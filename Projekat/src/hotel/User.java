@@ -2,11 +2,9 @@ package hotel;
 
 import java.time.LocalDate;
 
-enum Gender {
-	Male, Female, Other
-}
+enum Gender {Male, Female, Other}
 
-public class User {
+public abstract class User {
 	protected String firstName;
 	protected String lastName;
 	protected Gender gender;
