@@ -4,5 +4,5 @@
 /**
  * 
  */
-module Projekat {
+module Hotel {
 }

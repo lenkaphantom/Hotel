@@ -1,8 +1,10 @@
-package hotel;
+package users;
 
 import java.time.LocalDate;
 
-enum Gender {Male, Female, Other}
+enum Gender {
+	Male, Female, Other
+}
 
 public abstract class User {
 	protected String firstName;
@@ -17,14 +19,15 @@ public abstract class User {
 	// constructors
 	public User() {
 		this.firstName = "";
-        this.lastName = "";
-        this.gender = Gender.Other;
-        this.date = LocalDate.now();
-        this.phone = "";
-        this.address = "";
-        this.username = "";
-        this.password = "";
+		this.lastName = "";
+		this.gender = Gender.Other;
+		this.date = LocalDate.now();
+		this.phone = "";
+		this.address = "";
+		this.username = "";
+		this.password = "";
 	}
+
 	public User(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
 			String username, String password) {
 		this.firstName = firstName;
@@ -35,18 +38,6 @@ public abstract class User {
 		this.address = address;
 		this.username = username;
 		this.password = password;
-	}
-
-	// copy constructor
-	public User(User user) {
-		this.firstName = user.firstName;
-		this.lastName = user.lastName;
-		this.gender = user.gender;
-		this.date = user.date;
-		this.phone = user.phone;
-		this.address = user.address;
-		this.username = user.username;
-		this.password = user.password;
 	}
 
 	// getters
@@ -114,5 +105,4 @@ public abstract class User {
 	public void setPassword(String password) {
 		this.password = password;
 	}
-
 }
