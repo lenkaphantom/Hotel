@@ -19,6 +19,11 @@ public class Guest extends User {
 	}
 	
 	// methods
+	@Override
+	public String toString() {
+		return super.toString();
+	}
+	
 	public void makeReservation() {
 		System.out.println("Reservation made successfully!");
 	}

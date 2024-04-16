@@ -44,4 +44,14 @@ public class Room {
 	public void setOccupiedDates(List<LocalDate> occupiedDates) {
 		this.occupiedDates = new ArrayList<>(occupiedDates);
 	}
+	
+	// methods
+	@Override
+	public String toString() {
+		String occupiedDates = "";
+		for (LocalDate date : this.occupiedDates) {
+			occupiedDates += date + " ";
+		}
+		return "-------Room-------" + "\nroomType: " + this.roomType + "\noccupiedDates: " + occupiedDates;
+	}
 }

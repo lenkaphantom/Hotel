@@ -49,4 +49,10 @@ public class Receptionist extends Employee{
 	public void setRoomsInHotel(List<Room> roomsInHotel) {
 		this.roomsInHotel = new ArrayList<>(roomsInHotel);
 	}
+	
+	// methods
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }

@@ -35,4 +35,10 @@ public class HouseKeeper extends Employee {
             this.roomsToClean.add(new Room(room));
         }
     }
+	
+	// methods
+	@Override
+	public String toString() {
+		return super.toString();
+	}
 }

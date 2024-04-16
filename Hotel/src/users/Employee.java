@@ -30,7 +30,7 @@ public abstract class Employee extends User {
 		this.yearsOfExperience = yearsOfExperience;
 		this.type = type;
 	}
-	
+
 	// copy constructor
 	public Employee(Employee employee) {
 		super(employee);
@@ -76,5 +76,11 @@ public abstract class Employee extends User {
 
 	// methods
 	public void calculateSalary() {
+	}
+
+	@Override
+	public String toString() {
+		return super.toString() + "\nQualification: " + this.qualification + "\nSalary: " + this.salary
+				+ "\nYears of Experience: " + this.yearsOfExperience + "\nType: " + this.type;
 	}
 }

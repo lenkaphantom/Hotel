@@ -1,5 +1,8 @@
 package reservations;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import rooms.RoomType;
 
 enum ReservationStatus {
@@ -8,23 +11,23 @@ enum ReservationStatus {
 
 public class Reservation {
 	private RoomType roomType;
-	private AdditionalServices additionalServices;
+	private List<AdditionalServices> additionalServices;
 	private ReservationStatus status;
 
 	// constructors
 	public Reservation() {
 	}
 
-	public Reservation(RoomType roomType, AdditionalServices additionalServices, ReservationStatus status) {
+	public Reservation(RoomType roomType, List<AdditionalServices> additionalServices, ReservationStatus status) {
 		this.roomType = new RoomType(roomType);
-		this.additionalServices = new AdditionalServices(additionalServices);
+		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
 		this.status = status;
 	}
 
 	// copy constructor
 	public Reservation(Reservation reservation) {
 		this.roomType = new RoomType(reservation.roomType);
-		this.additionalServices = new AdditionalServices(reservation.additionalServices);
+		this.additionalServices = new ArrayList<AdditionalServices>(reservation.additionalServices);
 		this.status = reservation.status;
 	}
 
@@ -33,7 +36,7 @@ public class Reservation {
 		return roomType;
 	}
 
-	public AdditionalServices getAdditionalServices() {
+	public List<AdditionalServices> getAdditionalServices() {
 		return additionalServices;
 	}
 
@@ -46,8 +49,8 @@ public class Reservation {
 		this.roomType = new RoomType(roomType);
 	}
 
-	public void setAdditionalServices(AdditionalServices additionalServices) {
-		this.additionalServices = new AdditionalServices(additionalServices);
+	public void setAdditionalServices(List<AdditionalServices> additionalServices) {
+		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
 	}
 
 	public void setStatus(ReservationStatus status) {

@@ -65,4 +65,19 @@ public class Prices {
 	public void setEndDate(LocalDate endDate) {
 		this.endDate = endDate;
 	}
+	
+	// methods
+	@Override
+	public String toString() {
+		String pricePerRoom = "";
+		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {
+			pricePerRoom += entry.getKey() + " " + entry.getValue() + " ";
+		}
+		String pricePerService = "";
+		for (Map.Entry<String, Double> entry : this.pricePerService.entrySet()) {
+			pricePerService += entry.getKey() + " " + entry.getValue() + " ";
+		}
+		return "-------Prices-------" + "\npricePerRoom: " + pricePerRoom + "\npricePerService: " + pricePerService
+				+ "\nstartDate: " + this.startDate + "\nendDate: " + this.endDate;
+	}
 }

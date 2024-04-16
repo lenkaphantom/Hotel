@@ -1,31 +1,28 @@
 package reservations;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class AdditionalServices {
-	private List<String> services;
+	private String service;
 	
 	// constructors
 	public AdditionalServices() {
 	}
 	
-	public AdditionalServices(List<String> services) {
-		this.services = new ArrayList<>(services);
+	public AdditionalServices(String service) {
+		this.service = service;
 	}
 	
 	// copy constructor
 	public AdditionalServices(AdditionalServices additionalServices) {
-		this.services = new ArrayList<>(additionalServices.services);
+		this.service = additionalServices.service;
 	}
 	
 	// getters
-	public List<String> getServices() {
-		return services;
+	public String getService() {
+		return service;
 	}
 	
 	// setters
-	public void setServices(List<String> services) {
-		this.services = new ArrayList<>(services);
+	public void setService(String service) {
+		this.service = service;
 	}
 }

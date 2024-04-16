@@ -31,12 +31,12 @@ public abstract class User {
 		this.username = username;
 		this.password = password;
 	}
-	
+
 	// copy constructor
 	public User(User user) {
-        this.firstName = user.firstName;
-        this.lastName = user.lastName;
-        this.gender = user.gender;
+		this.firstName = user.firstName;
+		this.lastName = user.lastName;
+		this.gender = user.gender;
 		this.date = user.date;
 		this.phone = user.phone;
 		this.address = user.address;
@@ -108,5 +108,13 @@ public abstract class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	// methods
+	@Override
+	public String toString() {
+		return "First Name: " + this.firstName + "\nLast Name: " + this.lastName + "\nGender: " + this.gender
+				+ "\nDate of Birth: " + this.date + "\nPhone: " + this.phone + "\nAddress: " + this.address
+				+ "\nUsername: " + this.username + "\nPassword: " + this.password;
 	}
 }
