@@ -6,13 +6,17 @@ public class RoomType {
 
 	// constructors
 	public RoomType() {
-		this.numberOfPeople = 0;
-		this.numberOfBeds = 0;
 	}
 
 	public RoomType(int numberOfPeople, int numberOfBeds) {
 		this.numberOfPeople = numberOfPeople;
 		this.numberOfBeds = numberOfBeds;
+	}
+
+	// copy constructor
+	public RoomType(RoomType roomType) {
+		this.numberOfPeople = roomType.numberOfPeople;
+		this.numberOfBeds = roomType.numberOfBeds;
 	}
 
 	// getters

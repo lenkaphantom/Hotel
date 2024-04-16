@@ -19,10 +19,6 @@ public abstract class Employee extends User {
 	// constructors
 	public Employee() {
 		super();
-		this.qualification = Qualifications.None;
-		this.salary = 0;
-		this.yearsOfExperience = 0;
-		this.type = Type.HouseKeeper;
 	}
 
 	public Employee(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
@@ -33,6 +29,15 @@ public abstract class Employee extends User {
 		this.salary = salary;
 		this.yearsOfExperience = yearsOfExperience;
 		this.type = type;
+	}
+	
+	// copy constructor
+	public Employee(Employee employee) {
+		super(employee);
+		this.qualification = employee.qualification;
+		this.salary = employee.salary;
+		this.yearsOfExperience = employee.yearsOfExperience;
+		this.type = employee.type;
 	}
 
 	// getters

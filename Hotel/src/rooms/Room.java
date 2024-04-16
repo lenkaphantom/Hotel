@@ -1,10 +1,11 @@
 package rooms;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 enum RoomStatus {
-	Slobodna, Zauzeta, Spremanje
+	FREE, OCCUPIED, RESERVED
 }
 
 public class Room {
@@ -12,13 +13,35 @@ public class Room {
 	private List<LocalDate> occupiedDates;
 
 	// constructors
-	public Room(RoomType roomType, List<LocalDate> occupiedDates) {
-		this.roomType = roomType;
-		this.occupiedDates = occupiedDates;
+	public Room() {
 	}
 
-	public Room() {
-		this.roomType = new RoomType();
-        this.occupiedDates = null;
+	public Room(RoomType roomType, List<LocalDate> occupiedDates) {
+		this.roomType = new RoomType(roomType);
+		this.occupiedDates = new ArrayList<>(occupiedDates);
+	}
+	
+	// copy constructor
+	public Room(Room room) {
+		this.roomType = new RoomType(room.roomType);
+		this.occupiedDates = new ArrayList<>(room.occupiedDates);
+	}
+
+	// getters
+	public RoomType getRoomType() {
+		return roomType;
+	}
+
+	public List<LocalDate> getOccupiedDates() {
+		return occupiedDates;
+	}
+
+	// setter
+	public void setRoomType(RoomType roomType) {
+		this.roomType = new RoomType(roomType);
+	}
+
+	public void setOccupiedDates(List<LocalDate> occupiedDates) {
+		this.occupiedDates = new ArrayList<>(occupiedDates);
 	}
 }
