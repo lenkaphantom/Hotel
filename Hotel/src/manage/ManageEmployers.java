@@ -5,7 +5,7 @@ import java.util.List;
 
 import users.Employee;
 
-public class ManageEmployers {
+public abstract class ManageEmployers {
 	private List<Employee> employees;
 	
 	// constructors

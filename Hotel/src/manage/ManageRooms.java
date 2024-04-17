@@ -5,7 +5,7 @@ import java.util.List;
 
 import rooms.Room;
 
-public class ManageRooms {
+public abstract class ManageRooms {
 	private List<Room> rooms;
 	
 	// constructors

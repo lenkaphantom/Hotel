@@ -5,7 +5,7 @@ import java.util.List;
 
 import reservations.Reservation;
 
-public class ManageReservation {
+public abstract class ManageReservation {
 	private List<Reservation> reservations;
 	
 	// constructors

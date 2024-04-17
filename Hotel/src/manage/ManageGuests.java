@@ -5,7 +5,7 @@ import java.util.List;
 
 import users.Guest;
 
-public class ManageGuests {
+public abstract class ManageGuests {
 	private List<Guest> guests;
 	
 	// constructors
