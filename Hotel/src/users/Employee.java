@@ -2,29 +2,29 @@ package users;
 
 import java.time.LocalDate;
 
-enum Qualifications {
-	None, Basic, Intermediate, Advanced
-}
-
-enum Type {
-	Administrator, Receptionist, HouseKeeper
-}
+import enumeracije.Gender;
+import enumeracije.Qualifications;
+import enumeracije.Type;
 
 public abstract class Employee extends User {
-	protected Qualifications qualification;
-	protected double salary;
-	protected int yearsOfExperience;
-	protected Type type;
+	private static int idCounter = 1;
+	private int id;
+	private Qualifications qualification;
+	private double salary;
+	private int yearsOfExperience;
+	private Type type;
 
 	// constructors
 	public Employee() {
 		super();
+		this.id = idCounter++;
 	}
 
 	public Employee(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
 			String username, String password, Qualifications qualification, double salary, int yearsOfExperience,
 			Type type) {
 		super(firstName, lastName, gender, date, phone, address, username, password);
+		this.id = idCounter++;
 		this.qualification = qualification;
 		this.salary = salary;
 		this.yearsOfExperience = yearsOfExperience;
@@ -34,6 +34,7 @@ public abstract class Employee extends User {
 	// copy constructor
 	public Employee(Employee employee) {
 		super(employee);
+		this.id = idCounter++;
 		this.qualification = employee.qualification;
 		this.salary = employee.salary;
 		this.yearsOfExperience = employee.yearsOfExperience;
@@ -41,6 +42,10 @@ public abstract class Employee extends User {
 	}
 
 	// getters
+	public int getId() {
+		return this.id;
+	}
+	
 	public Qualifications getQualification() {
 		return this.qualification;
 	}
@@ -76,11 +81,13 @@ public abstract class Employee extends User {
 
 	// methods
 	public void calculateSalary() {
+		int totalHoursPerWeek = 40;
+		int totalWeeksPerMonth = 4;
 	}
-
+	
 	@Override
 	public String toString() {
-		return super.toString() + "\nQualification: " + this.qualification + "\nSalary: " + this.salary
-				+ "\nYears of Experience: " + this.yearsOfExperience + "\nType: " + this.type;
+		return super.toString() + " | " + this.qualification + " | " + this.salary + " | " + this.yearsOfExperience
+				+ " | " + this.type;
 	}
 }

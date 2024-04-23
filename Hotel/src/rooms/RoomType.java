@@ -1,39 +1,43 @@
 package rooms;
 
 public class RoomType {
-	protected int numberOfPeople;
-	protected int numberOfBeds;
+	private static int idCounter = 1;
+	private int id;
+	private String type;
 
 	// constructors
 	public RoomType() {
+		this.id = idCounter++;
 	}
 
-	public RoomType(int numberOfPeople, int numberOfBeds) {
-		this.numberOfPeople = numberOfPeople;
-		this.numberOfBeds = numberOfBeds;
+	public RoomType(String type) {
+		this.id = idCounter++;
+		this.type = type;
 	}
 
 	// copy constructor
 	public RoomType(RoomType roomType) {
-		this.numberOfPeople = roomType.numberOfPeople;
-		this.numberOfBeds = roomType.numberOfBeds;
+		this.id = idCounter++;
+		this.type = roomType.type;
 	}
 
 	// getters
-	public int getOccupancy() {
-		return numberOfPeople;
+	public int getId() {
+		return this.id;
 	}
 
-	public int getNumberOfBeds() {
-		return numberOfBeds;
+	public String getType() {
+		return this.type;
 	}
 
 	// setters
-	public void setOccupancy(int numberOfPeople) {
-		this.numberOfPeople = numberOfPeople;
+	public void setType(String type) {
+		this.type = type;
 	}
 
-	public void setNumberOfBeds(int numberOfBeds) {
-		this.numberOfBeds = numberOfBeds;
+	// methods
+	@Override
+	public String toString() {
+		return this.id + " | " + this.type;
 	}
 }

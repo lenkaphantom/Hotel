@@ -1,42 +1,46 @@
 package manage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import rooms.RoomType;
 
-public abstract class ManageRoomTypes {
-	private List<RoomType> roomTypes;
+public class ManageRoomTypes {
+	private static Map<Integer, RoomType> roomTypes = new HashMap<Integer, RoomType>();
 	
 	// constructors
-	public ManageRoomTypes() {
-	}
-	
-	public ManageRoomTypes(List<RoomType> roomTypes) {
-		this.roomTypes = new ArrayList<RoomType>(roomTypes);
-	}
-	
-	// copy constructor
-	public ManageRoomTypes(ManageRoomTypes manageRoomTypes) {
-		this.roomTypes = new ArrayList<RoomType>(manageRoomTypes.roomTypes);
-	}
+	private ManageRoomTypes() {}
 	
 	// getters
-	public List<RoomType> getRoomTypes() {
+	public static Map<Integer, RoomType> getRoomTypes() {
 		return roomTypes;
 	}
 	
-	// setters
-	public void setRoomTypes(List<RoomType> roomTypes) {
-		this.roomTypes = new ArrayList<RoomType>(roomTypes);
-	}
-	
 	// methods
-	public void addRoomType(RoomType roomType) {
-		this.roomTypes.add(roomType);
+	public static void addRoomType(RoomType roomType) {
+		roomTypes.put(roomType.getId(), roomType);
 	}
 	
-	public void removeRoomType(RoomType roomType) {
-		this.roomTypes.remove(roomType);
+	public static void removeRoomType(RoomType roomType) {
+		roomTypes.remove(roomType.getId());
+	}
+	
+	public static void changeRoomType(int id, String type) {
+		if (!roomTypes.containsKey(id)) {
+			System.out.println("Tip sobe sa id-jem " + id + " ne postoji.");
+			return;
+		}
+
+		RoomType roomType = roomTypes.get(id);
+
+		if (type != null) {
+			roomType.setType(type);
+		}
+	}
+	
+	public static void printRoomTypes() {
+		for (RoomType roomType : roomTypes.values()) {
+			System.out.println(roomType.toString());
+		}
 	}
 }

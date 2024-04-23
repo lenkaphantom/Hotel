@@ -2,9 +2,7 @@ package users;
 
 import java.time.LocalDate;
 
-enum Gender {
-	Male, Female, Other
-}
+import enumeracije.Gender;
 
 public abstract class User {
 	protected String firstName;
@@ -113,8 +111,7 @@ public abstract class User {
 	// methods
 	@Override
 	public String toString() {
-		return "First Name: " + this.firstName + "\nLast Name: " + this.lastName + "\nGender: " + this.gender
-				+ "\nDate of Birth: " + this.date + "\nPhone: " + this.phone + "\nAddress: " + this.address
-				+ "\nUsername: " + this.username + "\nPassword: " + this.password;
+		return this.firstName + " | " + this.lastName + " | " + this.gender + " | " + this.date + " | " + this.phone
+				+ " | " + this.address + " | " + this.username + " | " + this.password;
 	}
 }

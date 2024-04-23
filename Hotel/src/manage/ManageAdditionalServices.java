@@ -1,42 +1,46 @@
 package manage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import reservations.AdditionalServices;
 
-public abstract class ManageAdditionalServices {
-	private List<AdditionalServices> additionalServices;
-	
+public class ManageAdditionalServices {
+	private static Map<Integer, AdditionalServices> additionalServices = new HashMap<Integer, AdditionalServices>();
+
 	// constructors
-	public ManageAdditionalServices() {
-	}
-	
-	public ManageAdditionalServices(List<AdditionalServices> additionalServices) {
-		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
-	}
-	
-	// copy constructor
-	public ManageAdditionalServices(ManageAdditionalServices manageAdditionalServices) {
-		this.additionalServices = new ArrayList<AdditionalServices>(manageAdditionalServices.additionalServices);
-	}
-	
+	private ManageAdditionalServices() {}
+
 	// getters
-	public List<AdditionalServices> getAdditionalServices() {
+	public static Map<Integer, AdditionalServices> getAdditionalServices() {
 		return additionalServices;
 	}
-	
-	// setters
-	public void setAdditionalServices(List<AdditionalServices> additionalServices) {
-		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
-	}
-	
+
 	// methods
-	public void addAdditionalServices(AdditionalServices additionalServices) {
-		this.additionalServices.add(additionalServices);
+	public static void addAdditionalService(AdditionalServices additionalService) {
+		additionalServices.put(additionalService.getId(), additionalService);
 	}
-	
-	public void removeAdditionalServices(AdditionalServices additionalServices) {
-		this.additionalServices.remove(additionalServices);
+
+	public static void removeAdditionalService(AdditionalServices additionalService) {
+		additionalServices.remove(additionalService.getId());
+	}
+
+	public static void changeAdditionalService(int id, String name) {
+		if (!additionalServices.containsKey(id)) {
+			System.out.println("Dodatna usluga sa id-jem " + id + " ne postoji.");
+			return;
+		}
+
+		AdditionalServices additionalService = additionalServices.get(id);
+		
+		if (name != null) {
+			additionalService.setService(name);
+		}
+	}
+
+	public static void printAdditionalServices() {
+		for (AdditionalServices additionalService : additionalServices.values()) {
+			System.out.println(additionalService.toString());
+		}
 	}
 }

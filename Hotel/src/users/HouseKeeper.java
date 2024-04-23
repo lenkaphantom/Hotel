@@ -4,10 +4,14 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+import enumeracije.Gender;
+import enumeracije.Qualifications;
+import enumeracije.Type;
+
 import rooms.Room;
 
 public class HouseKeeper extends Employee {
-	List<Room> roomsToClean;
+	private List<Room> roomsToClean;
 
 	// constructors
 	public HouseKeeper() {
@@ -16,9 +20,9 @@ public class HouseKeeper extends Employee {
 
 	public HouseKeeper(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
 			String username, String password, Qualifications qualification, double salary, int yearsOfExperience,
-			Type type, List<Room> roomsToClean) {
+			List<Room> roomsToClean) {
 		super(firstName, lastName, gender, date, phone, address, username, password, qualification, salary,
-				yearsOfExperience, type);
+				yearsOfExperience, Type.HouseKeeper);
 		this.roomsToClean = roomsToClean;
 	}
 
@@ -39,6 +43,10 @@ public class HouseKeeper extends Employee {
 	// methods
 	@Override
 	public String toString() {
-		return super.toString();
+		String rooms = "";
+		for (Room room : this.roomsToClean) {
+			rooms += room.getId() + "*";
+		}
+		return super.toString() + " | " + rooms.substring(0, rooms.length() - 1);
 	}
 }

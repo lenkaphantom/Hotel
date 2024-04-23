@@ -1,51 +1,48 @@
 package manage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import rooms.Room;
 
-public abstract class ManageRooms {
-	private List<Room> rooms;
+public class ManageRooms {
+	private static Map<Integer, Room> rooms = new HashMap<Integer, Room>();
 	
 	// constructors
-	public ManageRooms() {
-	}
-	
-	public ManageRooms(List<Room> rooms) {
-		this.rooms = new ArrayList<Room>(rooms);
-	}
-	
-	// copy constructor
-	public ManageRooms(ManageRooms manageRooms) {
-		this.rooms = new ArrayList<Room>(manageRooms.rooms);
-	}
+	private ManageRooms() {}
 	
 	// getters
-	public List<Room> getRooms() {
+	public static Map<Integer, Room> getRooms() {
 		return rooms;
 	}
 	
-	// setters
-	public void setRooms(List<Room> rooms) {
-		this.rooms = new ArrayList<Room>(rooms);
-	}
-	
 	// methods
-	public void addRoom(Room room) {
-		this.rooms.add(room);
+	public static void addRoom(Room room) {
+		rooms.put(room.getId(), room);
 	}
 	
-	public void removeRoom(Room room) {
-		this.rooms.remove(room);
+	public static void removeRoom(Room room) {
+		rooms.remove(room.getId());
 	}
 	
-	public void changeRoom(Room oldRoom, Room newRoom) {
-		this.rooms.set(this.rooms.indexOf(oldRoom), newRoom);
+	public static void changeRoom(int id, int floor, int roomNumber) {
+		if (!rooms.containsKey(id)) {
+			System.out.println("Soba sa id-jem " + id + " ne postoji.");
+			return;
+		}
+
+		Room room = rooms.get(id);
+
+		if (floor != 0) {
+			room.setFloor(floor);
+		}
+		if (roomNumber != 0) {
+			room.setRoomNumber(roomNumber);
+		}
 	}
 	
-	public void printRooms() {
-		for (Room room : rooms) {
+	public static void printRooms() {
+		for (Room room : rooms.values()) {
 			System.out.println(room.toString());
 		}
 	}

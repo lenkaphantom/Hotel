@@ -1,52 +1,59 @@
 package manage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.Map;
 
+import reservations.AdditionalServices;
 import reservations.Prices;
+import rooms.RoomType;
 
-public abstract class ManagePrices {
-	private List<Prices> prices;
-	
+public class ManagePrices {
+	private static Map<Integer, Prices> prices = new HashMap<Integer, Prices>();
+
 	// constructors
-	public ManagePrices() {
-	}
-	
-	public ManagePrices(List<Prices> prices) {
-		this.prices = new ArrayList<Prices>(prices);
-	}
-	
-	// copy constructor
-	public ManagePrices(ManagePrices managePrices) {
-		this.prices = new ArrayList<Prices>(managePrices.prices);
-	}
-	
+	private ManagePrices() {}
+
 	// getters
-	public List<Prices> getPrices() {
+	public static Map<Integer, Prices> getPrices() {
 		return prices;
 	}
-	
-	// setters
-	public void setPrices(List<Prices> prices) {
-		this.prices = new ArrayList<Prices>(prices);
-	}
-	
+
 	// methods
-	public void addPrices(Prices prices) {
-		this.prices.add(prices);
+	public static void addPrices(Prices price) {
+		prices.put(price.getId(), price);
 	}
-	
-	public void removePrices(Prices prices) {
-		this.prices.remove(prices);
+
+	public static void removePrices(Prices price) {
+		prices.remove(price.getId());
 	}
-	
-	public void updatePrices(Prices prices, Prices newPrices) {
-		this.prices.set(this.prices.indexOf(prices), newPrices);
+
+	public static void changePrices(int id, Map<RoomType, Double> pricePerRoom,
+			Map<AdditionalServices, Double> pricePerService, LocalDate startDate, LocalDate endDate) {
+		if (!prices.containsKey(id)) {
+			System.out.println("Cenovnik sa id-jem " + id + " ne postoji.");
+			return;
+		}
+
+		Prices price = prices.get(id);
+
+		if (pricePerRoom != null) {
+			price.setPricePerRoom(pricePerRoom);
+		}
+		if (pricePerService != null) {
+			price.setPricePerService(pricePerService);
+		}
+		if (startDate != null) {
+			price.setStartDate(startDate);
+		}
+		if (endDate != null) {
+			price.setEndDate(endDate);
+		}
 	}
-	
-	public void printPrices() {
-		for (Prices prices : this.prices) {
-			System.out.println(prices.toString());
+
+	public static void printPrices() {
+		for (Prices price : prices.values()) {
+			System.out.println(price.toString());
 		}
 	}
 }
