@@ -1,4 +1,4 @@
-package users;
+package entity;
 
 import java.time.LocalDate;
 import java.util.Map;
@@ -7,9 +7,7 @@ import enumeracije.Gender;
 import enumeracije.Qualifications;
 import enumeracije.RoomStatus;
 import enumeracije.Type;
-import manage.ManageRooms;
-import reservations.Reservation;
-import rooms.Room;
+import manage.ManageHotel;
 
 public class Receptionist extends Employee {
 	private Reservation reservation;
@@ -36,8 +34,9 @@ public class Receptionist extends Employee {
 	}
 
 	// methods
-	public void changeReservation() {
-		Map<Integer, Room> rooms = ManageRooms.getRooms();
+	public void addRoomToReservation() {
+		ManageHotel hotel = new ManageHotel();
+		Map<Integer, Room> rooms = hotel.getRoomsMan().getRooms();
 		for (Room room : rooms.values()) {
 			if (!room.isOccupied(this.reservation.getStartDate(), this.reservation.getEndDate())) {
 				if (room.getRoomType().equals(this.reservation.getRoomType())) {

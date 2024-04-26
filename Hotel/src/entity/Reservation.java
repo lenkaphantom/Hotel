@@ -1,13 +1,10 @@
-package reservations;
+package entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import enumeracije.ReservationStatus;
-
-import rooms.Room;
-import rooms.RoomType;
 
 public class Reservation {
 	private static int idCounter = 1;

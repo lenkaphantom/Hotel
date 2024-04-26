@@ -1,4 +1,4 @@
-package users;
+package entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -7,8 +7,6 @@ import java.util.List;
 import enumeracije.Gender;
 import enumeracije.Qualifications;
 import enumeracije.Type;
-
-import rooms.Room;
 
 public class HouseKeeper extends Employee {
 	private List<Room> roomsToClean;
@@ -19,11 +17,10 @@ public class HouseKeeper extends Employee {
 	}
 
 	public HouseKeeper(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
-			String username, String password, Qualifications qualification, double salary, int yearsOfExperience,
-			List<Room> roomsToClean) {
+			String username, String password, Qualifications qualification, double salary, int yearsOfExperience) {
 		super(firstName, lastName, gender, date, phone, address, username, password, qualification, salary,
 				yearsOfExperience, Type.HouseKeeper);
-		this.roomsToClean = roomsToClean;
+		this.roomsToClean = new ArrayList<>();
 	}
 
 	// getters
@@ -43,10 +40,6 @@ public class HouseKeeper extends Employee {
 	// methods
 	@Override
 	public String toString() {
-		String rooms = "";
-		for (Room room : this.roomsToClean) {
-			rooms += room.getId() + "*";
-		}
-		return super.toString() + " | " + rooms.substring(0, rooms.length() - 1);
+		return super.toString();
 	}
 }

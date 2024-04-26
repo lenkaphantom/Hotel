@@ -1,10 +1,8 @@
-package reservations;
+package entity;
 
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
-
-import rooms.RoomType;
 
 public class Prices {
 	private static int idCounter = 1;

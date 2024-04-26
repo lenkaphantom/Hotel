@@ -1,11 +1,10 @@
-package rooms;
+package entity;
 
 import java.time.LocalDate;
 import java.util.Map;
 
 import enumeracije.RoomStatus;
-import manage.ManageReservations;
-import reservations.Reservation;
+import manage.ManageHotel;
 
 public class Room {
 	private static int idCounter = 1;
@@ -82,7 +81,8 @@ public class Room {
 	}
 
 	public void setOccupiedDates() {
-		Map<Integer, Reservation> reservations = ManageReservations.getReservations();
+		ManageHotel hotel = new ManageHotel();
+		Map<Integer, Reservation> reservations = hotel.getReservationsMan().getReservations();
 		for (Reservation reservation : reservations.values()) {
 			if (reservation.getRoom().getId() == this.id) {
 				this.occupiedDates.put(reservation.getStartDate(), reservation.getEndDate());

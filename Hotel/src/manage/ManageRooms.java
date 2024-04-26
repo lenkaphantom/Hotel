@@ -3,35 +3,37 @@ package manage;
 import java.util.HashMap;
 import java.util.Map;
 
-import rooms.Room;
+import entity.Room;
 
 public class ManageRooms {
-	private static Map<Integer, Room> rooms = new HashMap<Integer, Room>();
+	private Map<Integer, Room> rooms;
 	
 	// constructors
-	private ManageRooms() {}
+	public ManageRooms() {
+		this.rooms = new HashMap<Integer, Room>();
+	}
 	
 	// getters
-	public static Map<Integer, Room> getRooms() {
-		return rooms;
+	public Map<Integer, Room> getRooms() {
+		return this.rooms;
 	}
 	
 	// methods
-	public static void addRoom(Room room) {
-		rooms.put(room.getId(), room);
+	public void addRoom(Room room) {
+		this.rooms.put(room.getId(), room);
 	}
 	
-	public static void removeRoom(Room room) {
-		rooms.remove(room.getId());
+	public void removeRoom(Room room) {
+		this.rooms.remove(room.getId());
 	}
 	
-	public static void changeRoom(int id, int floor, int roomNumber) {
-		if (!rooms.containsKey(id)) {
+	public void changeRoom(int id, int floor, int roomNumber) {
+		if (!this.rooms.containsKey(id)) {
 			System.out.println("Soba sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		Room room = rooms.get(id);
+		Room room = this.rooms.get(id);
 
 		if (floor != 0) {
 			room.setFloor(floor);
@@ -41,8 +43,8 @@ public class ManageRooms {
 		}
 	}
 	
-	public static void printRooms() {
-		for (Room room : rooms.values()) {
+	public void printRooms() {
+		for (Room room : this.rooms.values()) {
 			System.out.println(room.toString());
 		}
 	}

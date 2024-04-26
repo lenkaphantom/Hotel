@@ -3,35 +3,37 @@ package manage;
 import java.util.HashMap;
 import java.util.Map;
 
-import users.Guest;
+import entity.Guest;
 
 public class ManageGuests {
-	private static Map<Integer, Guest> guests = new HashMap<>();
+	private Map<Integer, Guest> guests;
 	
 	// constructors
-	private ManageGuests() {}
+	public ManageGuests() {
+		this.guests = new HashMap<Integer, Guest>();
+	}
 	
 	// getters
-	public static Map<Integer, Guest> getGuests() {
-		return guests;
+	public Map<Integer, Guest> getGuests() {
+		return this.guests;
 	}
 	
 	// methods
-	public static void addGuest(Guest guest) {
-		guests.put(guest.getId(), guest);
+	public void addGuest(Guest guest) {
+		this.guests.put(guest.getId(), guest);
 	}
 	
-	public static void removeGuest(Guest guest) {
-		guests.remove(guest.getId());
+	public void removeGuest(Guest guest) {
+		this.guests.remove(guest.getId());
 	}
 	
-	public static void changeGuest(int id, String firstName, String lastName, String phone, String address) {
-		if (!guests.containsKey(id)) {
+	public void changeGuest(int id, String firstName, String lastName, String phone, String address) {
+		if (!this.guests.containsKey(id)) {
 			System.out.println("Gost sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		Guest guest = guests.get(id);
+		Guest guest = this.guests.get(id);
 
 		if (firstName != null) {
 			guest.setFirstName(firstName);
@@ -47,8 +49,8 @@ public class ManageGuests {
 		}
 	}
 	
-	public static void printGuests() {
-		for (Guest guest : guests.values()) {
+	public void printGuests() {
+		for (Guest guest : this.guests.values()) {
 			System.out.println(guest.toString());
 		}
 	}

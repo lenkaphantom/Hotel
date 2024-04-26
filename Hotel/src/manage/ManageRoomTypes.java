@@ -3,43 +3,49 @@ package manage;
 import java.util.HashMap;
 import java.util.Map;
 
-import rooms.RoomType;
+import entity.RoomType;
+import enumeracije.TypeOfRoom;
 
 public class ManageRoomTypes {
-	private static Map<Integer, RoomType> roomTypes = new HashMap<Integer, RoomType>();
+	private Map<Integer, RoomType> roomTypes;
 	
 	// constructors
-	private ManageRoomTypes() {}
+	public ManageRoomTypes() {
+		this.roomTypes = new HashMap<Integer, RoomType>();
+	}
 	
 	// getters
-	public static Map<Integer, RoomType> getRoomTypes() {
-		return roomTypes;
+	public Map<Integer, RoomType> getRoomTypes() {
+		return this.roomTypes;
 	}
 	
 	// methods
-	public static void addRoomType(RoomType roomType) {
-		roomTypes.put(roomType.getId(), roomType);
+	public void addRoomType(RoomType roomType) {
+		this.roomTypes.put(roomType.getId(), roomType);
 	}
 	
-	public static void removeRoomType(RoomType roomType) {
-		roomTypes.remove(roomType.getId());
+	public void removeRoomType(RoomType roomType) {
+		this.roomTypes.remove(roomType.getId());
 	}
 	
-	public static void changeRoomType(int id, String type) {
-		if (!roomTypes.containsKey(id)) {
+	public void changeRoomType(int id, TypeOfRoom type, String beds) {
+		if (!this.roomTypes.containsKey(id)) {
 			System.out.println("Tip sobe sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		RoomType roomType = roomTypes.get(id);
+		RoomType roomType = this.roomTypes.get(id);
 
 		if (type != null) {
 			roomType.setType(type);
 		}
+		if (beds != null) {
+			roomType.setBeds(beds);
+		}
 	}
 	
-	public static void printRoomTypes() {
-		for (RoomType roomType : roomTypes.values()) {
+	public void printRoomTypes() {
+		for (RoomType roomType : this.roomTypes.values()) {
 			System.out.println(roomType.toString());
 		}
 	}

@@ -3,36 +3,38 @@ package manage;
 import java.util.HashMap;
 import java.util.Map;
 
-import users.Employee;
+import entity.Employee;
 
 public class ManageEmployees {
-	private static Map<Integer, Employee> employees = new HashMap<Integer, Employee>();
+	private Map<Integer, Employee> employees;
 
 	// constructors
-	private ManageEmployees() {}
+	public ManageEmployees() {
+		this.employees = new HashMap<Integer, Employee>();
+	}
 
 	// getters
-	public static Map<Integer, Employee> getEmployees() {
-		return employees;
+	public Map<Integer, Employee> getEmployees() {
+		return this.employees;
 	}
 
 	// methods
-	public static void addEmployee(Employee employee) {
-		employees.put(employee.getId(), employee);
+	public void addEmployee(Employee employee) {
+		this.employees.put(employee.getId(), employee);
 	}
 
-	public static void removeEmployee(Employee employee) {
-		employees.remove(employee.getId());
+	public void removeEmployee(Employee employee) {
+		this.employees.remove(employee.getId());
 	}
 
-	public static void changeEmployee(int id, String firstName, String lastName, String phone, String address,
+	public void changeEmployee(int id, String firstName, String lastName, String phone, String address,
 			String username, String password) {
-		if (!employees.containsKey(id)) {
+		if (!this.employees.containsKey(id)) {
 			System.out.println("Zaposleni sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		Employee employee = employees.get(id);
+		Employee employee = this.employees.get(id);
 
 		if (firstName != null) {
 			employee.setFirstName(firstName);
@@ -54,8 +56,8 @@ public class ManageEmployees {
 		}
 	}
 
-	public static void printEmployees() {
-		for (Employee employee : employees.values()) {
+	public void printEmployees() {
+		for (Employee employee : this.employees.values()) {
 			System.out.println(employee.toString());
 		}
 	}

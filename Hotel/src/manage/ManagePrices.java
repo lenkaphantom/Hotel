@@ -4,38 +4,40 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import reservations.AdditionalServices;
-import reservations.Prices;
-import rooms.RoomType;
+import entity.AdditionalServices;
+import entity.Prices;
+import entity.RoomType;
 
 public class ManagePrices {
-	private static Map<Integer, Prices> prices = new HashMap<Integer, Prices>();
+	private Map<Integer, Prices> prices;
 
 	// constructors
-	private ManagePrices() {}
+	public ManagePrices() {
+		this.prices = new HashMap<Integer, Prices>();
+	}
 
 	// getters
-	public static Map<Integer, Prices> getPrices() {
-		return prices;
+	public Map<Integer, Prices> getPrices() {
+		return this.prices;
 	}
 
 	// methods
-	public static void addPrices(Prices price) {
-		prices.put(price.getId(), price);
+	public void addPrices(Prices price) {
+		this.prices.put(price.getId(), price);
 	}
 
-	public static void removePrices(Prices price) {
-		prices.remove(price.getId());
+	public void removePrices(Prices price) {
+		this.prices.remove(price.getId());
 	}
 
-	public static void changePrices(int id, Map<RoomType, Double> pricePerRoom,
+	public void changePrices(int id, Map<RoomType, Double> pricePerRoom,
 			Map<AdditionalServices, Double> pricePerService, LocalDate startDate, LocalDate endDate) {
-		if (!prices.containsKey(id)) {
+		if (!this.prices.containsKey(id)) {
 			System.out.println("Cenovnik sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		Prices price = prices.get(id);
+		Prices price = this.prices.get(id);
 
 		if (pricePerRoom != null) {
 			price.setPricePerRoom(pricePerRoom);
@@ -51,8 +53,8 @@ public class ManagePrices {
 		}
 	}
 
-	public static void printPrices() {
-		for (Prices price : prices.values()) {
+	public void printPrices() {
+		for (Prices price : this.prices.values()) {
 			System.out.println(price.toString());
 		}
 	}

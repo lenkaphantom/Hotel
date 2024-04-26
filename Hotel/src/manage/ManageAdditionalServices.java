@@ -3,43 +3,45 @@ package manage;
 import java.util.HashMap;
 import java.util.Map;
 
-import reservations.AdditionalServices;
+import entity.AdditionalServices;
 
 public class ManageAdditionalServices {
-	private static Map<Integer, AdditionalServices> additionalServices = new HashMap<Integer, AdditionalServices>();
+	private Map<Integer, AdditionalServices> additionalServices;
 
 	// constructors
-	private ManageAdditionalServices() {}
+	public ManageAdditionalServices() {
+		this.additionalServices = new HashMap<Integer, AdditionalServices>();
+	}
 
 	// getters
-	public static Map<Integer, AdditionalServices> getAdditionalServices() {
-		return additionalServices;
+	public Map<Integer, AdditionalServices> getAdditionalServices() {
+		return this.additionalServices;
 	}
 
 	// methods
-	public static void addAdditionalService(AdditionalServices additionalService) {
-		additionalServices.put(additionalService.getId(), additionalService);
+	public void addAdditionalService(AdditionalServices additionalService) {
+		this.additionalServices.put(additionalService.getId(), additionalService);
 	}
 
-	public static void removeAdditionalService(AdditionalServices additionalService) {
-		additionalServices.remove(additionalService.getId());
+	public void removeAdditionalService(AdditionalServices additionalService) {
+		this.additionalServices.remove(additionalService.getId());
 	}
 
-	public static void changeAdditionalService(int id, String name) {
-		if (!additionalServices.containsKey(id)) {
+	public void changeAdditionalService(int id, String name) {
+		if (!this.additionalServices.containsKey(id)) {
 			System.out.println("Dodatna usluga sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		AdditionalServices additionalService = additionalServices.get(id);
+		AdditionalServices additionalService = this.additionalServices.get(id);
 		
 		if (name != null) {
 			additionalService.setService(name);
 		}
 	}
 
-	public static void printAdditionalServices() {
-		for (AdditionalServices additionalService : additionalServices.values()) {
+	public void printAdditionalServices() {
+		for (AdditionalServices additionalService : this.additionalServices.values()) {
 			System.out.println(additionalService.toString());
 		}
 	}

@@ -1,9 +1,8 @@
-package users;
+package entity;
 
 import java.time.LocalDate;
 
 import enumeracije.Gender;
-import reservations.Reservation;
 
 public class Guest extends User {
 	private static int idCounter = 1;
@@ -35,7 +34,7 @@ public class Guest extends User {
 	// methods
 	@Override
 	public String toString() {
-		return super.toString();
+		return this.id + " | " + super.toString();
 	}
 	
 	public void makeReservation() {

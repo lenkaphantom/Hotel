@@ -1,4 +1,4 @@
-package reservations;
+package entity;
 
 public class AdditionalServices {
 	private static int idCounter = 1;

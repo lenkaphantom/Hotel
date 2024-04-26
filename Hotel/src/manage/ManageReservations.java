@@ -4,41 +4,42 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import entity.AdditionalServices;
+import entity.Reservation;
+import entity.Room;
+import entity.RoomType;
 import enumeracije.ReservationStatus;
-import reservations.AdditionalServices;
-import reservations.Reservation;
-import rooms.Room;
-import rooms.RoomType;
 
 public class ManageReservations {
-	private static Map<Integer, Reservation> reservations = new HashMap<Integer, Reservation>();
+	private Map<Integer, Reservation> reservations;
 
 	// constructors
-	private ManageReservations() {
+	public ManageReservations() {
+		this.reservations = new HashMap<Integer, Reservation>();
 	}
 
 	// getters
-	public static Map<Integer, Reservation> getReservations() {
-		return reservations;
+	public Map<Integer, Reservation> getReservations() {
+		return this.reservations;
 	}
 
 	// methods
-	public static void addReservation(Reservation reservation) {
-		reservations.put(reservation.getId(), reservation);
+	public void addReservation(Reservation reservation) {
+		this.reservations.put(reservation.getId(), reservation);
 	}
 
-	public static void removeReservation(Reservation reservation) {
-		reservations.remove(reservation.getId());
+	public void removeReservation(Reservation reservation) {
+		this.reservations.remove(reservation.getId());
 	}
 
-	public static void changeReservation(int id, RoomType roomType, List<AdditionalServices> additionalServices,
+	public void changeReservation(int id, RoomType roomType, List<AdditionalServices> additionalServices,
 			ReservationStatus status, Room room) {
-		if (!reservations.containsKey(id)) {
+		if (!this.reservations.containsKey(id)) {
 			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
 			return;
 		}
 
-		Reservation reservation = reservations.get(id);
+		Reservation reservation = this.reservations.get(id);
 		
 		if (roomType != null) {
 			reservation.setRoomType(roomType);
@@ -54,8 +55,8 @@ public class ManageReservations {
 		}
 	}
 	
-	public static void printReservations() {
-		for (Reservation reservation : reservations.values()) {
+	public void printReservations() {
+		for (Reservation reservation : this.reservations.values()) {
 			System.out.println(reservation.toString());
 		}
 	}

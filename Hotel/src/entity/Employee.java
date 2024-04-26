@@ -1,4 +1,4 @@
-package users;
+package entity;
 
 import java.time.LocalDate;
 
@@ -45,7 +45,7 @@ public abstract class Employee extends User {
 	public int getId() {
 		return this.id;
 	}
-	
+
 	public Qualifications getQualification() {
 		return this.qualification;
 	}
@@ -84,10 +84,10 @@ public abstract class Employee extends User {
 		int totalHoursPerWeek = 40;
 		int totalWeeksPerMonth = 4;
 	}
-	
+
 	@Override
 	public String toString() {
-		return super.toString() + " | " + this.qualification + " | " + this.salary + " | " + this.yearsOfExperience
-				+ " | " + this.type;
+		return this.id + " | " + super.toString() + " | " + this.qualification + " | " + this.salary + " | "
+				+ this.yearsOfExperience + " | " + this.type;
 	}
 }
