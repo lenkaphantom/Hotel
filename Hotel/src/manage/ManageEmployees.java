@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 import entity.Employee;
+import entity.HouseKeeper;
+import entity.Receptionist;
 
 public class ManageEmployees {
 	private Map<Integer, Employee> employees;
@@ -16,6 +18,26 @@ public class ManageEmployees {
 	// getters
 	public Map<Integer, Employee> getEmployees() {
 		return this.employees;
+	}
+	
+	public Map<Integer, HouseKeeper> getHouseKeepers() {
+		Map<Integer, HouseKeeper> houseKeepers = new HashMap<>();
+		for (Employee employee : this.employees.values()) {
+			if (employee instanceof HouseKeeper) {
+				houseKeepers.put(employee.getId(), (HouseKeeper) employee);
+			}
+		}
+		return houseKeepers;
+	}
+	
+	public Map<Integer, Receptionist> getReceptionists() {
+		Map<Integer, Receptionist> receptionists = new HashMap<>();
+		for (Employee employee : this.employees.values()) {
+			if (employee instanceof Receptionist) {
+				receptionists.put(employee.getId(), (Receptionist) employee);
+			}
+		}
+		return receptionists;
 	}
 
 	// methods

@@ -4,6 +4,7 @@ public class AdditionalServices {
 	private static int idCounter = 1;
 	private int id;
 	private String service;
+	private boolean isDeleted = false;
 
 	// constructors
 	public AdditionalServices() {
@@ -29,15 +30,27 @@ public class AdditionalServices {
 	public String getService() {
 		return this.service;
 	}
+	
+	public boolean getIsDeleted() {
+		return this.isDeleted;
+	}
 
 	// setters
 	public void setService(String service) {
 		this.service = service;
 	}
+	
+	public void setIsDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	// methods
 	@Override
 	public String toString() {
-		return this.id + " | " + this.service;
+		return this.id + ": " + this.service;
+	}
+	
+	public String toStringForFile() {
+		return this.id + " | " + this.service + " | " + this.isDeleted;
 	}
 }

@@ -40,7 +40,7 @@ public class Receptionist extends Employee {
 		for (Room room : rooms.values()) {
 			if (!room.isOccupied(this.reservation.getStartDate(), this.reservation.getEndDate())) {
 				if (room.getRoomType().equals(this.reservation.getRoomType())) {
-					room.setRoomStatus(RoomStatus.RESERVED);
+					room.setRoomStatus(RoomStatus.OCCUPIED);
 					this.reservation.setRoom(room);
 					return;
 				}

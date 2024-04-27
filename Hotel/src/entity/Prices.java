@@ -11,14 +11,15 @@ public class Prices {
 	private Map<AdditionalServices, Double> pricePerService;
 	private LocalDate startDate;
 	private LocalDate endDate;
+	private boolean isDeleted = false;
 
 	// constructors
 	public Prices() {
 		this.id = idCounter++;
 	}
 
-	public Prices(Map<RoomType, Double> pricePerRoom, Map<AdditionalServices, Double> pricePerService, LocalDate startDate,
-			LocalDate endDate) {
+	public Prices(Map<RoomType, Double> pricePerRoom, Map<AdditionalServices, Double> pricePerService,
+			LocalDate startDate, LocalDate endDate) {
 		this.id = idCounter++;
 		this.pricePerRoom = new HashMap<>(pricePerRoom);
 		this.pricePerService = new HashMap<>(pricePerService);
@@ -56,6 +57,10 @@ public class Prices {
 		return endDate;
 	}
 
+	public boolean getIsDeleted() {
+		return isDeleted;
+	}
+
 	// setters
 	public void setPricePerRoom(Map<RoomType, Double> pricePerRoom) {
 		this.pricePerRoom = new HashMap<>(pricePerRoom);
@@ -73,9 +78,29 @@ public class Prices {
 		this.endDate = endDate;
 	}
 
+	public void setIsDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
+
 	// methods
 	@Override
 	public String toString() {
+		String pricePerRoom = "";
+		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {
+			String tmp = entry.getKey().getType() + "(" + entry.getKey().getBeds() + ")";
+			pricePerRoom += String.format("%-20s | %.2f\n", tmp, entry.getValue());
+		}
+		String pricePerService = "";
+		for (Map.Entry<AdditionalServices, Double> entry : this.pricePerService.entrySet()) {
+			pricePerService += String.format("%-10s | %.2f\n", entry.getKey().getService(), entry.getValue());
+		}
+		return "--------- Cenovnik " + this.id + " ---------\n" + "      Tip sobe       | Cena\n" + pricePerRoom
+				+ "------------------------------\n" + "Tip usluge | Cena\n" + pricePerService
+				+ "------------------------------\n" + "Datum pocetka: " + this.startDate + "\nDatum kraja: "
+				+ this.endDate + "\n------------------------------";
+	}
+
+	public String toStringFile() {
 		String pricePerRoom = "";
 		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {
 			pricePerRoom += entry.getKey().getId() + "*" + entry.getValue() + " ";
@@ -84,6 +109,7 @@ public class Prices {
 		for (Map.Entry<AdditionalServices, Double> entry : this.pricePerService.entrySet()) {
 			pricePerService += entry.getKey().getId() + "*" + entry.getValue() + " ";
 		}
-		return this.id + " | " + pricePerRoom + "| " + pricePerService + "| " + this.startDate + " | " + this.endDate;
+		return this.id + " | " + pricePerRoom + "| " + pricePerService + "| " + this.startDate + " | " + this.endDate
+				+ " | " + isDeleted;
 	}
 }

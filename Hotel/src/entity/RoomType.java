@@ -13,10 +13,10 @@ public class RoomType {
 		this.id = idCounter++;
 	}
 
-	public RoomType(TypeOfRoom type, String beds) {
+	public RoomType(TypeOfRoom type, int index) {
 		this.id = idCounter++;
 		this.type = type;
-		this.beds = beds;
+		this.beds = type.getBedLayouts()[index];
 	}
 
 	// copy constructor
@@ -44,13 +44,17 @@ public class RoomType {
 		this.type = type;
 	}
 	
-	public void setBeds(String beds) {
-		this.beds = beds;
+	public void setBeds(int index) {
+		this.beds = this.type.getBedLayouts()[index];
 	}
 
 	// methods
 	@Override
 	public String toString() {
+		return "Tip sobe " + this.id + ": " + this.type + "(" + this.beds + ")";
+	}
+	
+	public String toStringFile() {
 		return this.id + " | " + this.type + " | " + this.beds;
 	}
 }

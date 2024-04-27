@@ -9,7 +9,7 @@ import enumeracije.Qualifications;
 import enumeracije.Type;
 
 public class HouseKeeper extends Employee {
-	private List<Room> roomsToClean;
+	private List<Room> roomsToClean = new ArrayList<>();
 
 	// constructors
 	public HouseKeeper() {
@@ -20,24 +20,18 @@ public class HouseKeeper extends Employee {
 			String username, String password, Qualifications qualification, double salary, int yearsOfExperience) {
 		super(firstName, lastName, gender, date, phone, address, username, password, qualification, salary,
 				yearsOfExperience, Type.HouseKeeper);
-		this.roomsToClean = new ArrayList<>();
 	}
 
 	// getters
 	public List<Room> getRoomsToClean() {
 		return roomsToClean;
 	}
-
-	// setters
-	public void setRoomsToClean(List<Room> rooms_to_clean) {
-        this.roomsToClean = new ArrayList<>();
-
-        for (Room room : rooms_to_clean) {
-            this.roomsToClean.add(new Room(room));
-        }
-    }
 	
 	// methods
+	public void addRoomToClean(Room room) {
+		this.roomsToClean.add(room);
+	}
+	
 	@Override
 	public String toString() {
 		return super.toString();

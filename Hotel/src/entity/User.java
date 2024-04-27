@@ -111,6 +111,12 @@ public abstract class User {
 	// methods
 	@Override
 	public String toString() {
+		return "Ime i prezime: " + this.firstName + " " + this.lastName + "\nPol: " + this.gender + "\nDatum rodjenja: "
+				+ this.date + "\nBroj telefona: " + this.phone + "\nAdresa stanovanja: " + this.address
+				+ "\nKorisnicko ime: " + this.username + "\nLozinka: " + this.password;
+	}
+
+	public String toStringFile() {
 		return this.firstName + " | " + this.lastName + " | " + this.gender + " | " + this.date + " | " + this.phone
 				+ " | " + this.address + " | " + this.username + " | " + this.password;
 	}

@@ -1,5 +1,5 @@
 package enumeracije;
 
 public enum RoomStatus {
-	FREE, OCCUPIED, RESERVED
+	FREE, OCCUPIED, CLEANING
 }

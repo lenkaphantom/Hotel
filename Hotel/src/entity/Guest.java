@@ -1,13 +1,16 @@
 package entity;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import enumeracije.Gender;
+import enumeracije.ReservationStatus;
 
 public class Guest extends User {
 	private static int idCounter = 1;
 	private int id;
-	
+	private boolean isDeleted = false;
+
 	// constructors
 	public Guest() {
 		super();
@@ -19,26 +22,32 @@ public class Guest extends User {
 		super(firstName, lastName, gender, date, phone, address, username, password);
 		this.id = idCounter++;
 	}
-	
+
 	// copy constructor
 	public Guest(Guest guest) {
 		super(guest);
 		this.id = idCounter++;
 	}
-	
+
 	// getters
 	public int getId() {
 		return this.id;
 	}
-	
+
 	// methods
 	@Override
 	public String toString() {
-		return this.id + " | " + super.toString();
+		return "--------- Gost " + this.id + " ---------\n" + super.toString() + "\n";
 	}
 	
-	public void makeReservation() {
-		Reservation reservation = new Reservation();
-		System.out.println("Reservation made successfully!");
+	public String toStringFile() {
+		return this.id + " | " + super.toStringFile() + " | " + this.isDeleted;
+	}
+
+	public Reservation makeReservation(RoomType roomType, LocalDate startDate, LocalDate endDate,
+			List<AdditionalServices> additionalServices) {
+		Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices,
+				ReservationStatus.WAITING);
+		return reservation;
 	}
 }

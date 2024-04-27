@@ -110,6 +110,11 @@ public class Room {
 
 	@Override
 	public String toString() {
+		return "Soba " + this.id + ": " + this.floor + ". sprat, " + this.roomNumber + " | " + this.roomStatus + " | "
+				+ this.roomType.getType() + "(" + this.roomType.getBeds() + ")";
+	}
+
+	public String toStringFiles() {
 		return this.id + " | " + this.floor + " | " + this.roomNumber + " | " + this.roomStatus + " | "
 				+ this.roomType.getId();
 	}

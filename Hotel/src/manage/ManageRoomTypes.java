@@ -28,7 +28,7 @@ public class ManageRoomTypes {
 		this.roomTypes.remove(roomType.getId());
 	}
 	
-	public void changeRoomType(int id, TypeOfRoom type, String beds) {
+	public void changeRoomType(int id, TypeOfRoom type, int index) {
 		if (!this.roomTypes.containsKey(id)) {
 			System.out.println("Tip sobe sa id-jem " + id + " ne postoji.");
 			return;
@@ -39,8 +39,8 @@ public class ManageRoomTypes {
 		if (type != null) {
 			roomType.setType(type);
 		}
-		if (beds != null) {
-			roomType.setBeds(beds);
+		if (index >= 0 && index < type.getBedLayouts().length) {
+			roomType.setBeds(index);
 		}
 	}
 	
