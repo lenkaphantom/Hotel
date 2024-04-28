@@ -32,16 +32,21 @@ public class Receptionist extends Employee {
 	public Reservation getReservation() {
 		return this.reservation;
 	}
+	
+	// setters
+	public void setReservation(Reservation reservation) {
+		this.reservation = reservation;
+	}
 
 	// methods
-	public void addRoomToReservation() {
-		ManageHotel hotel = new ManageHotel();
+	public void addRoomToReservation(ManageHotel hotel) {
 		Map<Integer, Room> rooms = hotel.getRoomsMan().getRooms();
 		for (Room room : rooms.values()) {
 			if (!room.isOccupied(this.reservation.getStartDate(), this.reservation.getEndDate())) {
 				if (room.getRoomType().equals(this.reservation.getRoomType())) {
 					room.setRoomStatus(RoomStatus.OCCUPIED);
 					this.reservation.setRoom(room);
+					room.setOccupiedDates(hotel);
 					return;
 				}
 			}

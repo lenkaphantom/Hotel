@@ -1,7 +1,9 @@
 package main;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.AdditionalServices;
@@ -10,6 +12,7 @@ import entity.Guest;
 import entity.HouseKeeper;
 import entity.Prices;
 import entity.Receptionist;
+import entity.Reservation;
 import entity.Room;
 import entity.RoomType;
 import enumeracije.Gender;
@@ -17,6 +20,7 @@ import enumeracije.Qualifications;
 import enumeracije.RoomStatus;
 import enumeracije.TypeOfRoom;
 import manage.ManageHotel;
+import manage.ManageRooms;
 
 public class Hotel {
 
@@ -47,12 +51,12 @@ public class Hotel {
 		RoomType roomType5 = new RoomType(TypeOfRoom.trokrevetna, 1);
 		RoomType roomType6 = new RoomType(TypeOfRoom.trokrevetna, 2);
 		
-		Room room = new Room(1, 101, RoomStatus.FREE, roomType);
-		Room room2 = new Room(1, 102, RoomStatus.FREE, roomType2);
-		Room room3 = new Room(2, 201, RoomStatus.FREE, roomType3);
-		Room room4 = new Room(2, 202, RoomStatus.FREE, roomType4);
-		Room room5 = new Room(3, 301, RoomStatus.FREE, roomType5);
-		Room room6 = new Room(3, 302, RoomStatus.FREE, roomType6);
+		Room room = new Room(1, 101, RoomStatus.FREE, roomType, manager);
+		Room room2 = new Room(1, 102, RoomStatus.FREE, roomType2, manager);
+		Room room3 = new Room(2, 201, RoomStatus.FREE, roomType3, manager);
+		Room room4 = new Room(2, 202, RoomStatus.FREE, roomType4, manager);
+		Room room5 = new Room(3, 301, RoomStatus.FREE, roomType5, manager);
+		Room room6 = new Room(3, 302, RoomStatus.FREE, roomType6, manager);
 		
 		AdditionalServices additionalServices = new AdditionalServices("Dorucak");
 		AdditionalServices additionalServices2 = new AdditionalServices("Rucak");
@@ -101,6 +105,8 @@ public class Hotel {
 		manager.getRoomTypesMan().addRoomType(roomType6);
 		manager.getRoomTypesMan().printRoomTypes();
 		
+		System.out.println();
+		
 		manager.getRoomsMan().addRoom(room);
 		manager.getRoomsMan().addRoom(room2);
 		manager.getRoomsMan().addRoom(room3);
@@ -108,6 +114,13 @@ public class Hotel {
 		manager.getRoomsMan().addRoom(room5);
 		manager.getRoomsMan().addRoom(room6);
 		manager.getRoomsMan().printRooms();
+		
+		System.out.println();
+		
+		manager.getRoomsMan().changeRoom(3, 2, 201, roomType5);
+		manager.getRoomsMan().printRooms();
+		
+		System.out.println();
 		
 		manager.getAdditionalServicesMan().addAdditionalService(additionalServices);
 		manager.getAdditionalServicesMan().addAdditionalService(additionalServices2);
@@ -118,15 +131,51 @@ public class Hotel {
 		manager.getAdditionalServicesMan().addAdditionalService(additionalServices7);
 		manager.getAdditionalServicesMan().printAdditionalServices();
 		
+		System.out.println();
+		
 		manager.getAdditionalServicesMan().removeAdditionalService(additionalServices6);
 		manager.getAdditionalServicesMan().printAdditionalServices();
 		
+		System.out.println();
+		
 		manager.getPricesMan().addPrices(prices);
 		manager.getPricesMan().printPrices();
+		
+		System.out.println();
 		
 		pricePerService.remove(additionalServices);
 		pricePerService.put(additionalServices, 7.0);
 		manager.getPricesMan().changePrices(1, pricePerRoom, pricePerService, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
 		manager.getPricesMan().printPrices();
+		
+		ManageRooms roomsMan = manager.getRoomsMan();
+		for (Map.Entry<Integer, Room> entry : roomsMan.getRooms().entrySet()) {
+			if (!entry.getValue().isOccupied(LocalDate.of(2024, 8, 1), LocalDate.of(2024, 8, 31)))
+			{
+				System.out.println(entry.getValue().getRoomType());
+			}
+		}
+	
+		List<AdditionalServices> guestServices = new ArrayList<>();
+		guestServices.add(additionalServices);
+		guestServices.add(additionalServices3);
+		Reservation reservation = guest.makeReservation(roomType5, LocalDate.of(2024, 8, 13), LocalDate.of(2024, 8, 23), guestServices);
+		
+		for (Map.Entry<Integer, Room> entry : roomsMan.getRooms().entrySet()) {
+			if (!entry.getValue().isOccupied(LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 30)))
+			{
+				System.out.println(entry.getValue().getRoomType());
+			}
+		}
+		
+		Reservation reservation2 = guest2.makeReservation(roomType2, LocalDate.of(2024, 6, 6), LocalDate.of(2024, 6, 12), new ArrayList<>());
+		
+		manager.getReservationsMan().addReservation(reservation);
+		manager.getReservationsMan().addReservation(reservation2);
+		manager.getReservationsMan().printReservations();
+		
+		receptionist.setReservation(reservation);
+		receptionist.addRoomToReservation(manager);
+		manager.getReservationsMan().printReservations();
 	}
 }

@@ -50,6 +50,16 @@ public class RoomType {
 
 	// methods
 	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null || this.getClass() != obj.getClass())
+			return false;
+		RoomType other = (RoomType) obj;
+		return this.id == other.id;
+	}
+	
+	@Override
 	public String toString() {
 		return "Tip sobe " + this.id + ": " + this.type + "(" + this.beds + ")";
 	}

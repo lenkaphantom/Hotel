@@ -25,21 +25,21 @@ public class Reservation {
 	public Reservation(RoomType roomType, LocalDate startDate, LocalDate endDate,
 			List<AdditionalServices> additionalServices, ReservationStatus status) {
 		this.id = idCounter++;
-		this.roomType = new RoomType(roomType);
+		this.roomType = roomType;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
 		this.status = status;
-		this.room = new Room();
+		this.room = null;
 	}
 
 	// copy constructor
 	public Reservation(Reservation reservation) {
 		this.id = idCounter++;
-		this.roomType = new RoomType(reservation.roomType);
+		this.roomType = reservation.roomType;
 		this.additionalServices = new ArrayList<AdditionalServices>(reservation.additionalServices);
 		this.status = reservation.status;
-		this.room = new Room(reservation.room);
+		this.room = reservation.room;
 	}
 
 	// getters
@@ -73,7 +73,7 @@ public class Reservation {
 
 	// setters
 	public void setRoomType(RoomType roomType) {
-		this.roomType = new RoomType(roomType);
+		this.roomType = roomType;
 	}
 
 	public void setStartDate(LocalDate startDate) {
@@ -93,7 +93,7 @@ public class Reservation {
 	}
 
 	public void setRoom(Room room) {
-		this.room = new Room(room);
+		this.room = room;
 	}
 
 	// methods
@@ -103,7 +103,17 @@ public class Reservation {
 		for (AdditionalServices additionalService : this.additionalServices) {
 			services += additionalService.getId() + "*";
 		}
-		return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
-				+ services.substring(0, services.length() - 1) + " | " + this.status + " | " + this.room.getId();
+		if (services == "" && this.room == null)
+			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
+					+ this.status;
+		else if (services == "" && this.room != null)
+			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
+					+ this.status + " | " + this.room.getId();
+		else if (services != "" && this.room == null)
+			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
+					+ services.substring(0, services.length() - 1) + " | " + this.status;
+		else
+			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
+					+ services.substring(0, services.length() - 1) + " | " + this.status + " | " + this.room.getId();
 	}
 }

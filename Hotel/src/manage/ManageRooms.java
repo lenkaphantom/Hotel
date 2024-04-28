@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import entity.Room;
+import entity.RoomType;
 
 public class ManageRooms {
 	private Map<Integer, Room> rooms;
@@ -27,7 +28,7 @@ public class ManageRooms {
 		this.rooms.remove(room.getId());
 	}
 	
-	public void changeRoom(int id, int floor, int roomNumber) {
+	public void changeRoom(int id, int floor, int roomNumber, RoomType roomType) {
 		if (!this.rooms.containsKey(id)) {
 			System.out.println("Soba sa id-jem " + id + " ne postoji.");
 			return;
@@ -40,6 +41,9 @@ public class ManageRooms {
 		}
 		if (roomNumber != 0) {
 			room.setRoomNumber(roomNumber);
+		}
+		if (roomType != null) {
+			room.setRoomType(roomType);
 		}
 	}
 	

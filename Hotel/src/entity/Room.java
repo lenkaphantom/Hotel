@@ -1,6 +1,7 @@
 package entity;
 
 import java.time.LocalDate;
+import java.util.HashMap;
 import java.util.Map;
 
 import enumeracije.RoomStatus;
@@ -13,20 +14,20 @@ public class Room {
 	private int roomNumber;
 	private RoomStatus roomStatus;
 	private RoomType roomType;
-	private Map<LocalDate, LocalDate> occupiedDates;
+	private Map<LocalDate, LocalDate> occupiedDates =  new HashMap<>();
 
 	// constructors
 	public Room() {
 		this.id = idCounter++;
 	}
 
-	public Room(int floor, int roomNumber, RoomStatus roomStatus, RoomType roomType) {
+	public Room(int floor, int roomNumber, RoomStatus roomStatus, RoomType roomType, ManageHotel hotel) {
 		this.id = idCounter++;
 		this.floor = floor;
 		this.roomNumber = roomNumber;
 		this.roomStatus = roomStatus;
-		this.roomType = new RoomType(roomType);
-		this.setOccupiedDates();
+		this.roomType = roomType;
+		this.setOccupiedDates(hotel);
 	}
 
 	// copy constructor
@@ -35,7 +36,7 @@ public class Room {
 		this.floor = room.floor;
 		this.roomNumber = room.roomNumber;
 		this.roomStatus = room.roomStatus;
-		this.roomType = new RoomType(room.roomType);
+		this.roomType = room.roomType;
 	}
 
 	// getters
@@ -77,13 +78,14 @@ public class Room {
 	}
 
 	public void setRoomType(RoomType roomType) {
-		this.roomType = new RoomType(roomType);
+		this.roomType = roomType;
 	}
 
-	public void setOccupiedDates() {
-		ManageHotel hotel = new ManageHotel();
+	public void setOccupiedDates(ManageHotel hotel) {
 		Map<Integer, Reservation> reservations = hotel.getReservationsMan().getReservations();
 		for (Reservation reservation : reservations.values()) {
+			if (reservation.getRoom() == null)
+				continue;
 			if (reservation.getRoom().getId() == this.id) {
 				this.occupiedDates.put(reservation.getStartDate(), reservation.getEndDate());
 			}
@@ -92,6 +94,8 @@ public class Room {
 
 	// methods
 	public boolean isOccupied(LocalDate date1, LocalDate date2) {
+		if (this.occupiedDates == null)
+			return false;
 		for (LocalDate startDate : occupiedDates.keySet()) {
 			LocalDate endDate = occupiedDates.get(startDate);
 			if (date1.isBefore(endDate) && date2.isAfter(startDate)) {
