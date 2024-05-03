@@ -149,12 +149,21 @@ public class Hotel {
 		manager.getPricesMan().printPrices();
 		
 		ManageRooms roomsMan = manager.getRoomsMan();
+		List<Integer> roomTypesId = new ArrayList<>();
 		for (Map.Entry<Integer, Room> entry : roomsMan.getRooms().entrySet()) {
 			if (!entry.getValue().isOccupied(LocalDate.of(2024, 8, 1), LocalDate.of(2024, 8, 31)))
 			{
-				System.out.println(entry.getValue().getRoomType());
+				if (!roomTypesId.contains(entry.getValue().getRoomType().getId()))
+					roomTypesId.add(entry.getValue().getRoomType().getId());
 			}
 		}
+		
+		for (Integer id : roomTypesId) {
+			System.out.println(manager.getRoomTypesMan().getRoomTypes().get(id));
+		}
+		
+		roomTypesId.clear();
+		System.out.println();
 	
 		List<AdditionalServices> guestServices = new ArrayList<>();
 		guestServices.add(additionalServices);
@@ -164,18 +173,30 @@ public class Hotel {
 		for (Map.Entry<Integer, Room> entry : roomsMan.getRooms().entrySet()) {
 			if (!entry.getValue().isOccupied(LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 30)))
 			{
-				System.out.println(entry.getValue().getRoomType());
+				if (!roomTypesId.contains(entry.getValue().getRoomType().getId()))
+					roomTypesId.add(entry.getValue().getRoomType().getId());
 			}
 		}
+		
+		for (Integer id : roomTypesId) {
+			System.out.println(manager.getRoomTypesMan().getRoomTypes().get(id));
+		}
+		
+		roomTypesId.clear();
+		System.out.println();
 		
 		Reservation reservation2 = guest2.makeReservation(roomType2, LocalDate.of(2024, 6, 6), LocalDate.of(2024, 6, 12), new ArrayList<>());
 		
 		manager.getReservationsMan().addReservation(reservation);
 		manager.getReservationsMan().addReservation(reservation2);
-		manager.getReservationsMan().printReservations();
 		
 		receptionist.setReservation(reservation);
 		receptionist.addRoomToReservation(manager);
-		manager.getReservationsMan().printReservations();
+		
+		for (Map.Entry<Integer, Reservation> entry : manager.getReservationsMan().getReservations().entrySet()) {
+			if (entry.getValue().getGuest().getUsername().equals("milena5rovic@mail.rs")) {
+				System.out.println(entry.getValue());
+			}
+		}
 	}
 }

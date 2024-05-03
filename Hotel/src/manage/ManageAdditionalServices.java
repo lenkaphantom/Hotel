@@ -24,6 +24,7 @@ public class ManageAdditionalServices {
 	}
 
 	public void removeAdditionalService(AdditionalServices additionalService) {
+		additionalService.setIsDeleted(true);
 		this.additionalServices.remove(additionalService.getId());
 	}
 

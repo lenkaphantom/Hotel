@@ -31,7 +31,7 @@ public class AdditionalServices {
 		return this.service;
 	}
 	
-	public boolean getIsDeleted() {
+	public boolean isDeleted() {
 		return this.isDeleted;
 	}
 

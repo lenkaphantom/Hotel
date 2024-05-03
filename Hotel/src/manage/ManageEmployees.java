@@ -46,6 +46,7 @@ public class ManageEmployees {
 	}
 
 	public void removeEmployee(Employee employee) {
+		employee.setIsDeleted(true);
 		this.employees.remove(employee.getId());
 	}
 

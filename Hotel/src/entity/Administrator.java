@@ -32,7 +32,7 @@ public class Administrator extends User {
 		return this.id;
 	}
 	
-	public boolean getIsDeleted() {
+	public boolean isDeleted() {
 		return this.isDeleted;
 	}
 	

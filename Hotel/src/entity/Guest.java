@@ -33,6 +33,15 @@ public class Guest extends User {
 	public int getId() {
 		return this.id;
 	}
+	
+	public boolean isDeleted() {
+		return this.isDeleted;
+	}
+	
+	// setters
+	public void setIsDeleted(boolean isDeleted) {
+		this.isDeleted = isDeleted;
+	}
 
 	// methods
 	@Override
@@ -48,6 +57,7 @@ public class Guest extends User {
 			List<AdditionalServices> additionalServices) {
 		Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices,
 				ReservationStatus.WAITING);
+		reservation.setGuest(this);
 		return reservation;
 	}
 }

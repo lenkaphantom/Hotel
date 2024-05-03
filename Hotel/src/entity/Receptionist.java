@@ -5,6 +5,7 @@ import java.util.Map;
 
 import enumeracije.Gender;
 import enumeracije.Qualifications;
+import enumeracije.ReservationStatus;
 import enumeracije.RoomStatus;
 import enumeracije.Type;
 import manage.ManageHotel;
@@ -46,6 +47,7 @@ public class Receptionist extends Employee {
 				if (room.getRoomType().equals(this.reservation.getRoomType())) {
 					room.setRoomStatus(RoomStatus.OCCUPIED);
 					this.reservation.setRoom(room);
+					this.reservation.setStatus(ReservationStatus.CONFIRMED);
 					room.setOccupiedDates(hotel);
 					return;
 				}
@@ -56,5 +58,9 @@ public class Receptionist extends Employee {
 	@Override
 	public String toString() {
 		return super.toString();
+	}
+	
+	public String toStringFile() {
+		return super.toStringFile();
 	}
 }

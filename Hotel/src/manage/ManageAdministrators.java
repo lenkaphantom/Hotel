@@ -24,6 +24,7 @@ public class ManageAdministrators {
 	}
 
 	public void removeAdministrator(Administrator admin) {
+		admin.setIsDeleted(true);
 		this.administrators.remove(admin.getId());
 	}
 

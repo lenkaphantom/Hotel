@@ -15,6 +15,7 @@ public class Reservation {
 	private List<AdditionalServices> additionalServices;
 	private ReservationStatus status;
 	private Room room;
+	private Guest guest;
 
 	// constructors
 	public Reservation() {
@@ -31,6 +32,7 @@ public class Reservation {
 		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
 		this.status = status;
 		this.room = null;
+		this.guest = null;
 	}
 
 	// copy constructor
@@ -40,6 +42,7 @@ public class Reservation {
 		this.additionalServices = new ArrayList<AdditionalServices>(reservation.additionalServices);
 		this.status = reservation.status;
 		this.room = reservation.room;
+		this.guest = reservation.guest;
 	}
 
 	// getters
@@ -71,6 +74,10 @@ public class Reservation {
 		return room;
 	}
 
+	public Guest getGuest() {
+		return guest;
+	}
+
 	// setters
 	public void setRoomType(RoomType roomType) {
 		this.roomType = roomType;
@@ -96,24 +103,41 @@ public class Reservation {
 		this.room = room;
 	}
 
+	public void setGuest(Guest guest) {
+		this.guest = guest;
+	}
+
 	// methods
 	@Override
 	public String toString() {
 		String services = "";
 		for (AdditionalServices additionalService : this.additionalServices) {
+			services += additionalService.getService() + ", ";
+		}
+		String result = "-------Reservation " + this.id + "-------\nStart date: " + this.startDate + "\nEnd date: "
+				+ this.endDate + "\nStatus: " + this.status + "\n" + this.roomType.toString() + "\n";
+		if (services != "")
+			result += "Additional services: " + services.substring(0, services.length() - 2) + "\n";
+		if (this.room != null)
+			result += "Room: " + this.room.getRoomNumber() + "\n";
+		if (this.guest != null)
+			result += "Guest: " + this.guest.getUsername() + "\n";
+		return result;
+	}
+
+	public String toStringFile() {
+		String services = "";
+		for (AdditionalServices additionalService : this.additionalServices) {
 			services += additionalService.getId() + "*";
 		}
-		if (services == "" && this.room == null)
-			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
-					+ this.status;
-		else if (services == "" && this.room != null)
-			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
-					+ this.status + " | " + this.room.getId();
-		else if (services != "" && this.room == null)
-			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
-					+ services.substring(0, services.length() - 1) + " | " + this.status;
-		else
-			return this.id + " | " + this.roomType.getId() + " | " + this.startDate + " | " + this.endDate + " | "
-					+ services.substring(0, services.length() - 1) + " | " + this.status + " | " + this.room.getId();
+		String result = this.id + " | " + this.startDate + " | " + this.endDate + " | " + this.status + " | "
+				+ this.roomType.getId() + " | " + services;
+		if (services != "")
+			result = result.substring(0, result.length() - 1);
+		if (this.room != null)
+			result += " | " + this.room.getId();
+		if (this.guest != null)
+			result += " | " + this.guest.getId();
+		return result;
 	}
 }

@@ -84,7 +84,7 @@ public abstract class Employee extends User {
 		this.type = type;
 	}
 
-	public void setDeleted(boolean isDeleted) {
+	public void setIsDeleted(boolean isDeleted) {
 		this.isDeleted = isDeleted;
 	}
 
@@ -92,12 +92,31 @@ public abstract class Employee extends User {
 	public void calculateSalary() {
 		int totalHoursPerWeek = 40;
 		int totalWeeksPerMonth = 4;
+		double salary = 0.0;
+		double index = 0.0;
+		if (this.qualification == Qualifications.NONE) {
+			index = 1.0;
+		} else if (this.qualification == Qualifications.BASIC) {
+			index = 1.5;
+		} else if (this.qualification == Qualifications.INTERMEDIATE) {
+			index = 2.0;
+		} else if (this.qualification == Qualifications.ADVANCED) {
+			index = 2.5;
+		}
+		double hourlyRate = 150.0 * index;
+		if (this.type == Type.Receptionist) {
+			salary = 2 * hourlyRate * totalHoursPerWeek * totalWeeksPerMonth;
+		} else {
+			salary = hourlyRate * totalHoursPerWeek * totalWeeksPerMonth;
+		}
+		this.setSalary(salary);
 	}
 
 	@Override
 	public String toString() {
-		return "------- Zaposleni " + this.id + " -------\n" + super.toString() + "\nStepen strucne spreme: " + this.qualification + "\nPlata:" + this.salary
-				+ "\nGodine staza: " + this.yearsOfExperience + "\nRadno mesto: " + this.type + "\n";
+		return "------- Zaposleni " + this.id + " -------\n" + super.toString() + "\nStepen strucne spreme: "
+				+ this.qualification + "\nPlata: " + this.salary + "\nGodine staza: " + this.yearsOfExperience
+				+ "\nRadno mesto: " + this.type + "\n";
 	}
 
 	public String toStringFile() {

@@ -36,4 +36,8 @@ public class HouseKeeper extends Employee {
 	public String toString() {
 		return super.toString();
 	}
+	
+	public String toStringForFile() {
+		return super.toStringFile();
+	}
 }

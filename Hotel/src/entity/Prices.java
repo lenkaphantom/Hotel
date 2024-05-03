@@ -57,7 +57,7 @@ public class Prices {
 		return endDate;
 	}
 
-	public boolean getIsDeleted() {
+	public boolean isDeleted() {
 		return isDeleted;
 	}
 
