@@ -5,6 +5,7 @@ import java.util.Map;
 
 import entity.Room;
 import entity.RoomType;
+import enumeracije.RoomStatus;
 
 public class ManageRooms {
 	private Map<Integer, Room> rooms;
@@ -20,11 +21,13 @@ public class ManageRooms {
 	}
 	
 	// methods
-	public void addRoom(Room room) {
+	public void addRoom(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel) {
+		Room room = new Room(floor, roomNumber, roomStatus, idRoomType, hotel);
 		this.rooms.put(room.getId(), room);
 	}
 	
-	public void removeRoom(Room room) {
+	public void removeRoom(int id) {
+		Room room = this.rooms.get(id);
 		room.setIsDeleted(true);
 		this.rooms.remove(room.getId());
 	}

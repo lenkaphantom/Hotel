@@ -22,11 +22,14 @@ public class ManagePrices {
 	}
 
 	// methods
-	public void addPrices(Prices price) {
+	public void addPrices(Map<RoomType, Double> pricePerRoom, Map<AdditionalServices, Double> pricePerService,
+			LocalDate startDate, LocalDate endDate) {
+		Prices price = new Prices(pricePerRoom, pricePerService, startDate, endDate);
 		this.prices.put(price.getId(), price);
 	}
 
-	public void removePrices(Prices price) {
+	public void removePrices(int id) {
+		Prices price = this.prices.get(id);
 		price.setIsDeleted(true);
 		this.prices.remove(price.getId());
 	}

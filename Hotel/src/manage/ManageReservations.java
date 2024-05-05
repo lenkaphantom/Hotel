@@ -1,5 +1,6 @@
 package manage;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -28,7 +29,8 @@ public class ManageReservations {
 		this.reservations.put(reservation.getId(), reservation);
 	}
 
-	public void removeReservation(Reservation reservation) {
+	public void removeReservation(int id) {
+		Reservation reservation = this.reservations.get(id);
 		this.reservations.remove(reservation.getId());
 	}
 

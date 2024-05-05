@@ -1,11 +1,20 @@
 package manage;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
+import entity.AdditionalServices;
 import entity.Employee;
 import entity.HouseKeeper;
 import entity.Receptionist;
+import enumeracije.Gender;
+import enumeracije.Qualifications;
+import enumeracije.Type;
 
 public class ManageEmployees {
 	private Map<Integer, Employee> employees;
@@ -19,7 +28,7 @@ public class ManageEmployees {
 	public Map<Integer, Employee> getEmployees() {
 		return this.employees;
 	}
-	
+
 	public Map<Integer, HouseKeeper> getHouseKeepers() {
 		Map<Integer, HouseKeeper> houseKeepers = new HashMap<>();
 		for (Employee employee : this.employees.values()) {
@@ -29,7 +38,7 @@ public class ManageEmployees {
 		}
 		return houseKeepers;
 	}
-	
+
 	public Map<Integer, Receptionist> getReceptionists() {
 		Map<Integer, Receptionist> receptionists = new HashMap<>();
 		for (Employee employee : this.employees.values()) {
@@ -41,17 +50,28 @@ public class ManageEmployees {
 	}
 
 	// methods
-	public void addEmployee(Employee employee) {
-		this.employees.put(employee.getId(), employee);
+	public void addEmployee(String firstName, String lastName, Gender gender, LocalDate date, String phone,
+			String address, String username, String password, Qualifications qualification, double salary,
+			int yearsOfExperience, Type type) {
+		if (type == Type.Receptionist) {
+			Receptionist receptionist = new Receptionist(firstName, lastName, gender, date, phone, address, username,
+					password, qualification, salary, yearsOfExperience, type);
+			this.employees.put(receptionist.getId(), receptionist);
+		} else if (type == Type.HouseKeeper) {
+			HouseKeeper houseKeeper = new HouseKeeper(firstName, lastName, gender, date, phone, address, username,
+					password, qualification, salary, yearsOfExperience, type);
+			this.employees.put(houseKeeper.getId(), houseKeeper);
+		}
 	}
 
-	public void removeEmployee(Employee employee) {
+	public void removeEmployee(int id) {
+		Employee employee = this.employees.get(id);
 		employee.setIsDeleted(true);
 		this.employees.remove(employee.getId());
 	}
 
-	public void changeEmployee(int id, String firstName, String lastName, String phone, String address,
-			String username, String password) {
+	public void changeEmployee(int id, String firstName, String lastName, String phone, String address, String username,
+			String password) {
 		if (!this.employees.containsKey(id)) {
 			System.out.println("Zaposleni sa id-jem " + id + " ne postoji.");
 			return;
@@ -82,6 +102,32 @@ public class ManageEmployees {
 	public void printEmployees() {
 		for (Employee employee : this.employees.values()) {
 			System.out.println(employee.toString());
+		}
+	}
+
+	public void loadEmployees(String path) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(" \\| ");
+				this.addEmployee(parts[1], parts[2], Gender.valueOf(parts[3]), LocalDate.parse(parts[4]), parts[5],
+						parts[6], parts[7], parts[8], Qualifications.valueOf(parts[9]), Double.parseDouble(parts[10]),
+						Integer.parseInt(parts[11]), Type.valueOf(parts[12]));
+			}
+		} catch (IOException e) {
+			System.out.println("Greška prilikom čitanja iz fajla.");
+		}
+	}
+
+	public void writeEmployees(String path) {
+		try {
+			FileWriter writer = new FileWriter(path);
+			for (Employee employee : this.employees.values()) {
+				writer.write(employee.toStringFile() + "\n");
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
 }

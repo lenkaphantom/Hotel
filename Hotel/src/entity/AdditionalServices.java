@@ -50,7 +50,7 @@ public class AdditionalServices {
 		return this.id + ": " + this.service;
 	}
 	
-	public String toStringForFile() {
+	public String toStringFile() {
 		return this.id + " | " + this.service + " | " + this.isDeleted;
 	}
 }

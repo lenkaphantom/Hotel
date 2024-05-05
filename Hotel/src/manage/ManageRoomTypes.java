@@ -20,11 +20,13 @@ public class ManageRoomTypes {
 	}
 	
 	// methods
-	public void addRoomType(RoomType roomType) {
+	public void addRoomType(TypeOfRoom type, int index) {
+		RoomType roomType = new RoomType(type, index);
 		this.roomTypes.put(roomType.getId(), roomType);
 	}
 	
-	public void removeRoomType(RoomType roomType) {
+	public void removeRoomType(int id) {
+		RoomType roomType = this.roomTypes.get(id);
 		this.roomTypes.remove(roomType.getId());
 	}
 	

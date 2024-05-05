@@ -18,6 +18,7 @@ import entity.RoomType;
 import enumeracije.Gender;
 import enumeracije.Qualifications;
 import enumeracije.RoomStatus;
+import enumeracije.Type;
 import enumeracije.TypeOfRoom;
 import manage.ManageHotel;
 import manage.ManageRooms;
@@ -27,176 +28,150 @@ public class Hotel {
 	public static void main(String[] args) {
 		ManageHotel manager = new ManageHotel();
 
-		Administrator admin = new Administrator("Danijela", "Golubovic", Gender.FEMALE, LocalDate.of(1975, 8, 14),
-				"061111111", "Karadjordjeva 1", "golubovicva", "daca123");
-		
-		Receptionist receptionist = new Receptionist("Rada", "Djurasinovic", Gender.FEMALE, LocalDate.of(1973, 12, 27),
-				"062222222", "Kralja Petra 2", "radanatasa", "badovinac123", Qualifications.INTERMEDIATE, 60000, 12);
-		Receptionist receptionist2 = new Receptionist("Vida", "Nikic", Gender.FEMALE, LocalDate.of(1977, 9, 18),
-				"063333333", "Dimitrija Tucovica 3", "nikicV", "muzProgramer123", Qualifications.INTERMEDIATE, 6000,
-				10);
-		
-		HouseKeeper houseKeeper = new HouseKeeper("Nada", "Kovacevic", Gender.FEMALE, LocalDate.of(1959, 2, 20),
-				"066666666", "Pop Lukina 13", "nadaSoc", "bogBog1", Qualifications.INTERMEDIATE, 5000, 20);
-		
-		Guest guest = new Guest("Milena", "Petrovic", Gender.FEMALE, LocalDate.of(1974, 1, 24), "065555555",
-				"Karadjordjeva 75", "milena5rovic@mail.rs", "111222333");
-		Guest guest2 = new Guest("Predrag", "Jevtic", Gender.MALE, LocalDate.of(1975, 10, 21), "067777777",
-				"Karadjordjeva 99", "predrage@mail.rs", "444555666");
-		
-		RoomType roomType = new RoomType(TypeOfRoom.jednokrevetna, 0);
-		RoomType roomType2 = new RoomType(TypeOfRoom.dvokrevetna, 0);
-		RoomType roomType3 = new RoomType(TypeOfRoom.dvokrevetna, 1);
-		RoomType roomType4 = new RoomType(TypeOfRoom.trokrevetna, 0);
-		RoomType roomType5 = new RoomType(TypeOfRoom.trokrevetna, 1);
-		RoomType roomType6 = new RoomType(TypeOfRoom.trokrevetna, 2);
-		
-		Room room = new Room(1, 101, RoomStatus.FREE, roomType, manager);
-		Room room2 = new Room(1, 102, RoomStatus.FREE, roomType2, manager);
-		Room room3 = new Room(2, 201, RoomStatus.FREE, roomType3, manager);
-		Room room4 = new Room(2, 202, RoomStatus.FREE, roomType4, manager);
-		Room room5 = new Room(3, 301, RoomStatus.FREE, roomType5, manager);
-		Room room6 = new Room(3, 302, RoomStatus.FREE, roomType6, manager);
-		
-		AdditionalServices additionalServices = new AdditionalServices("Dorucak");
-		AdditionalServices additionalServices2 = new AdditionalServices("Rucak");
-		AdditionalServices additionalServices3 = new AdditionalServices("Vecera");
-		AdditionalServices additionalServices4 = new AdditionalServices("Parking");
-		AdditionalServices additionalServices5 = new AdditionalServices("Bazen");
-		AdditionalServices additionalServices6 = new AdditionalServices("Spa centar");
-		AdditionalServices additionalServices7 = new AdditionalServices("Masaza");
-		
-		Map<RoomType, Double> pricePerRoom = new HashMap<>();
-		pricePerRoom.put(roomType, 20.0);
-		pricePerRoom.put(roomType2, 30.0);
-		pricePerRoom.put(roomType3, 25.0);
-		pricePerRoom.put(roomType4, 40.0);
-		pricePerRoom.put(roomType5, 35.0);
-		pricePerRoom.put(roomType6, 30.0);
-		
-		Map<AdditionalServices, Double> pricePerService = new HashMap<>();
-		pricePerService.put(additionalServices, 5.0);
-		pricePerService.put(additionalServices2, 15.0);
-		pricePerService.put(additionalServices3, 10.0);
-		pricePerService.put(additionalServices4, 3.0);
-		pricePerService.put(additionalServices5, 7.0);
-		pricePerService.put(additionalServices7, 20.0);
-		
-		Prices prices = new Prices(pricePerRoom, pricePerService, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
-
-		manager.getAdministratorsMan().addAdministrator(admin);
+		manager.getAdministratorsMan().addAdministrator("Danijela", "Golubovic", Gender.FEMALE,
+				LocalDate.of(1975, 8, 14), "061111111", "Karadjordjeva 1", "golubovicva", "daca123");
 		manager.getAdministratorsMan().printAdministrators();
 
-		manager.getEmployeesMan().addEmployee(receptionist);
-		manager.getEmployeesMan().addEmployee(receptionist2);
-		manager.getEmployeesMan().addEmployee(houseKeeper);
-		manager.getEmployeesMan().removeEmployee(receptionist2);
+		manager.getEmployeesMan().addEmployee("Rada", "Djurasinovic", Gender.FEMALE, LocalDate.of(1973, 12, 27),
+				"062222222", "Kralja Petra 2", "radanatasa", "badovinac123", Qualifications.INTERMEDIATE, 60000, 12,
+				Type.Receptionist);
+		manager.getEmployeesMan().addEmployee("Vida", "Nikic", Gender.FEMALE, LocalDate.of(1977, 9, 18), "063333333",
+				"Dimitrija Tucovica 3", "nikicV", "muzProgramer123", Qualifications.INTERMEDIATE, 6000, 10,
+				Type.Receptionist);
+		manager.getEmployeesMan().addEmployee("Nada", "Kovacevic", Gender.FEMALE, LocalDate.of(1959, 2, 20),
+				"066666666", "Pop Lukina 13", "nadaSoc", "bogBog1", Qualifications.INTERMEDIATE, 5000, 20,
+				Type.HouseKeeper);
+		manager.getEmployeesMan().removeEmployee(2);
 		manager.getEmployeesMan().printEmployees();
 
-		manager.getGuestsMan().addGuest(guest);
-		manager.getGuestsMan().addGuest(guest2);
+		manager.getGuestsMan().addGuest("Milena", "Petrovic", Gender.FEMALE, LocalDate.of(1974, 1, 24), "065555555",
+				"Karadjordjeva 75", "milena5rovic@mail.rs", "111222333");
+		manager.getGuestsMan().addGuest("Predrag", "Jevtic", Gender.MALE, LocalDate.of(1975, 10, 21), "067777777",
+				"Karadjordjeva 99", "predrage@mail.rs", "444555666");
 		manager.getGuestsMan().printGuests();
-		
-		manager.getRoomTypesMan().addRoomType(roomType);
-		manager.getRoomTypesMan().addRoomType(roomType2);
-		manager.getRoomTypesMan().addRoomType(roomType3);
-		manager.getRoomTypesMan().addRoomType(roomType4);
-		manager.getRoomTypesMan().addRoomType(roomType5);
-		manager.getRoomTypesMan().addRoomType(roomType6);
+
+		manager.getRoomTypesMan().addRoomType(TypeOfRoom.jednokrevetna, 0);
+		manager.getRoomTypesMan().addRoomType(TypeOfRoom.dvokrevetna, 0);
+		manager.getRoomTypesMan().addRoomType(TypeOfRoom.dvokrevetna, 1);
+		manager.getRoomTypesMan().addRoomType(TypeOfRoom.trokrevetna, 0);
+		manager.getRoomTypesMan().addRoomType(TypeOfRoom.trokrevetna, 1);
+		manager.getRoomTypesMan().addRoomType(TypeOfRoom.trokrevetna, 2);
 		manager.getRoomTypesMan().printRoomTypes();
-		
+
 		System.out.println();
-		
-		manager.getRoomsMan().addRoom(room);
-		manager.getRoomsMan().addRoom(room2);
-		manager.getRoomsMan().addRoom(room3);
-		manager.getRoomsMan().addRoom(room4);
-		manager.getRoomsMan().addRoom(room5);
-		manager.getRoomsMan().addRoom(room6);
+
+		manager.getRoomsMan().addRoom(1, 101, RoomStatus.FREE, 1, manager);
+		manager.getRoomsMan().addRoom(1, 102, RoomStatus.FREE, 2, manager);
+		manager.getRoomsMan().addRoom(2, 201, RoomStatus.FREE, 3, manager);
+		manager.getRoomsMan().addRoom(2, 202, RoomStatus.FREE, 4, manager);
+		manager.getRoomsMan().addRoom(3, 301, RoomStatus.FREE, 5, manager);
+		manager.getRoomsMan().addRoom(3, 302, RoomStatus.FREE, 6, manager);
 		manager.getRoomsMan().printRooms();
-		
+
 		System.out.println();
-		
-		manager.getRoomsMan().changeRoom(3, 2, 201, roomType5);
+
+		manager.getRoomsMan().changeRoom(3, 2, 201, manager.getRoomTypesMan().getRoomTypes().get(5));
 		manager.getRoomsMan().printRooms();
-		
+
 		System.out.println();
-		
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices);
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices2);
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices3);
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices4);
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices5);
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices6);
-		manager.getAdditionalServicesMan().addAdditionalService(additionalServices7);
+
+		manager.getAdditionalServicesMan().addAdditionalService("Dorucak");
+		manager.getAdditionalServicesMan().addAdditionalService("Rucak");
+		manager.getAdditionalServicesMan().addAdditionalService("Vecera");
+		manager.getAdditionalServicesMan().addAdditionalService("Parking");
+		manager.getAdditionalServicesMan().addAdditionalService("Bazen");
+		manager.getAdditionalServicesMan().addAdditionalService("Spa centar");
+		manager.getAdditionalServicesMan().addAdditionalService("Masaza");
 		manager.getAdditionalServicesMan().printAdditionalServices();
-		
+
 		System.out.println();
-		
-		manager.getAdditionalServicesMan().removeAdditionalService(additionalServices6);
+
+		manager.getAdditionalServicesMan().removeAdditionalService(6);
 		manager.getAdditionalServicesMan().printAdditionalServices();
-		
+
 		System.out.println();
 		
-		manager.getPricesMan().addPrices(prices);
+		Map<RoomType, Double> pricePerRoom = new HashMap<>();
+		pricePerRoom.put(manager.getRoomTypesMan().getRoomTypes().get(1), 20.0);
+		pricePerRoom.put(manager.getRoomTypesMan().getRoomTypes().get(2), 30.0);
+		pricePerRoom.put(manager.getRoomTypesMan().getRoomTypes().get(3), 25.0);
+		pricePerRoom.put(manager.getRoomTypesMan().getRoomTypes().get(4), 40.0);
+		pricePerRoom.put(manager.getRoomTypesMan().getRoomTypes().get(5), 35.0);
+		pricePerRoom.put(manager.getRoomTypesMan().getRoomTypes().get(6), 30.0);
+
+		Map<AdditionalServices, Double> pricePerService = new HashMap<>();
+		pricePerService.put(manager.getAdditionalServicesMan().getAdditionalServices().get(1), 5.0);
+		pricePerService.put(manager.getAdditionalServicesMan().getAdditionalServices().get(2), 15.0);
+		pricePerService.put(manager.getAdditionalServicesMan().getAdditionalServices().get(3), 10.0);
+		pricePerService.put(manager.getAdditionalServicesMan().getAdditionalServices().get(4), 3.0);
+		pricePerService.put(manager.getAdditionalServicesMan().getAdditionalServices().get(5), 7.0);
+
+		manager.getPricesMan().addPrices(pricePerRoom, pricePerService, LocalDate.of(2024, 1, 1),
+				LocalDate.of(2024, 12, 31));
 		manager.getPricesMan().printPrices();
-		
+
 		System.out.println();
-		
-		pricePerService.remove(additionalServices);
-		pricePerService.put(additionalServices, 7.0);
-		manager.getPricesMan().changePrices(1, pricePerRoom, pricePerService, LocalDate.of(2024, 1, 1), LocalDate.of(2024, 12, 31));
+
+		pricePerService.put(manager.getAdditionalServicesMan().getAdditionalServices().get(1), 7.0);
+		manager.getPricesMan().changePrices(1, pricePerRoom, pricePerService, LocalDate.of(2024, 1, 1),
+				LocalDate.of(2024, 12, 31));
 		manager.getPricesMan().printPrices();
-		
+
 		ManageRooms roomsMan = manager.getRoomsMan();
 		List<Integer> roomTypesId = new ArrayList<>();
 		for (Map.Entry<Integer, Room> entry : roomsMan.getRooms().entrySet()) {
-			if (!entry.getValue().isOccupied(LocalDate.of(2024, 8, 1), LocalDate.of(2024, 8, 31)))
-			{
+			if (!entry.getValue().isOccupied(LocalDate.of(2024, 8, 1), LocalDate.of(2024, 8, 31))) {
 				if (!roomTypesId.contains(entry.getValue().getRoomType().getId()))
 					roomTypesId.add(entry.getValue().getRoomType().getId());
 			}
 		}
-		
+
 		for (Integer id : roomTypesId) {
 			System.out.println(manager.getRoomTypesMan().getRoomTypes().get(id));
 		}
-		
+
 		roomTypesId.clear();
 		System.out.println();
-	
+
 		List<AdditionalServices> guestServices = new ArrayList<>();
-		guestServices.add(additionalServices);
-		guestServices.add(additionalServices3);
-		Reservation reservation = guest.makeReservation(roomType5, LocalDate.of(2024, 8, 13), LocalDate.of(2024, 8, 23), guestServices);
-		
+		guestServices.add(manager.getAdditionalServicesMan().getAdditionalServices().get(1));
+		guestServices.add(manager.getAdditionalServicesMan().getAdditionalServices().get(3));
+		Reservation reservation = manager.getGuestsMan().getGuests().get(1).makeReservation(
+				manager.getRoomTypesMan().getRoomTypes().get(5), LocalDate.of(2024, 8, 13), LocalDate.of(2024, 8, 23),
+				guestServices);
+
 		for (Map.Entry<Integer, Room> entry : roomsMan.getRooms().entrySet()) {
-			if (!entry.getValue().isOccupied(LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 30)))
-			{
+			if (!entry.getValue().isOccupied(LocalDate.of(2024, 6, 1), LocalDate.of(2024, 6, 30))) {
 				if (!roomTypesId.contains(entry.getValue().getRoomType().getId()))
 					roomTypesId.add(entry.getValue().getRoomType().getId());
 			}
 		}
-		
+
 		for (Integer id : roomTypesId) {
 			System.out.println(manager.getRoomTypesMan().getRoomTypes().get(id));
 		}
-		
+
 		roomTypesId.clear();
 		System.out.println();
-		
-		Reservation reservation2 = guest2.makeReservation(roomType2, LocalDate.of(2024, 6, 6), LocalDate.of(2024, 6, 12), new ArrayList<>());
-		
+
+		Reservation reservation2 = manager.getGuestsMan().getGuests().get(2).makeReservation(
+				manager.getRoomTypesMan().getRoomTypes().get(2), LocalDate.of(2024, 6, 6), LocalDate.of(2024, 6, 12),
+				new ArrayList<>());
+
 		manager.getReservationsMan().addReservation(reservation);
 		manager.getReservationsMan().addReservation(reservation2);
-		
-		receptionist.setReservation(reservation);
-		receptionist.addRoomToReservation(manager);
-		
+
+		manager.getEmployeesMan().getReceptionists().get(1).setReservation(reservation);
+		manager.getEmployeesMan().getReceptionists().get(1).addRoomToReservation(manager);
+
 		for (Map.Entry<Integer, Reservation> entry : manager.getReservationsMan().getReservations().entrySet()) {
 			if (entry.getValue().getGuest().getUsername().equals("milena5rovic@mail.rs")) {
 				System.out.println(entry.getValue());
 			}
 		}
+		
+		manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
+		manager.getAdministratorsMan().writeAdministrators("data/administrators.csv");
+		manager.getEmployeesMan().writeEmployees("data/employees.csv");
 	}
 }

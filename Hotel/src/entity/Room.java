@@ -22,12 +22,12 @@ public class Room {
 		this.id = idCounter++;
 	}
 
-	public Room(int floor, int roomNumber, RoomStatus roomStatus, RoomType roomType, ManageHotel hotel) {
+	public Room(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel) {
 		this.id = idCounter++;
 		this.floor = floor;
 		this.roomNumber = roomNumber;
 		this.roomStatus = roomStatus;
-		this.roomType = roomType;
+		this.roomType = hotel.getRoomTypesMan().getRoomTypes().get(idRoomType);
 		this.setOccupiedDates(hotel);
 	}
 

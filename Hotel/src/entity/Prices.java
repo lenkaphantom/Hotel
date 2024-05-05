@@ -86,7 +86,7 @@ public class Prices {
 	@Override
 	public String toString() {
 		String pricePerRoom = "";
-		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {
+		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {;
 			String tmp = entry.getKey().getType() + "(" + entry.getKey().getBeds() + ")";
 			pricePerRoom += String.format("%-20s | %.2f\n", tmp, entry.getValue());
 		}

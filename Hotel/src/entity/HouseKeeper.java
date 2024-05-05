@@ -17,9 +17,9 @@ public class HouseKeeper extends Employee {
 	}
 
 	public HouseKeeper(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
-			String username, String password, Qualifications qualification, double salary, int yearsOfExperience) {
+			String username, String password, Qualifications qualification, double salary, int yearsOfExperience, Type type) {
 		super(firstName, lastName, gender, date, phone, address, username, password, qualification, salary,
-				yearsOfExperience, Type.HouseKeeper);
+				yearsOfExperience, type);
 	}
 
 	// getters

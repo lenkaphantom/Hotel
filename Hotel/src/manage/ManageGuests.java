@@ -1,9 +1,11 @@
 package manage;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 import entity.Guest;
+import enumeracije.Gender;
 
 public class ManageGuests {
 	private Map<Integer, Guest> guests;
@@ -19,11 +21,14 @@ public class ManageGuests {
 	}
 	
 	// methods
-	public void addGuest(Guest guest) {
+	public void addGuest(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
+			String username, String password) {
+		Guest guest = new Guest(firstName, lastName, gender, date, phone, address, username, password);
 		this.guests.put(guest.getId(), guest);
 	}
 	
-	public void removeGuest(Guest guest) {
+	public void removeGuest(int id) {
+		Guest guest = this.guests.get(id);
 		guest.setIsDeleted(true);
 		this.guests.remove(guest.getId());
 	}

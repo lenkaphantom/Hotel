@@ -1,5 +1,9 @@
 package manage;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,11 +23,13 @@ public class ManageAdditionalServices {
 	}
 
 	// methods
-	public void addAdditionalService(AdditionalServices additionalService) {
+	public void addAdditionalService(String service) {
+		AdditionalServices additionalService = new AdditionalServices(service);
 		this.additionalServices.put(additionalService.getId(), additionalService);
 	}
 
-	public void removeAdditionalService(AdditionalServices additionalService) {
+	public void removeAdditionalService(int id) {
+		AdditionalServices additionalService = this.additionalServices.get(id);
 		additionalService.setIsDeleted(true);
 		this.additionalServices.remove(additionalService.getId());
 	}
@@ -35,7 +41,7 @@ public class ManageAdditionalServices {
 		}
 
 		AdditionalServices additionalService = this.additionalServices.get(id);
-		
+
 		if (name != null) {
 			additionalService.setService(name);
 		}
@@ -44,6 +50,30 @@ public class ManageAdditionalServices {
 	public void printAdditionalServices() {
 		for (AdditionalServices additionalService : this.additionalServices.values()) {
 			System.out.println(additionalService.toString());
+		}
+	}
+
+	public void loadAdditionalServices(String path) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(" \\| ");
+				this.addAdditionalService(parts[1]);
+			}
+		} catch (IOException e) {
+			System.out.println("Greška prilikom čitanja iz fajla.");
+		}
+	}
+	
+	public void writeAdditionalServices(String path) {
+		try {
+			FileWriter writer = new FileWriter(path);
+			for (AdditionalServices additionalService : this.additionalServices.values()) {
+				writer.write(additionalService.toStringFile() + "\n");
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
 }
