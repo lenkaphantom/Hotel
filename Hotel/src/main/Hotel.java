@@ -7,11 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 import entity.AdditionalServices;
-import entity.Administrator;
-import entity.Guest;
-import entity.HouseKeeper;
-import entity.Prices;
-import entity.Receptionist;
 import entity.Reservation;
 import entity.Room;
 import entity.RoomType;
