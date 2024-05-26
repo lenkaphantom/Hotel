@@ -127,7 +127,7 @@ public class Room {
 				+ this.roomType.getType() + "(" + this.roomType.getBeds() + ")";
 	}
 
-	public String toStringFiles() {
+	public String toStringFile() {
 		return this.id + " | " + this.floor + " | " + this.roomNumber + " | " + this.roomStatus + " | "
 				+ this.roomType.getId();
 	}

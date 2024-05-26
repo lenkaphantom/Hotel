@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import enumeracije.ReservationStatus;
+import manage.ManageHotel;
 
 public class Reservation {
 	private static int idCounter = 1;
@@ -103,8 +104,8 @@ public class Reservation {
 		this.room = room;
 	}
 
-	public void setGuest(Guest guest) {
-		this.guest = guest;
+	public void setGuest(int guestId, ManageHotel manager) {
+		this.guest = manager.getGuestsMan().getGuests().get(guestId);
 	}
 
 	// methods
@@ -136,8 +137,12 @@ public class Reservation {
 			result = result.substring(0, result.length() - 1);
 		if (this.room != null)
 			result += " | " + this.room.getId();
+		else
+			result += " | ";
 		if (this.guest != null)
 			result += " | " + this.guest.getId();
+		else
+			result += " | ";
 		return result;
 	}
 }

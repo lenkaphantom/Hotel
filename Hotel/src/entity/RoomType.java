@@ -65,6 +65,13 @@ public class RoomType {
 	}
 	
 	public String toStringFile() {
-		return this.id + " | " + this.type + " | " + this.beds;
+		int index = -1;
+		for (int i = 0; i < this.type.getBedLayouts().length; i++) {
+			if (this.beds.equals(this.type.getBedLayouts()[i])) {
+				index = i;
+				break;
+			}
+		}
+		return this.id + " | " + this.type + " | " + index;
 	}
 }

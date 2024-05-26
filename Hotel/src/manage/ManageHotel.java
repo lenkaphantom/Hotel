@@ -9,9 +9,10 @@ public class ManageHotel {
 	private ManageReservations reservationsMan;
 	private ManageRooms roomsMan;
 	private ManageRoomTypes roomTypesMan;
-	
-	// constructor
-	public ManageHotel() {
+
+	private static ManageHotel instance;
+
+	private ManageHotel() {
 		this.additionalServicesMan = new ManageAdditionalServices();
 		this.administratorsMan = new ManageAdministrators();
 		this.employeesMan = new ManageEmployees();
@@ -21,8 +22,19 @@ public class ManageHotel {
 		this.roomsMan = new ManageRooms();
 		this.roomTypesMan = new ManageRoomTypes();
 	}
-	
-	// getters
+
+	public static ManageHotel getInstance() {
+		if (instance == null) {
+			synchronized (ManageHotel.class) {
+				if (instance == null) {
+					instance = new ManageHotel();
+				}
+			}
+		}
+		return instance;
+	}
+
+	// Getters
 	public ManageAdditionalServices getAdditionalServicesMan() {
 		return additionalServicesMan;
 	}

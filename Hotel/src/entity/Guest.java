@@ -52,12 +52,4 @@ public class Guest extends User {
 	public String toStringFile() {
 		return this.id + " | " + super.toStringFile() + " | " + this.isDeleted;
 	}
-
-	public Reservation makeReservation(RoomType roomType, LocalDate startDate, LocalDate endDate,
-			List<AdditionalServices> additionalServices) {
-		Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices,
-				ReservationStatus.WAITING);
-		reservation.setGuest(this);
-		return reservation;
-	}
 }

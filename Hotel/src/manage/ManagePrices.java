@@ -1,12 +1,18 @@
 package manage;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
 import entity.AdditionalServices;
+import entity.Guest;
 import entity.Prices;
 import entity.RoomType;
+import enumeracije.Gender;
 
 public class ManagePrices {
 	private Map<Integer, Prices> prices;
@@ -60,6 +66,56 @@ public class ManagePrices {
 	public void printPrices() {
 		for (Prices price : this.prices.values()) {
 			System.out.println(price.toString());
+		}
+	}
+
+	public void loadPrices(String path, ManageHotel manager) {
+		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+			String line;
+			while ((line = reader.readLine()) != null) {
+				String[] parts = line.split(" \\| ");
+				String[] roomPrices = parts[1].trim().split(" ");
+				Map<RoomType, Double> pricePerRoom = new HashMap<>();
+				for (String roomPrice : roomPrices) {
+					String[] roomParts = roomPrice.split("\\*");
+					int roomId = Integer.parseInt(roomParts[0].trim());
+					RoomType roomType = manager.getRoomsMan().getRooms().get(roomId).getRoomType();
+					Double price = Double.parseDouble(roomParts[1].trim());
+					pricePerRoom.put(roomType, price);
+				}
+
+				// Parsing service prices
+				String[] servicePrices = parts[2].trim().split(" ");
+				Map<AdditionalServices, Double> pricePerService = new HashMap<>();
+				for (String servicePrice : servicePrices) {
+					String[] serviceParts = servicePrice.split("\\*");
+					int serviceId = Integer.parseInt(serviceParts[0].trim());
+					AdditionalServices service = manager.getAdditionalServicesMan().getAdditionalServices().get(serviceId);
+					Double price = Double.parseDouble(serviceParts[1].trim());
+					pricePerService.put(service, price);
+				}
+
+				// Parsing dates
+				LocalDate startDate = LocalDate.parse(parts[3].trim());
+				LocalDate endDate = LocalDate.parse(parts[4].trim());
+
+				// Adding prices
+				addPrices(pricePerRoom, pricePerService, startDate, endDate);
+			}
+		} catch (IOException e) {
+			System.out.println("Greška prilikom čitanja iz fajla.");
+		}
+	}
+
+	public void writePrices(String path) {
+		try {
+			FileWriter writer = new FileWriter(path);
+			for (Prices price : this.prices.values()) {
+				writer.write(price.toStringFile() + "\n");
+			}
+			writer.close();
+		} catch (IOException e) {
+			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
 }

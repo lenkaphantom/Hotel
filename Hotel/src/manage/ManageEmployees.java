@@ -11,8 +11,12 @@ import java.util.Map;
 import entity.Employee;
 import entity.HouseKeeper;
 import entity.Receptionist;
+import entity.Reservation;
+import entity.Room;
 import enumeracije.Gender;
 import enumeracije.Qualifications;
+import enumeracije.ReservationStatus;
+import enumeracije.RoomStatus;
 import enumeracije.Type;
 
 public class ManageEmployees {
@@ -127,6 +131,22 @@ public class ManageEmployees {
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Greška prilikom upisa u fajl.");
+		}
+	}
+	
+	// methods
+	public void addRoomToReservation(ManageHotel hotel, Reservation reservation) {
+		Map<Integer, Room> rooms = hotel.getRoomsMan().getRooms();
+		for (Room room : rooms.values()) {
+			if (!room.isOccupied(reservation.getStartDate(), reservation.getEndDate())) {
+				if (room.getRoomType().equals(reservation.getRoomType())) {
+					room.setRoomStatus(RoomStatus.OCCUPIED);
+					reservation.setRoom(room);
+					reservation.setStatus(ReservationStatus.CONFIRMED);
+					room.setOccupiedDates(hotel);
+					return;
+				}
+			}
 		}
 	}
 }
