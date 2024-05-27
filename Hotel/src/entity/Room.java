@@ -102,25 +102,6 @@ public class Room {
 	}
 
 	// methods
-	public boolean isOccupied(LocalDate date1, LocalDate date2) {
-		if (this.occupiedDates == null)
-			return false;
-		for (LocalDate startDate : occupiedDates.keySet()) {
-			LocalDate endDate = occupiedDates.get(startDate);
-			if (date1.isBefore(endDate) && date2.isAfter(startDate)) {
-				return true;
-			}
-			if (date1.isEqual(endDate) || date2.isEqual(startDate) || date1.isEqual(startDate)
-					|| date2.isEqual(endDate)) {
-				return true;
-			}
-			if (date1.isAfter(startDate) && date2.isBefore(endDate)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
 	@Override
 	public String toString() {
 		return "Soba " + this.id + ": " + this.floor + ". sprat, " + this.roomNumber + " | " + this.roomStatus + " | "

@@ -88,4 +88,30 @@ public class ManageRooms {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
+	
+	public boolean isOccupied(int id, LocalDate date1, LocalDate date2) {
+		if (!this.rooms.containsKey(id)) {
+			System.out.println("Soba sa id-jem " + id + " ne postoji.");
+			return false;
+		}
+		
+		Room room = this.rooms.get(id);
+		
+		if (room.getOccupiedDates() == null)
+			return false;
+		for (LocalDate startDate : room.getOccupiedDates().keySet()) {
+			LocalDate endDate = room.getOccupiedDates().get(startDate);
+			if (date1.isBefore(endDate) && date2.isAfter(startDate)) {
+				return true;
+			}
+			if (date1.isEqual(endDate) || date2.isEqual(startDate) || date1.isEqual(startDate)
+					|| date2.isEqual(endDate)) {
+				return true;
+			}
+			if (date1.isAfter(startDate) && date2.isBefore(endDate)) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

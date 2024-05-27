@@ -97,13 +97,4 @@ public class ManageGuests {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
-	
-	// methods
-	public Reservation makeReservation(int guestID, RoomType roomType, LocalDate startDate, LocalDate endDate,
-			List<AdditionalServices> additionalServices, ManageHotel manager) {
-		Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices,
-				ReservationStatus.WAITING);
-		reservation.setGuest(guestID, manager);
-		return reservation;
-	}
 }

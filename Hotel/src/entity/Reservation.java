@@ -17,6 +17,7 @@ public class Reservation {
 	private ReservationStatus status;
 	private Room room;
 	private Guest guest;
+	private double totalPrice;
 
 	// constructors
 	public Reservation() {
@@ -34,6 +35,7 @@ public class Reservation {
 		this.status = status;
 		this.room = null;
 		this.guest = null;
+		this.totalPrice = 0;
 	}
 
 	// copy constructor
@@ -44,6 +46,7 @@ public class Reservation {
 		this.status = reservation.status;
 		this.room = reservation.room;
 		this.guest = reservation.guest;
+		this.totalPrice = reservation.totalPrice;
 	}
 
 	// getters
@@ -78,6 +81,10 @@ public class Reservation {
 	public Guest getGuest() {
 		return guest;
 	}
+	
+	public double getTotalPrice() {
+		return totalPrice;
+	}
 
 	// setters
 	public void setRoomType(RoomType roomType) {
@@ -107,6 +114,10 @@ public class Reservation {
 	public void setGuest(int guestId, ManageHotel manager) {
 		this.guest = manager.getGuestsMan().getGuests().get(guestId);
 	}
+	
+	public void setTotalPrice(double totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 
 	// methods
 	@Override
@@ -123,7 +134,7 @@ public class Reservation {
 			result += "Room: " + this.room.getRoomNumber() + "\n";
 		if (this.guest != null)
 			result += "Guest: " + this.guest.getUsername() + "\n";
-		return result;
+		return result + "Price: " + this.totalPrice + "\n-----------------------------\n";
 	}
 
 	public String toStringFile() {
@@ -143,6 +154,6 @@ public class Reservation {
 			result += " | " + this.guest.getId();
 		else
 			result += " | ";
-		return result;
+		return result + " | " + this.totalPrice;
 	}
 }

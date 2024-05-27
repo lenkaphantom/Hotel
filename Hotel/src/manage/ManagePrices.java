@@ -84,7 +84,6 @@ public class ManagePrices {
 					pricePerRoom.put(roomType, price);
 				}
 
-				// Parsing service prices
 				String[] servicePrices = parts[2].trim().split(" ");
 				Map<AdditionalServices, Double> pricePerService = new HashMap<>();
 				for (String servicePrice : servicePrices) {
@@ -95,11 +94,9 @@ public class ManagePrices {
 					pricePerService.put(service, price);
 				}
 
-				// Parsing dates
 				LocalDate startDate = LocalDate.parse(parts[3].trim());
 				LocalDate endDate = LocalDate.parse(parts[4].trim());
 
-				// Adding prices
 				addPrices(pricePerRoom, pricePerService, startDate, endDate);
 			}
 		} catch (IOException e) {

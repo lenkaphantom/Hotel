@@ -12,10 +12,12 @@ import java.util.Map;
 
 import entity.AdditionalServices;
 import entity.Guest;
+import entity.Prices;
 import entity.Reservation;
 import entity.Room;
 import entity.RoomType;
 import enumeracije.ReservationStatus;
+import enumeracije.RoomStatus;
 
 public class ManageReservations {
 	private Map<Integer, Reservation> reservations;
@@ -74,42 +76,42 @@ public class ManageReservations {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				String[] parts = line.split(" \\| ");
-				String id = parts[0].trim();
-				LocalDate startDate = LocalDate.parse(parts[1].trim());
-				LocalDate endDate = LocalDate.parse(parts[2].trim());
-				ReservationStatus status = ReservationStatus.valueOf(parts[3].trim());
-				int roomTypeId = Integer.parseInt(parts[4].trim());
+				LocalDate startDate = LocalDate.parse(parts[1]);
+				LocalDate endDate = LocalDate.parse(parts[2]);
+				ReservationStatus status = ReservationStatus.valueOf(parts[3]);
+				int roomTypeId = Integer.parseInt(parts[4]);
 				RoomType roomType = manager.getRoomTypesMan().getRoomTypes().get(roomTypeId);
 
 				List<AdditionalServices> additionalServices = new ArrayList<>();
-				if (!parts[5].trim().isEmpty()) {
-					String[] serviceIds = parts[5].trim().split("\\*");
+				if (!parts[5].isEmpty()) {
+					String[] serviceIds = parts[5].split("\\*");
 					for (String serviceId : serviceIds) {
 						additionalServices.add(manager.getAdditionalServicesMan().getAdditionalServices()
 								.get(Integer.parseInt(serviceId)));
 					}
 				}
-				
+
 				Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices, status);
 
 				Room room = null;
-				if (parts.length > 6 && !parts[6].trim().isEmpty()) {
-					int roomId = Integer.parseInt(parts[6].trim());
+				if (!parts[6].isEmpty()) {
+					int roomId = Integer.parseInt(parts[6]);
 					room = manager.getRoomsMan().getRooms().get(roomId);
 					reservation.setRoom(room);
 				}
 
-				Guest guest = null;
-				if (parts.length > 7 && !parts[7].trim().isEmpty()) {
-					int guestId = Integer.parseInt(parts[7].trim());
+				if (!parts[7].isEmpty()) {
+					int guestId = Integer.parseInt(parts[7]);
 					reservation.setGuest(guestId, manager);
 				}
+				reservation.setTotalPrice(Double.parseDouble(parts[8]));
+				this.reservations.put(reservation.getId(), reservation);
 			}
 		} catch (IOException e) {
 			System.out.println("Greška prilikom čitanja iz fajla.");
 		}
 	}
-	
+
 	public void writeReservations(String path) {
 		try {
 			FileWriter writer = new FileWriter(path);

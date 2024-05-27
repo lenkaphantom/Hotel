@@ -2,52 +2,37 @@ package main;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import entity.AdditionalServices;
-import entity.Reservation;
-import entity.Room;
-import entity.RoomType;
-import enumeracije.Gender;
-import enumeracije.Qualifications;
-import enumeracije.RoomStatus;
-import enumeracije.Type;
-import enumeracije.TypeOfRoom;
 import manage.ManageHotel;
-import manage.ManageRooms;
 
 public class Hotel {
 
 	public static void main(String[] args) {
-		ManageHotel manager = ManageHotel.getInstance();
+		ManageHotel manager = ManageHotel.getInstance();		
+		manager.loadData();
 		
-//		manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
-//		manager.getAdministratorsMan().writeAdministrators("data/administrators.csv");
-//		manager.getEmployeesMan().writeEmployees("data/employees.csv");
-//		manager.getGuestsMan().writeGuests("data/guests.csv");
-//		manager.getRoomsMan().writeRooms("data/rooms.csv");
-//		manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
-//		manager.getPricesMan().writePrices("data/prices.csv");
-//		manager.getReservationsMan().writeReservations("data/reservations.csv");
+		List<AdditionalServices> additionalServices1 = new ArrayList();
+		additionalServices1.add(manager.getAdditionalServicesMan().getAdditionalServices().get(1));
+		additionalServices1.add(manager.getAdditionalServicesMan().getAdditionalServices().get(3));
 		
-		manager.getAdditionalServicesMan().loadAdditionalServices("data/additional_services.csv");
-		manager.getAdministratorsMan().loadAdministrators("data/administrators.csv");
-		manager.getEmployeesMan().loadEmployees("data/employees.csv");
-		manager.getGuestsMan().loadGuests("data/guests.csv");
-		manager.getRoomTypesMan().loadRoomTypes("data/room_types.csv");
-		manager.getRoomsMan().loadRooms("data/rooms.csv", manager);
-		manager.getPricesMan().loadPrices("data/prices.csv", manager);
-		manager.getReservationsMan().loadReservations("data/reservations.csv", manager);
+		List<AdditionalServices> temp = new ArrayList();
+		temp.add(manager.getAdditionalServicesMan().getAdditionalServices().get(5));
+		manager.makeReservation(1, 5, LocalDate.of(2024, 5, 27), LocalDate.of(2024, 6, 3), additionalServices1);
 		
-		manager.getAdditionalServicesMan().printAdditionalServices();
-		manager.getAdministratorsMan().printAdministrators();
-		manager.getEmployeesMan().printEmployees();
-		manager.getGuestsMan().printGuests();
-		manager.getRoomTypesMan().printRoomTypes();
-		manager.getRoomsMan().printRooms();
-		manager.getPricesMan().printPrices();
+		manager.addRoomToReservation(4);
+		manager.addRoomToReservation(3);
+		manager.checkIn(4, temp);
+		
+		manager.checkOut(4);
+		manager.cleanRooms(2);
+		System.out.println(manager.getRoomsMan().getRooms().get(2));
+		
+		manager.makeReservation(2, 5, LocalDate.of(2024, 5, 29), LocalDate.of(2024, 6, 1), additionalServices1);
+		manager.addRoomToReservation(5);
 		manager.getReservationsMan().printReservations();
+		manager.writeData();
+		// MainFrame mainFrame = new MainFrame();
 	}
 }
