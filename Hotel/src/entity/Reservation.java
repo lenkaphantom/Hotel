@@ -31,7 +31,7 @@ public class Reservation {
 		this.roomType = roomType;
 		this.startDate = startDate;
 		this.endDate = endDate;
-		this.additionalServices = new ArrayList<AdditionalServices>(additionalServices);
+		this.additionalServices = additionalServices;
 		this.status = status;
 		this.room = null;
 		this.guest = null;
@@ -81,7 +81,7 @@ public class Reservation {
 	public Guest getGuest() {
 		return guest;
 	}
-	
+
 	public double getTotalPrice() {
 		return totalPrice;
 	}
@@ -114,7 +114,7 @@ public class Reservation {
 	public void setGuest(int guestId, ManageHotel manager) {
 		this.guest = manager.getGuestsMan().getGuests().get(guestId);
 	}
-	
+
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
@@ -139,8 +139,10 @@ public class Reservation {
 
 	public String toStringFile() {
 		String services = "";
-		for (AdditionalServices additionalService : this.additionalServices) {
-			services += additionalService.getId() + "*";
+		if (this.additionalServices != null) {
+			for (AdditionalServices additionalService : this.additionalServices) {
+				services += additionalService.getId() + "*";
+			}
 		}
 		String result = this.id + " | " + this.startDate + " | " + this.endDate + " | " + this.status + " | "
 				+ this.roomType.getId() + " | " + services;

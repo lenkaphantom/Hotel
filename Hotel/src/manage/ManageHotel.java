@@ -121,6 +121,16 @@ public class ManageHotel {
 
 		this.reservationsMan.addReservation(reservation);
 	}
+	
+	public void cancleReservation(int id) {
+		if (!this.reservationsMan.getReservations().containsKey(id)) {
+			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
+			return;
+		}
+
+		Reservation reservation = this.reservationsMan.getReservations().get(id);
+		reservation.setStatus(ReservationStatus.CANCELLED);
+	}
 
 	public void checkIn(int id, List<AdditionalServices> additionalServices) {
 		if (!this.reservationsMan.getReservations().containsKey(id)) {

@@ -74,7 +74,7 @@ public class ManageReservations {
 	public void loadReservations(String path, ManageHotel manager) {
 		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 			String line;
-			while ((line = reader.readLine()) != null) {
+			while ((line = reader.readLine()) != "" && line != null) {
 				String[] parts = line.split(" \\| ");
 				LocalDate startDate = LocalDate.parse(parts[1]);
 				LocalDate endDate = LocalDate.parse(parts[2]);
