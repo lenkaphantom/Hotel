@@ -36,7 +36,6 @@ public class ManagePrices {
 
 	public void removePrices(int id) {
 		Prices price = this.prices.get(id);
-		price.setIsDeleted(true);
 		this.prices.remove(price.getId());
 	}
 

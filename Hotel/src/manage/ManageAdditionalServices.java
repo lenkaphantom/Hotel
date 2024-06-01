@@ -30,7 +30,6 @@ public class ManageAdditionalServices {
 
 	public void removeAdditionalService(int id) {
 		AdditionalServices additionalService = this.additionalServices.get(id);
-		additionalService.setIsDeleted(true);
 		this.additionalServices.remove(additionalService.getId());
 	}
 

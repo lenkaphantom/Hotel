@@ -11,12 +11,9 @@ import java.util.Map;
 import entity.Employee;
 import entity.HouseKeeper;
 import entity.Receptionist;
-import entity.Reservation;
 import entity.Room;
 import enumeracije.Gender;
 import enumeracije.Qualifications;
-import enumeracije.ReservationStatus;
-import enumeracije.RoomStatus;
 import enumeracije.Type;
 
 public class ManageEmployees {
@@ -69,7 +66,6 @@ public class ManageEmployees {
 
 	public void removeEmployee(int id) {
 		Employee employee = this.employees.get(id);
-		employee.setIsDeleted(true);
 		this.employees.remove(employee.getId());
 	}
 
@@ -108,7 +104,7 @@ public class ManageEmployees {
 		}
 	}
 
-	public void loadEmployees(String path) {
+	public void loadEmployees(String path, ManageHotel manager) {
 		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 			String line;
 			while ((line = reader.readLine()) != null) {
@@ -116,6 +112,16 @@ public class ManageEmployees {
 				this.addEmployee(parts[1], parts[2], Gender.valueOf(parts[3]), LocalDate.parse(parts[4]), parts[5],
 						parts[6], parts[7], parts[8], Qualifications.valueOf(parts[9]), Double.parseDouble(parts[10]),
 						Integer.parseInt(parts[11]), Type.valueOf(parts[12]));
+				if (parts[12].equals("HouseKeeper") && parts.length > 13)
+                {
+					HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(Integer.parseInt(parts[0]));
+					String[] data = parts[13].split(":");
+					String[] rooms = data[1].split(",");
+					for (String room : rooms) {
+						Room roomToAdd = manager.getRoomsMan().getRooms().get(Integer.parseInt(room));
+						houseKeeper.getRoomsToClean().put(LocalDate.parse(data[0]), roomToAdd);
+					}
+                }
 			}
 		} catch (IOException e) {
 			System.out.println("Greška prilikom čitanja iz fajla.");

@@ -11,7 +11,6 @@ public class Prices {
 	private Map<AdditionalServices, Double> pricePerService;
 	private LocalDate startDate;
 	private LocalDate endDate;
-	private boolean isDeleted = false;
 
 	// constructors
 	public Prices() {
@@ -57,10 +56,6 @@ public class Prices {
 		return endDate;
 	}
 
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
 	// setters
 	public void setPricePerRoom(Map<RoomType, Double> pricePerRoom) {
 		this.pricePerRoom = new HashMap<>(pricePerRoom);
@@ -78,15 +73,12 @@ public class Prices {
 		this.endDate = endDate;
 	}
 
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
-
 	// methods
 	@Override
 	public String toString() {
 		String pricePerRoom = "";
-		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {;
+		for (Map.Entry<RoomType, Double> entry : this.pricePerRoom.entrySet()) {
+			;
 			String tmp = entry.getKey().getType() + "(" + entry.getKey().getBeds() + ")";
 			pricePerRoom += String.format("%-20s | %.2f\n", tmp, entry.getValue());
 		}
@@ -109,7 +101,6 @@ public class Prices {
 		for (Map.Entry<AdditionalServices, Double> entry : this.pricePerService.entrySet()) {
 			pricePerService += entry.getKey().getId() + "*" + entry.getValue() + " ";
 		}
-		return this.id + " | " + pricePerRoom + "| " + pricePerService + "| " + this.startDate + " | " + this.endDate
-				+ " | " + isDeleted;
+		return this.id + " | " + pricePerRoom + "| " + pricePerService + "| " + this.startDate + " | " + this.endDate;
 	}
 }

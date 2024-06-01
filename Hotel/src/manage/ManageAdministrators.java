@@ -33,7 +33,6 @@ public class ManageAdministrators {
 
 	public void removeAdministrator(int id) {
 		Administrator admin = this.administrators.get(id);
-		admin.setIsDeleted(true);
 		this.administrators.remove(admin.getId());
 	}
 

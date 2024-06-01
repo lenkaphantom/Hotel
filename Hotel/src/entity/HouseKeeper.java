@@ -1,15 +1,15 @@
 package entity;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 import enumeracije.Gender;
 import enumeracije.Qualifications;
 import enumeracije.Type;
 
 public class HouseKeeper extends Employee {
-	private List<Room> roomsToClean = new ArrayList<>();
+	private Map<LocalDate, Room> roomsToClean = new HashMap<>();
 
 	// constructors
 	public HouseKeeper() {
@@ -23,13 +23,8 @@ public class HouseKeeper extends Employee {
 	}
 
 	// getters
-	public List<Room> getRoomsToClean() {
+	public Map<LocalDate, Room> getRoomsToClean() {
 		return roomsToClean;
-	}
-	
-	// methods
-	public void addRoomToClean(Room room) {
-		this.roomsToClean.add(room);
 	}
 	
 	@Override
@@ -38,6 +33,10 @@ public class HouseKeeper extends Employee {
 	}
 	
 	public String toStringForFile() {
-		return super.toStringFile();
+		String rooms = "";
+		for (LocalDate date : roomsToClean.keySet()) {
+			rooms += date + ":" + roomsToClean.get(date).getId() + ",";
+		}
+		return super.toStringFile() + " | " + rooms;
 	}
 }

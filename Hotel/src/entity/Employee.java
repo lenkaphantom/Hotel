@@ -13,7 +13,6 @@ public abstract class Employee extends User {
 	private double salary;
 	private int yearsOfExperience;
 	private Type type;
-	private boolean isDeleted = false;
 
 	// constructors
 	public Employee() {
@@ -63,10 +62,6 @@ public abstract class Employee extends User {
 		return this.type;
 	}
 
-	public boolean isDeleted() {
-		return isDeleted;
-	}
-
 	// setters
 	public void setQualification(Qualifications qualification) {
 		this.qualification = qualification;
@@ -82,10 +77,6 @@ public abstract class Employee extends User {
 
 	public void setType(Type type) {
 		this.type = type;
-	}
-
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 
 	// methods
@@ -121,6 +112,6 @@ public abstract class Employee extends User {
 
 	public String toStringFile() {
 		return this.id + " | " + super.toStringFile() + " | " + this.qualification + " | " + this.salary + " | "
-				+ this.yearsOfExperience + " | " + this.type + " | " + isDeleted;
+				+ this.yearsOfExperience + " | " + this.type;
 	}
 }

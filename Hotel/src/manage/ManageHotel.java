@@ -84,10 +84,10 @@ public class ManageHotel {
 	public void loadData() {
 		this.getAdditionalServicesMan().loadAdditionalServices("data/additional_services.csv");
 		this.getAdministratorsMan().loadAdministrators("data/administrators.csv");
-		this.getEmployeesMan().loadEmployees("data/employees.csv");
 		this.getGuestsMan().loadGuests("data/guests.csv");
 		this.getRoomTypesMan().loadRoomTypes("data/room_types.csv");
 		this.getRoomsMan().loadRooms("data/rooms.csv", this);
+		this.getEmployeesMan().loadEmployees("data/employees.csv", this);
 		this.getPricesMan().loadPrices("data/prices.csv", this);
 		this.getReservationsMan().loadReservations("data/reservations.csv", this);
 	}
@@ -118,6 +118,7 @@ public class ManageHotel {
 		Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices,
 				ReservationStatus.WAITING);
 		reservation.setGuest(guestID, this);
+		this.calculatePrice(reservation.getId());
 
 		this.reservationsMan.addReservation(reservation);
 	}
@@ -175,9 +176,6 @@ public class ManageHotel {
 			minCleaning = this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().size();
 		}
 		for (HouseKeeper houseKeeper : this.employeesMan.getHouseKeepers().values()) {
-			if (houseKeeper.isDeleted()) {
-				continue;
-			}
 			if (houseKeeper.getRoomsToClean().isEmpty()) {
 				minCleaning = 0;
 				houseKeeperId = houseKeeper.getId();
@@ -188,22 +186,24 @@ public class ManageHotel {
 			}
 		}
 
-		this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().add(room);
+		this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(), room);
 	}
 
-	public void cleanRooms(int id) {
-		if (!this.employeesMan.getHouseKeepers().containsKey(id)) {
-			System.out.println("Housekeeper sa id-jem " + id + " ne postoji.");
+	public void cleanRooms(int idHK, int idRoom) {
+		if (!this.employeesMan.getHouseKeepers().containsKey(idHK)) {
+			System.out.println("Housekeeper sa id-jem " + idHK + " ne postoji.");
 			return;
 		}
 
-		HouseKeeper houseKeeper = this.employeesMan.getHouseKeepers().get(id);
-
-		for (Room room : houseKeeper.getRoomsToClean()) {
-			room.setRoomStatus(RoomStatus.FREE);
+		HouseKeeper houseKeeper = this.employeesMan.getHouseKeepers().get(idHK);
+		
+		if (!this.roomsMan.getRooms().containsKey(idRoom)) {
+			System.out.println("Soba sa id-jem " + idRoom + " ne postoji.");
+			return;
 		}
-
-		houseKeeper.getRoomsToClean().clear();
+		
+		Room room = this.roomsMan.getRooms().get(idRoom);
+		room.setRoomStatus(RoomStatus.FREE);
 	}
 
 	public void addRoomToReservation(int id) {
@@ -249,7 +249,7 @@ public class ManageHotel {
 			LocalDate latestStartDate = LocalDate.MIN;
 
 			for (Prices price : prices.values()) {
-				if (!price.isDeleted() && !date.isBefore(price.getStartDate()) && !date.isAfter(price.getEndDate())) {
+				if (!date.isBefore(price.getStartDate()) && !date.isAfter(price.getEndDate())) {
 					if (price.getStartDate().isAfter(latestStartDate)) {
 						latestStartDate = price.getStartDate();
 						validPrices = price;

@@ -9,7 +9,6 @@ import enumeracije.ReservationStatus;
 public class Guest extends User {
 	private static int idCounter = 1;
 	private int id;
-	private boolean isDeleted = false;
 
 	// constructors
 	public Guest() {
@@ -33,15 +32,6 @@ public class Guest extends User {
 	public int getId() {
 		return this.id;
 	}
-	
-	public boolean isDeleted() {
-		return this.isDeleted;
-	}
-	
-	// setters
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
-	}
 
 	// methods
 	@Override
@@ -50,6 +40,6 @@ public class Guest extends User {
 	}
 	
 	public String toStringFile() {
-		return this.id + " | " + super.toStringFile() + " | " + this.isDeleted;
+		return this.id + " | " + super.toStringFile();
 	}
 }

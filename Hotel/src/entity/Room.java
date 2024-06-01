@@ -15,7 +15,6 @@ public class Room {
 	private RoomStatus roomStatus;
 	private RoomType roomType;
 	private Map<LocalDate, LocalDate> occupiedDates =  new HashMap<>();
-	private boolean isDeleted = false;
 
 	// constructors
 	public Room() {
@@ -64,10 +63,6 @@ public class Room {
 	public Map<LocalDate, LocalDate> getOccupiedDates() {
 		return occupiedDates;
 	}
-	
-	public boolean isDeleted() {
-		return isDeleted;
-	}
 
 	// setters
 	public void setFloor(int floor) {
@@ -95,10 +90,6 @@ public class Room {
 				this.occupiedDates.put(reservation.getStartDate(), reservation.getEndDate());
 			}
 		}
-	}
-	
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 
 	// methods

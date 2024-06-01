@@ -41,7 +41,6 @@ public class ManageGuests {
 
 	public void removeGuest(int id) {
 		Guest guest = this.guests.get(id);
-		guest.setIsDeleted(true);
 		this.guests.remove(guest.getId());
 	}
 

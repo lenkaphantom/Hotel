@@ -35,7 +35,6 @@ public class ManageRooms {
 
 	public void removeRoom(int id) {
 		Room room = this.rooms.get(id);
-		room.setIsDeleted(true);
 		this.rooms.remove(room.getId());
 	}
 

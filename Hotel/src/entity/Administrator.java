@@ -7,7 +7,6 @@ import enumeracije.Gender;
 public class Administrator extends User {
 	private static int idCounter = 1;
 	private int id;
-	private boolean isDeleted = false;
 
 	// constructors
 	public Administrator() {
@@ -30,15 +29,6 @@ public class Administrator extends User {
 	// getters
 	public int getId() {
 		return this.id;
-	}
-	
-	public boolean isDeleted() {
-		return this.isDeleted;
-	}
-	
-	// setters
-	public void setIsDeleted(boolean isDeleted) {
-		this.isDeleted = isDeleted;
 	}
 
 	// method toString
