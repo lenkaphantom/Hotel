@@ -44,7 +44,7 @@ public class ManageGuests {
 		this.guests.remove(guest.getId());
 	}
 
-	public void changeGuest(int id, String firstName, String lastName, String phone, String address) {
+	public void changeGuest(int id, String firstName, String lastName, Gender gender, String phone, String address) {
 		if (!this.guests.containsKey(id)) {
 			System.out.println("Gost sa id-jem " + id + " ne postoji.");
 			return;
@@ -63,6 +63,9 @@ public class ManageGuests {
 		}
 		if (address != null) {
 			guest.setAddress(address);
+		}
+		if (gender != null) {
+			guest.setGender(gender);
 		}
 	}
 
@@ -84,7 +87,7 @@ public class ManageGuests {
 			System.out.println("Greška prilikom čitanja iz fajla.");
 		}
 	}
-	
+
 	public void writeGuests(String path) {
 		try {
 			FileWriter writer = new FileWriter(path);

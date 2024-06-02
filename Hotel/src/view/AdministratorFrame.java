@@ -30,6 +30,7 @@ import model.EmployeeModel;
 import model.GuestModel;
 import net.miginfocom.swing.MigLayout;
 import view.addedit.AddEditEmployeeDialog;
+import view.addedit.AddEditGuestDialog;
 
 public class AdministratorFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -182,9 +183,9 @@ public class AdministratorFrame extends JFrame {
 		});
 
 		if (isEmployee) {
-			tfSearchEmployee = searchField;
+			this.tfSearchEmployee = searchField;
 		} else {
-			tfSearchGuest = searchField;
+			this.tfSearchGuest = searchField;
 		}
 		return panel;
 	}
@@ -213,8 +214,7 @@ public class AdministratorFrame extends JFrame {
                 if (row == -1) {
                     JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Izmeni Zaposlenog");
-                    AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this, row);
+                    AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this, row + 1);
                     addEditEmployeeDialog.setVisible(true);
                     refreshEmployeeTable();
                     manager.getEmployeesMan().writeEmployees("data/employees.csv");
@@ -231,7 +231,7 @@ public class AdministratorFrame extends JFrame {
                 } else {
                 	int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete zaposlenog?", "Brisanje zaposlenog", JOptionPane.YES_NO_OPTION);
                 	if (izbor == JOptionPane.YES_OPTION) {
-                        manager.getEmployeesMan().removeEmployee(row);
+                        manager.getEmployeesMan().removeEmployee(row + 1);
                         manager.getEmployeesMan().writeEmployees("data/employees.csv");
 					}
 					refreshEmployeeTable();
@@ -242,12 +242,10 @@ public class AdministratorFrame extends JFrame {
         addBtnGuest.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(null, "Dodaj Gosta");
-                // Logika za dodavanje gosta
-                // ...
-
-                // Osvežavanje tabele nakon dodavanja gosta
+                AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, 0);
+                addEditGuestDialog.setVisible(true);
                 refreshGuestTable();
+                manager.getGuestsMan().writeGuests("data/guests.csv");
             }
         });
 
@@ -258,12 +256,10 @@ public class AdministratorFrame extends JFrame {
                 if (row == -1) {
                     JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Izmeni Gosta");
-                    // Logika za izmenu gosta
-                    // ...
-
-                    // Osvežavanje tabele nakon izmene gosta
+                	AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, row + 1);
+                	addEditGuestDialog.setVisible(true);
                     refreshGuestTable();
+                    manager.getGuestsMan().writeGuests("data/guests.csv");
                 }
             }
         });
@@ -275,11 +271,11 @@ public class AdministratorFrame extends JFrame {
                 if (row == -1) {
                     JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
                 } else {
-                    JOptionPane.showMessageDialog(null, "Obrisi Gosta");
-                    // Logika za brisanje gosta
-                    // ...
-
-                    // Osvežavanje tabele nakon brisanja gosta
+                	int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete gosta?", "Brisanje gosta", JOptionPane.YES_NO_OPTION);
+                	if (izbor == JOptionPane.YES_OPTION) {
+                        manager.getGuestsMan().removeGuest(row + 1);
+                        manager.getGuestsMan().writeGuests("data/guests.csv");
+                	}
                     refreshGuestTable();
                 }
             }

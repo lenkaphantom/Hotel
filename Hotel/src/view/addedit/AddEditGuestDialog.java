@@ -17,18 +17,17 @@ import javax.swing.JTextField;
 
 import com.toedter.calendar.JDateChooser;
 
-import entity.Employee;
+import entity.Guest;
 import enumeracije.Gender;
-import enumeracije.Qualifications;
 import manage.ManageHotel;
 import net.miginfocom.swing.MigLayout;
 import validation.Validation;
 import view.AdministratorFrame;
 
-public class AddEditEmployeeDialog extends JDialog {
+public class AddEditGuestDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private ManageHotel manager = ManageHotel.getInstance();
-	private Employee editE;
+	private Guest editG;
 	private JFrame parent;
 
 	private JTextField txtIme;
@@ -39,19 +38,16 @@ public class AddEditEmployeeDialog extends JDialog {
 	private JTextField txtAdresa;
 	private JTextField txtKorisnickoIme;
 	private JPasswordField txtLozinka;
-	private JComboBox<String> cbKvalifikacija;
-	private JTextField txtGodineStaza;
-	private JComboBox<String> cbRadnoMesto;
 
-	public AddEditEmployeeDialog(JFrame parent, int id) {
+	public AddEditGuestDialog(JFrame parent, int id) {
 		super(parent, true);
 		this.parent = parent;
 		if (id != 0) {
-			setTitle("Izmena zaposlenog");
+			setTitle("Izmena gosta");
 		} else {
-			setTitle("Dodavanje zaposlenog");
+			setTitle("Dodavanje gosta");
 		}
-		this.editE = manager.getEmployeesMan().getEmployees().get(id);
+		this.editG = manager.getGuestsMan().getGuests().get(id);
 
 		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
@@ -104,46 +100,28 @@ public class AddEditEmployeeDialog extends JDialog {
 		txtLozinka = new JPasswordField(20);
 		add(txtLozinka, "growx");
 
-		JLabel lblKvalifikacija = new JLabel("Kvalifikacija");
-		add(lblKvalifikacija);
-		cbKvalifikacija = new JComboBox<>(new String[] { "NONE", "BASIC", "INTERMEDIATE", "ADVANCED" });
-		add(cbKvalifikacija, "growx");
-
-		JLabel lblGodineStaza = new JLabel("Godine staza");
-		add(lblGodineStaza);
-		txtGodineStaza = new JTextField(20);
-		add(txtGodineStaza, "growx");
-
-		JLabel lblRadnoMesto = new JLabel("Radno mesto");
-		add(lblRadnoMesto);
-		cbRadnoMesto = new JComboBox<>(new String[] { "Receptionist", "HouseKeeper" });
-		add(cbRadnoMesto, "growx");
-
 		JButton btnCancel = new JButton("Cancel");
 		add(btnCancel);
 
 		JButton btnOK = new JButton("OK");
 		add(btnOK);
 
-		if (editE != null) {
-			txtIme.setText(editE.getFirstName());
-			txtPrezime.setText(editE.getLastName());
-			cbPol.setSelectedItem(editE.getGender().toString());
-			dcDatumRodjenja.setDate(java.sql.Date.valueOf(editE.getDate()));
-			txtBrojTelefona.setText(editE.getPhone());
-			txtAdresa.setText(editE.getAddress());
-			txtKorisnickoIme.setText(editE.getUsername());
+		if (editG != null) {
+			txtIme.setText(editG.getFirstName());
+			txtPrezime.setText(editG.getLastName());
+			cbPol.setSelectedItem(editG.getGender().toString());
+			dcDatumRodjenja.setDate(java.sql.Date.valueOf(editG.getDate()));
+			txtBrojTelefona.setText(editG.getPhone());
+			txtAdresa.setText(editG.getAddress());
+			txtKorisnickoIme.setText(editG.getUsername());
 			txtKorisnickoIme.setEditable(false);
-			txtLozinka.setText(editE.getPassword());
-			cbKvalifikacija.setSelectedItem(editE.getQualification().toString());
-			txtGodineStaza.setText(String.valueOf(editE.getYearsOfExperience()));
-			cbRadnoMesto.setSelectedItem(editE.getType());
+			txtLozinka.setText(editG.getPassword());
 		}
 
 		btnOK.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (validateFields(editE)) {
+				if (validateFields(editG)) {
 					String ime = txtIme.getText().trim();
 					String prezime = txtPrezime.getText().trim();
 					Gender pol = Gender.valueOf(cbPol.getSelectedItem().toString());
@@ -152,22 +130,18 @@ public class AddEditEmployeeDialog extends JDialog {
 					String adresa = txtAdresa.getText().trim();
 					String korisnickoIme = txtKorisnickoIme.getText().trim();
 					String lozinka = new String(txtLozinka.getPassword());
-					Qualifications kvalifikacija = Qualifications.valueOf(cbKvalifikacija.getSelectedItem().toString());
-					int godineStaza = Integer.parseInt(txtGodineStaza.getText().trim());
-					enumeracije.Type radnoMesto = enumeracije.Type.valueOf(cbRadnoMesto.getSelectedItem().toString());
 
 					LocalDate localDatumRodjenja = datumRodjenja.toInstant().atZone(ZoneId.systemDefault())
 							.toLocalDate();
 
-					if (editE != null) {
-						manager.getEmployeesMan().changeEmployee(editE.getId(), ime, prezime, pol, brojTelefona, adresa,
-								korisnickoIme, lozinka, kvalifikacija, godineStaza);
+					if (editG != null) {
+						manager.getGuestsMan().changeGuest(editG.getId(), ime, prezime, pol, brojTelefona, adresa);
 					} else {
-						manager.getEmployeesMan().addEmployee(ime, prezime, pol, localDatumRodjenja, brojTelefona,
-								adresa, korisnickoIme, lozinka, kvalifikacija, godineStaza, radnoMesto);
+						manager.getGuestsMan().addGuest(ime, prezime, pol, localDatumRodjenja, brojTelefona, adresa,
+								korisnickoIme, lozinka);
 					}
 					((AdministratorFrame) parent).refreshEmployeeTable();
-					AddEditEmployeeDialog.this.dispose();
+					AddEditGuestDialog.this.dispose();
 				}
 			}
 		});
@@ -175,32 +149,17 @@ public class AddEditEmployeeDialog extends JDialog {
 		btnCancel.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AddEditEmployeeDialog.this.dispose();
+				AddEditGuestDialog.this.dispose();
 			}
 		});
 	}
 
-	private boolean validateFields(Employee editE) {
+	private boolean validateFields(Guest editG) {
 		if (txtIme.getText().trim().isEmpty() || txtPrezime.getText().trim().isEmpty()
 				|| cbPol.getSelectedItem() == null || dcDatumRodjenja.getDate() == null
 				|| txtBrojTelefona.getText().trim().isEmpty() || txtAdresa.getText().trim().isEmpty()
-				|| txtKorisnickoIme.getText().trim().isEmpty() || txtLozinka.getPassword().length == 0
-				|| cbKvalifikacija.getSelectedItem() == null || txtGodineStaza.getText().trim().isEmpty()
-				|| cbRadnoMesto.getSelectedItem() == null) {
+				|| txtKorisnickoIme.getText().trim().isEmpty() || txtLozinka.getPassword().length == 0) {
 			JOptionPane.showMessageDialog(this, "Sva polja moraju biti popunjena.", "Greška",
-					JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-
-		try {
-			Integer.parseInt(txtGodineStaza.getText().trim());
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Godine staza moraju biti broj.", "Greška", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-
-		if (Validation.isNumberNegative(Integer.parseInt(txtGodineStaza.getText().trim()))) {
-			JOptionPane.showMessageDialog(this, "Godine staza ne mogu biti negativne.", "Greška",
 					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
@@ -261,7 +220,7 @@ public class AddEditEmployeeDialog extends JDialog {
 			return false;
 		}
 
-		if (editE == null) {
+		if (editG == null) {
 			if (!Validation.isValidUsername(txtKorisnickoIme.getText().trim(), manager)) {
 				JOptionPane.showMessageDialog(this, "Korisnicko ime vec postoji.", "Greška", JOptionPane.ERROR_MESSAGE);
 				return false;
@@ -273,7 +232,7 @@ public class AddEditEmployeeDialog extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			AddEditEmployeeDialog dialog = new AddEditEmployeeDialog(new JFrame(), 0);
+			AddEditGuestDialog dialog = new AddEditGuestDialog(new JFrame(), 0);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {

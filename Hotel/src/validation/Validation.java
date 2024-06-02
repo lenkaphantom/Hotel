@@ -1,5 +1,12 @@
 package validation;
 
+import java.util.Map;
+
+import entity.Administrator;
+import entity.Employee;
+import entity.Guest;
+import manage.ManageHotel;
+
 public abstract class Validation {
 	public static boolean isStringEmpty(String text) {
 		return text.trim().isEmpty();
@@ -75,5 +82,31 @@ public abstract class Validation {
 			}
 		}
 		return false;
+	}
+	
+	public static boolean isValidUsername(String username, ManageHotel manager) {
+		if (username.isEmpty()) {
+			return false;
+		}
+		
+		for (Map.Entry<Integer, Employee> entry : manager.getEmployeesMan().getEmployees().entrySet()) {
+			if (entry.getValue().getUsername().equals(username)) {
+				return false;
+			}
+		}
+		
+		for (Map.Entry<Integer, Guest> entry : manager.getGuestsMan().getGuests().entrySet()) {
+			if (entry.getValue().getUsername().equals(username)) {
+				return false;
+			}
+		}
+		
+		for (Map.Entry<Integer, Administrator> entry : manager.getAdministratorsMan().getAdministrators().entrySet()) {
+			if (entry.getValue().getUsername().equals(username)) {
+				return false;
+			}
+		}
+		
+		return true;
 	}
 }

@@ -25,9 +25,9 @@ public abstract class Employee extends User {
 		super(firstName, lastName, gender, date, phone, address, username, password);
 		this.id = idCounter++;
 		this.qualification = qualification;
-		this.calculateSalary();
 		this.yearsOfExperience = yearsOfExperience;
 		this.type = type;
+		this.salary = this.calculateSalary();
 	}
 
 	// copy constructor
@@ -79,7 +79,7 @@ public abstract class Employee extends User {
 	}
 
 	// methods
-	public void calculateSalary() {
+	public double calculateSalary() {
 		int totalHoursPerWeek = 40;
 		int totalWeeksPerMonth = 4;
 		double salary = 0.0;
@@ -112,7 +112,7 @@ public abstract class Employee extends User {
 		} else {
 			salary = hourlyRate * totalHoursPerWeek * totalWeeksPerMonth * bonus;
 		}
-		this.setSalary(salary);
+		return salary;
 	}
 
 	@Override

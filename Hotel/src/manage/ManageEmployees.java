@@ -105,6 +105,8 @@ public class ManageEmployees {
 		if (yearsOfExperience != 0) {
 			employee.setYearsOfExperience(yearsOfExperience);
 		}
+		
+		employee.calculateSalary();
 	}
 
 	public void printEmployees() {
