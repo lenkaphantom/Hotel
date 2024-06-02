@@ -206,27 +206,90 @@ public class ManageHotel {
 		room.setRoomStatus(RoomStatus.FREE);
 	}
 
-	public void addRoomToReservation(int id) {
-		if (!this.reservationsMan.getReservations().containsKey(id)) {
-			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
-			return;
-		}
-
-		Reservation reservation = this.reservationsMan.getReservations().get(id);
-		Map<Integer, Room> rooms = this.roomsMan.getRooms();
-		for (Room room : rooms.values()) {
-			if (!this.roomsMan.isOccupied(room.getId(), reservation.getStartDate(), reservation.getEndDate())) {
-				if (room.getRoomType().equals(reservation.getRoomType())) {
-					room.setRoomStatus(RoomStatus.OCCUPIED);
-					reservation.setRoom(room);
-					reservation.setStatus(ReservationStatus.CONFIRMED);
-					room.setOccupiedDates(this);
-					return;
-				}
+//	public void addRoomToReservation(int id) {
+//		if (!this.reservationsMan.getReservations().containsKey(id)) {
+//			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
+//			return;
+//		}
+//
+//		Reservation reservation = this.reservationsMan.getReservations().get(id);
+//		Map<Integer, Room> rooms = this.roomsMan.getRooms();
+//		for (Room room : rooms.values()) {
+//			if (!this.roomsMan.isOccupied(room.getId(), reservation.getStartDate(), reservation.getEndDate())) {
+//				if (room.getRoomType().equals(reservation.getRoomType())) {
+//					room.setRoomStatus(RoomStatus.OCCUPIED);
+//					reservation.setRoom(room);
+//					reservation.setStatus(ReservationStatus.CONFIRMED);
+//					room.setOccupiedDates(this);
+//					return;
+//				}
+//			}
+//		}
+//		reservation.setStatus(ReservationStatus.DENIED);
+//	}
+	
+	public int numberOfAvailableRooms(RoomType roomType, LocalDate startDate, LocalDate endDate) {
+        Map<Integer, Room> rooms = this.roomsMan.getRooms();
+        int availableCount = 0;
+        for (Room room : rooms.values()) {
+            if (room.getRoomType().equals(roomType) && !this.roomsMan.isOccupied(room.getId(), startDate, endDate)) {
+                availableCount++;
+            }
+        }
+        return availableCount;
+    }
+	
+	public int numberOfReservations(RoomType roomType, LocalDate startDate, LocalDate endDate) {
+		int count = 0;
+		for (Reservation reservation : this.reservationsMan.getReservations().values()) {
+			if (reservation.getRoomType().equals(roomType) && reservation.getStartDate().equals(startDate)
+					&& reservation.getEndDate().equals(endDate)) {
+				count++;
 			}
 		}
-		reservation.setStatus(ReservationStatus.DENIED);
+		return count;	
 	}
+
+    public void checkAvailableRoom(int id) {
+        if (!this.reservationsMan.getReservations().containsKey(id)) {
+            System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
+            return;
+        }
+
+        Reservation reservation = this.reservationsMan.getReservations().get(id);
+        int availableRooms = numberOfAvailableRooms(reservation.getRoomType(), reservation.getStartDate(), reservation.getEndDate());
+        int reservations = numberOfReservations(reservation.getRoomType(), reservation.getStartDate(), reservation.getEndDate());
+        
+        if (availableRooms > reservations) {
+        	reservation.setStatus(ReservationStatus.CONFIRMED);
+        }
+        else {
+        	reservation.setStatus(ReservationStatus.DENIED);
+        }
+    }
+
+    public void assignRoomAtCheckIn(int id) {
+        if (!this.reservationsMan.getReservations().containsKey(id)) {
+            System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
+            return;
+        }
+
+        Reservation reservation = this.reservationsMan.getReservations().get(id);
+        if (reservation.getStatus() != ReservationStatus.CONFIRMED) {
+            System.out.println("Rezervacija sa id-jem " + id + " nije potvrđena.");
+            return;
+        }
+
+        Map<Integer, Room> rooms = this.roomsMan.getRooms();
+        for (Room room : rooms.values()) {
+            if (room.getRoomType().equals(reservation.getRoomType()) && !this.roomsMan.isOccupied(room.getId(), reservation.getStartDate(), reservation.getEndDate())) {
+                room.setRoomStatus(RoomStatus.OCCUPIED);
+                reservation.setRoom(room);
+                room.setOccupiedDates(this);
+                return;
+            }
+        }
+    }
 
 	public void calculatePrice(int id) {
 		if (!this.reservationsMan.getReservations().containsKey(id)) {

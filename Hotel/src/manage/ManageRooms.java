@@ -8,10 +8,8 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
-import entity.Guest;
 import entity.Room;
 import entity.RoomType;
-import enumeracije.Gender;
 import enumeracije.RoomStatus;
 
 public class ManageRooms {

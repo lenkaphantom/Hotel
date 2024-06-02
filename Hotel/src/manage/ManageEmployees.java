@@ -51,15 +51,15 @@ public class ManageEmployees {
 
 	// methods
 	public void addEmployee(String firstName, String lastName, Gender gender, LocalDate date, String phone,
-			String address, String username, String password, Qualifications qualification, double salary,
+			String address, String username, String password, Qualifications qualification,
 			int yearsOfExperience, Type type) {
 		if (type == Type.Receptionist) {
 			Receptionist receptionist = new Receptionist(firstName, lastName, gender, date, phone, address, username,
-					password, qualification, salary, yearsOfExperience, type);
+					password, qualification, yearsOfExperience, type);
 			this.employees.put(receptionist.getId(), receptionist);
 		} else if (type == Type.HouseKeeper) {
 			HouseKeeper houseKeeper = new HouseKeeper(firstName, lastName, gender, date, phone, address, username,
-					password, qualification, salary, yearsOfExperience, type);
+					password, qualification, yearsOfExperience, type);
 			this.employees.put(houseKeeper.getId(), houseKeeper);
 		}
 	}
@@ -69,8 +69,8 @@ public class ManageEmployees {
 		this.employees.remove(employee.getId());
 	}
 
-	public void changeEmployee(int id, String firstName, String lastName, String phone, String address, String username,
-			String password) {
+	public void changeEmployee(int id, String firstName, String lastName, Gender gender, String phone, String address,
+			String username, String password, Qualifications qualification, int yearsOfExperience) {
 		if (!this.employees.containsKey(id)) {
 			System.out.println("Zaposleni sa id-jem " + id + " ne postoji.");
 			return;
@@ -84,6 +84,9 @@ public class ManageEmployees {
 		if (lastName != null) {
 			employee.setLastName(lastName);
 		}
+		if (gender != null) {
+			employee.setGender(gender);
+		}
 		if (phone != null) {
 			employee.setPhone(phone);
 		}
@@ -95,6 +98,12 @@ public class ManageEmployees {
 		}
 		if (password != null) {
 			employee.setPassword(password);
+		}
+		if (qualification != null) {
+			employee.setQualification(qualification);
+		}
+		if (yearsOfExperience != 0) {
+			employee.setYearsOfExperience(yearsOfExperience);
 		}
 	}
 
@@ -110,10 +119,9 @@ public class ManageEmployees {
 			while ((line = reader.readLine()) != null) {
 				String[] parts = line.split(" \\| ");
 				this.addEmployee(parts[1], parts[2], Gender.valueOf(parts[3]), LocalDate.parse(parts[4]), parts[5],
-						parts[6], parts[7], parts[8], Qualifications.valueOf(parts[9]), Double.parseDouble(parts[10]),
+						parts[6], parts[7], parts[8], Qualifications.valueOf(parts[9]),
 						Integer.parseInt(parts[11]), Type.valueOf(parts[12]));
-				if (parts[12].equals("HouseKeeper") && parts.length > 13)
-                {
+				if (parts[12].equals("HouseKeeper") && parts.length > 13) {
 					HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(Integer.parseInt(parts[0]));
 					String[] data = parts[13].split(":");
 					String[] rooms = data[1].split(",");
@@ -121,7 +129,7 @@ public class ManageEmployees {
 						Room roomToAdd = manager.getRoomsMan().getRooms().get(Integer.parseInt(room));
 						houseKeeper.getRoomsToClean().put(LocalDate.parse(data[0]), roomToAdd);
 					}
-                }
+				}
 			}
 		} catch (IOException e) {
 			System.out.println("Greška prilikom čitanja iz fajla.");

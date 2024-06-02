@@ -19,9 +19,9 @@ public class Receptionist extends Employee {
 	}
 
 	public Receptionist(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
-			String username, String password, Qualifications qualification, double salary, int yearsOfExperience, Type type) {
-		super(firstName, lastName, gender, date, phone, address, username, password, qualification, salary,
-				yearsOfExperience, type);
+			String username, String password, Qualifications qualification, int yearsOfExperience, Type type) {
+		super(firstName, lastName, gender, date, phone, address, username, password, qualification, yearsOfExperience,
+				type);
 	}
 
 	// copy constructor
@@ -33,7 +33,7 @@ public class Receptionist extends Employee {
 	public Reservation getReservation() {
 		return this.reservation;
 	}
-	
+
 	// setters
 	public void setReservation(Reservation reservation) {
 		this.reservation = reservation;
@@ -43,7 +43,7 @@ public class Receptionist extends Employee {
 	public String toString() {
 		return super.toString();
 	}
-	
+
 	public String toStringFile() {
 		return super.toStringFile();
 	}

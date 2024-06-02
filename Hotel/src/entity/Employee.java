@@ -21,12 +21,11 @@ public abstract class Employee extends User {
 	}
 
 	public Employee(String firstName, String lastName, Gender gender, LocalDate date, String phone, String address,
-			String username, String password, Qualifications qualification, double salary, int yearsOfExperience,
-			Type type) {
+			String username, String password, Qualifications qualification, int yearsOfExperience, Type type) {
 		super(firstName, lastName, gender, date, phone, address, username, password);
 		this.id = idCounter++;
 		this.qualification = qualification;
-		this.salary = salary;
+		this.calculateSalary();
 		this.yearsOfExperience = yearsOfExperience;
 		this.type = type;
 	}
@@ -85,20 +84,33 @@ public abstract class Employee extends User {
 		int totalWeeksPerMonth = 4;
 		double salary = 0.0;
 		double index = 0.0;
-		if (this.qualification == Qualifications.NONE) {
+		double bonus = 0.0;
+		if (this.getQualification() == Qualifications.NONE) {
 			index = 1.0;
-		} else if (this.qualification == Qualifications.BASIC) {
+		} else if (this.getQualification() == Qualifications.BASIC) {
 			index = 1.5;
-		} else if (this.qualification == Qualifications.INTERMEDIATE) {
+		} else if (this.getQualification() == Qualifications.INTERMEDIATE) {
 			index = 2.0;
-		} else if (this.qualification == Qualifications.ADVANCED) {
+		} else if (this.getQualification() == Qualifications.ADVANCED) {
 			index = 2.5;
 		}
+		if (this.getYearsOfExperience() > 5) {
+			bonus = 1.0;
+		} else if (this.getYearsOfExperience() > 10) {
+			bonus = 1.5;
+		} else if (this.getYearsOfExperience() > 15) {
+			bonus = 2.0;
+		} else if (this.getYearsOfExperience() > 20) {
+			bonus = 2.5;
+		} else if (this.getYearsOfExperience() > 25) {
+			bonus = 3.0;
+		}
+
 		double hourlyRate = 150.0 * index;
-		if (this.type == Type.Receptionist) {
-			salary = 2 * hourlyRate * totalHoursPerWeek * totalWeeksPerMonth;
+		if (this.getType() == Type.Receptionist) {
+			salary = 2 * hourlyRate * totalHoursPerWeek * totalWeeksPerMonth * bonus;
 		} else {
-			salary = hourlyRate * totalHoursPerWeek * totalWeeksPerMonth;
+			salary = hourlyRate * totalHoursPerWeek * totalWeeksPerMonth * bonus;
 		}
 		this.setSalary(salary);
 	}
