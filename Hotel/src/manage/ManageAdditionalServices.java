@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.AdditionalServices;
@@ -20,6 +22,14 @@ public class ManageAdditionalServices {
 	// getters
 	public Map<Integer, AdditionalServices> getAdditionalServices() {
 		return this.additionalServices;
+	}
+	
+	public List<String> getAdditionalServicesList() {
+		List<String> services = new ArrayList<>();
+		for (AdditionalServices additionalService : this.additionalServices.values()) {
+			services.add(additionalService.getService());
+		}
+		return services;
 	}
 
 	// methods
@@ -74,5 +84,18 @@ public class ManageAdditionalServices {
 		} catch (IOException e) {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
+	}
+	
+	public List<AdditionalServices> getAdditionalServicesFromNames(List<String> names) {
+		List<AdditionalServices> services = new ArrayList<>();
+		for (String name : names) {
+			for (AdditionalServices service : this.additionalServices.values()) {
+				if (service.getService().equals(name)) {
+					services.add(service);
+					break;
+				}
+			}
+		}
+		return services;
 	}
 }

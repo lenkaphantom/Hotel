@@ -11,13 +11,10 @@ import java.util.List;
 import java.util.Map;
 
 import entity.AdditionalServices;
-import entity.Guest;
-import entity.Prices;
 import entity.Reservation;
 import entity.Room;
 import entity.RoomType;
 import enumeracije.ReservationStatus;
-import enumeracije.RoomStatus;
 
 public class ManageReservations {
 	private Map<Integer, Reservation> reservations;

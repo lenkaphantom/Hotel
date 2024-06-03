@@ -99,4 +99,13 @@ public class ManageGuests {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
+	
+	public Guest getGuestFromUsername(String username) {
+		for (Guest guest : this.guests.values()) {
+			if (guest.getUsername().equals(username)) {
+				return guest;
+			}
+		}
+		return null;
+	}
 }

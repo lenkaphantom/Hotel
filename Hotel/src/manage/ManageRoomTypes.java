@@ -4,13 +4,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import entity.Guest;
 import entity.RoomType;
-import enumeracije.Gender;
 import enumeracije.TypeOfRoom;
 
 public class ManageRoomTypes {
@@ -24,6 +23,14 @@ public class ManageRoomTypes {
 	// getters
 	public Map<Integer, RoomType> getRoomTypes() {
 		return this.roomTypes;
+	}
+	
+	public List<TypeOfRoom> getRoomTypesList() {
+		List<TypeOfRoom> types = new ArrayList<>();
+		for (RoomType roomType : this.roomTypes.values()) {
+			types.add(roomType.getType());
+		}
+		return types;
 	}
 
 	// methods
@@ -81,5 +88,14 @@ public class ManageRoomTypes {
 		} catch (IOException e) {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
+	}
+	
+	public RoomType getRoomTypeFromType(String type) {
+		for (RoomType roomType : this.roomTypes.values()) {
+			if (roomType.getType().toString().equals(type)) {
+				return roomType;
+			}
+		}
+		return null;
 	}
 }

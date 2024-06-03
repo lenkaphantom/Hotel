@@ -28,9 +28,11 @@ import javax.swing.table.TableRowSorter;
 import manage.ManageHotel;
 import model.EmployeeModel;
 import model.GuestModel;
+import model.RoomTypeModel;
 import net.miginfocom.swing.MigLayout;
 import view.addedit.AddEditEmployeeDialog;
 import view.addedit.AddEditGuestDialog;
+import view.addedit.AddEditRoomTypeDialog;
 
 public class AdministratorFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -40,12 +42,18 @@ public class AdministratorFrame extends JFrame {
 	private static final Color FOREGROUND_COLOR = new Color(102, 0, 34);
 
 	private JPanel contentPane;
+
 	private JTable employeeTable;
 	private JTable guestTable;
+	private JTable roomTypeTable;
+
 	private JTextField tfSearchEmployee;
 	private JTextField tfSearchGuest;
+	private JTextField tfSearchRoomType;
+
 	private TableRowSorter<AbstractTableModel> employeeTableSorter;
 	private TableRowSorter<AbstractTableModel> guestTableSorter;
+	private TableRowSorter<AbstractTableModel> roomTypeTableSorter;
 
 	private JButton addBtnEmployee = new JButton();
 	private JButton editBtnEmployee = new JButton();
@@ -54,6 +62,22 @@ public class AdministratorFrame extends JFrame {
 	private JButton addBtnGuest = new JButton();
 	private JButton editBtnGuest = new JButton();
 	private JButton removeBtnGuest = new JButton();
+
+	private JButton addBtnRoomType = new JButton();
+	private JButton editBtnRoomType = new JButton();
+	private JButton removeBtnRoomType = new JButton();
+
+	private JButton addBtnRoom = new JButton();
+	private JButton editBtnRoom = new JButton();
+	private JButton removeBtnRoom = new JButton();
+
+	private JButton addBtnAdditionalService = new JButton();
+	private JButton editBtnAdditionalService = new JButton();
+	private JButton removeBtnAdditionalService = new JButton();
+
+	private JButton addBtnPrice = new JButton();
+	private JButton editBtnPrice = new JButton();
+	private JButton removeBtnPrice = new JButton();
 
 	Image img = new ImageIcon("img/add.png").getImage();
 	Image newimg = img.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
@@ -114,6 +138,17 @@ public class AdministratorFrame extends JFrame {
 
 		JPanel guestPanel = createPanelWithTable(guestTable, addBtnGuest, editBtnGuest, removeBtnGuest, false);
 		tabbedPane.addTab("Gosti", null, guestPanel, null);
+
+		addBtnRoomType.setIcon(new ImageIcon(newimg));
+		editBtnRoomType.setIcon(new ImageIcon(newimg1));
+		removeBtnRoomType.setIcon(new ImageIcon(newimg2));
+
+		roomTypeTable = new JTable(new RoomTypeModel());
+		roomTypeTableSorter = new TableRowSorter<>((AbstractTableModel) roomTypeTable.getModel());
+		roomTypeTable.setRowSorter(roomTypeTableSorter);
+
+		JPanel roomTypePanel = createRoomTypePanel(roomTypeTable, addBtnRoomType, editBtnRoomType, removeBtnRoomType);
+		tabbedPane.addTab("Tipovi soba", null, roomTypePanel, null);
 
 		initActions();
 	}
@@ -190,103 +225,220 @@ public class AdministratorFrame extends JFrame {
 		return panel;
 	}
 
+	private JPanel createRoomTypePanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		toolBar.add(addButton);
+		toolBar.add(editButton);
+		toolBar.add(removeButton);
+		panel.add(toolBar, "flowx,cell 0 0");
+
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setForeground(FOREGROUND_COLOR);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPane, "cell 0 1 1 2,grow");
+
+		int[] columnWidths = new int[] { 50, 150, 100 };
+		setTableColumnWidths(table, columnWidths);
+
+		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		searchPanel.setBackground(BACKGROUND_COLOR);
+		JTextField searchField = new JTextField(20);
+		searchPanel.add(new JLabel("Pretraga:"));
+		searchPanel.add(searchField);
+
+		panel.add(searchPanel, "cell 0 0, grow");
+
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			private void filterTable() {
+				String text = searchField.getText();
+				if (text.trim().length() == 0) {
+					roomTypeTableSorter.setRowFilter(null);
+				} else {
+					roomTypeTableSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text.trim()));
+				}
+			}
+		});
+
+		this.tfSearchRoomType = searchField;
+		return panel;
+	}
+
 	private void setTableColumnWidths(JTable table, int[] columnWidths) {
-        for (int i = 0; i < columnWidths.length; i++) {
-            table.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
-        }
-    }
+		for (int i = 0; i < columnWidths.length; i++) {
+			table.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
+		}
+	}
 
 	private void initActions() {
-        addBtnEmployee.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this, 0);
-                addEditEmployeeDialog.setVisible(true);
-                refreshEmployeeTable();
-                manager.getEmployeesMan().writeEmployees("data/employees.csv");;
-            }
-        });
+		addBtnEmployee.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this, 0);
+				addEditEmployeeDialog.setVisible(true);
+				refreshEmployeeTable();
+				manager.getEmployeesMan().writeEmployees("data/employees.csv");
+				;
+			}
+		});
 
-        editBtnEmployee.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = employeeTable.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
-                } else {
-                    AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this, row + 1);
-                    addEditEmployeeDialog.setVisible(true);
-                    refreshEmployeeTable();
-                    manager.getEmployeesMan().writeEmployees("data/employees.csv");
-                }
-            }
-        });
+		editBtnEmployee.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = employeeTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this,
+							row + 1);
+					addEditEmployeeDialog.setVisible(true);
+					refreshEmployeeTable();
+					manager.getEmployeesMan().writeEmployees("data/employees.csv");
+				}
+			}
+		});
 
-        removeBtnEmployee.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = employeeTable.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
-                } else {
-                	int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete zaposlenog?", "Brisanje zaposlenog", JOptionPane.YES_NO_OPTION);
-                	if (izbor == JOptionPane.YES_OPTION) {
-                        manager.getEmployeesMan().removeEmployee(row + 1);
-                        manager.getEmployeesMan().writeEmployees("data/employees.csv");
+		removeBtnEmployee.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = employeeTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int izbor = JOptionPane.showConfirmDialog(null,
+							"Da li ste sigurni da zelite da obrisete zaposlenog?", "Brisanje zaposlenog",
+							JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getEmployeesMan().removeEmployee(row + 1);
+						manager.getEmployeesMan().writeEmployees("data/employees.csv");
 					}
 					refreshEmployeeTable();
-                }
-            }
-        });
+				}
+			}
+		});
 
-        addBtnGuest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, 0);
-                addEditGuestDialog.setVisible(true);
-                refreshGuestTable();
-                manager.getGuestsMan().writeGuests("data/guests.csv");
-            }
-        });
+		addBtnGuest.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, 0);
+				addEditGuestDialog.setVisible(true);
+				refreshGuestTable();
+				manager.getGuestsMan().writeGuests("data/guests.csv");
+			}
+		});
 
-        editBtnGuest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = guestTable.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
-                } else {
-                	AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, row + 1);
-                	addEditGuestDialog.setVisible(true);
-                    refreshGuestTable();
-                    manager.getGuestsMan().writeGuests("data/guests.csv");
-                }
-            }
-        });
+		editBtnGuest.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = guestTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, row + 1);
+					addEditGuestDialog.setVisible(true);
+					refreshGuestTable();
+					manager.getGuestsMan().writeGuests("data/guests.csv");
+				}
+			}
+		});
 
-        removeBtnGuest.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int row = guestTable.getSelectedRow();
-                if (row == -1) {
-                    JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska", JOptionPane.WARNING_MESSAGE);
-                } else {
-                	int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete gosta?", "Brisanje gosta", JOptionPane.YES_NO_OPTION);
-                	if (izbor == JOptionPane.YES_OPTION) {
-                        manager.getGuestsMan().removeGuest(row + 1);
-                        manager.getGuestsMan().writeGuests("data/guests.csv");
-                	}
-                    refreshGuestTable();
-                }
-            }
-        });
-    }
+		removeBtnGuest.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = guestTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete gosta?",
+							"Brisanje gosta", JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getGuestsMan().removeGuest(row + 1);
+						manager.getGuestsMan().writeGuests("data/guests.csv");
+					}
+					refreshGuestTable();
+				}
+			}
+		});
 
-    public void refreshEmployeeTable() {
-        ((AbstractTableModel) employeeTable.getModel()).fireTableDataChanged();
-    }
+		addBtnRoomType.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditRoomTypeDialog addEditRoomTypeDialog = new AddEditRoomTypeDialog(AdministratorFrame.this, 0);
+				addEditRoomTypeDialog.setVisible(true);
+				refreshRoomTypeTable();
+				manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
+			}
+		});
 
-    public void refreshGuestTable() {
-        ((AbstractTableModel) guestTable.getModel()).fireTableDataChanged();
-    }
+		editBtnRoomType.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = roomTypeTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditRoomTypeDialog addEditRoomTypeDialog = new AddEditRoomTypeDialog(AdministratorFrame.this,
+							row + 1);
+					addEditRoomTypeDialog.setVisible(true);
+					refreshRoomTypeTable();
+					manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
+				}
+			}
+		});
+		
+		removeBtnRoomType.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = roomTypeTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete tip sobe?",
+							"Brisanje tipa sobe", JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getRoomTypesMan().removeRoomType(row + 1);
+						manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
+					}
+					refreshRoomTypeTable();
+				}
+			}
+		});
+	}
+
+	public void refreshEmployeeTable() {
+		((AbstractTableModel) employeeTable.getModel()).fireTableDataChanged();
+	}
+
+	public void refreshGuestTable() {
+		((AbstractTableModel) guestTable.getModel()).fireTableDataChanged();
+	}
+
+	public void refreshRoomTypeTable() {
+		((AbstractTableModel) roomTypeTable.getModel()).fireTableDataChanged();
+	}
 }

@@ -92,7 +92,7 @@ public class MainFrame extends JFrame {
 				int userType = validateLogin(username, password);
 				if (userType != -1) {
 					loginDialog.dispose();
-					openUserFrame(userType);
+					openUserFrame(userType, username);
 				} else {
 					JOptionPane.showMessageDialog(loginDialog, "Pogresno korisnicko ime ili lozinka.", "Greska",
 							JOptionPane.ERROR_MESSAGE);
@@ -145,11 +145,11 @@ public class MainFrame extends JFrame {
 		return -1;
 	}
 
-	private void openUserFrame(int userType) {
+	private void openUserFrame(int userType, String username) {
 		JFrame userFrame = null;
 		switch (userType) {
 		case 1:
-			userFrame = new GuestFrame();
+			userFrame = new GuestFrame(username);
 			break;
 		case 2:
 			userFrame = new AdministratorFrame();
