@@ -100,4 +100,13 @@ public class ManageRoomTypes {
 		}
 		return null;
 	}
+	
+	public RoomType getRoomTypeFromTypeAndBeds(TypeOfRoom type, String beds) {
+		for (RoomType roomType : this.roomTypes.values()) {
+			if (roomType.getType().equals(type) && roomType.getBeds().equals(beds)) {
+				return roomType;
+			}
+		}
+		return null;
+	}
 }

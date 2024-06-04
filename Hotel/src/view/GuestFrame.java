@@ -106,7 +106,7 @@ public class GuestFrame extends JFrame {
                 int column = reservationTable.columnAtPoint(e.getPoint());
 
                 if (column == 4) {
-                    reservationTable.editCellAt(row, column);
+                    reservationTable.editCellAt(row, column); 
                 }
             }
         });
@@ -185,7 +185,7 @@ public class GuestFrame extends JFrame {
         addBtnReservation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(GuestFrame.this, 0);
+                AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(GuestFrame.this, 0, guestUsername);
                 addEditReservationDialog.setVisible(true);
                 refreshReservationTable();
                 manager.getReservationsMan().writeReservations("data/reservations.csv");
