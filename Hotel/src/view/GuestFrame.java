@@ -29,6 +29,7 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import controler.ReservationControler;
 import enumeracije.ReservationStatus;
 import manage.ManageHotel;
 import model.ReservationModel;
@@ -40,6 +41,7 @@ import view.comboBoxRenderer.AdditionalServicesEditor;
 public class GuestFrame extends JFrame {
     private static final long serialVersionUID = 1L;
     private ManageHotel manager = ManageHotel.getInstance();
+    private ReservationControler controler;
 
     private static final Color BACKGROUND_COLOR = new Color(214, 204, 194);
     private static final Color FOREGROUND_COLOR = new Color(102, 0, 34);
@@ -89,6 +91,7 @@ public class GuestFrame extends JFrame {
 
         List<String> additionalServicesList = manager.getAdditionalServicesMan().getAdditionalServicesList();
         ReservationModel reservationModel = new ReservationModel(guestUsername);
+        controler = reservationModel.getControler();
 
         reservationTable = new JTable(reservationModel);
         reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
@@ -185,7 +188,7 @@ public class GuestFrame extends JFrame {
         addBtnReservation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(GuestFrame.this, 0, guestUsername);
+                AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(GuestFrame.this, 0, controler);
                 addEditReservationDialog.setVisible(true);
                 refreshReservationTable();
                 manager.getReservationsMan().writeReservations("data/reservations.csv");

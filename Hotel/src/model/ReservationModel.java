@@ -16,7 +16,10 @@ public class ReservationModel extends AbstractTableModel {
 
 	public ReservationModel(String username) {
 		controler = new ReservationControler(username);
-		System.out.println(controler.getReservations());
+	}
+	
+	public ReservationControler getControler() {
+		return this.controler;
 	}
 
 	@Override
@@ -40,7 +43,7 @@ public class ReservationModel extends AbstractTableModel {
 		case 0:
 			return reservation.getId();
 		case 1:
-			if (reservation.getRoom() != null && reservation.getRoom().getRoomType() != null)
+			if (reservation.getRoomType() != null)
 				return reservation.getRoomType().getType();
 			return null;
 		case 2:

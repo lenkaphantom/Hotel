@@ -17,9 +17,13 @@ public class ReservationControler {
 	public ReservationControler(String username) {
 		this.username = username;
 		if (username == "")
-			this.reservations = manager.getReservationsMan().getReservations();
+			this.reservations.putAll(manager.getReservationsMan().getReservations());
 		else
 			this.setReservations();
+	}
+	
+	public String getUsername() {
+		return this.username;
 	}
 	
 	public void setReservations() {
@@ -41,4 +45,16 @@ public class ReservationControler {
 		}
 		return additionalServices;
 	}
+	
+	public void updateReservations() {
+	    if (username.isEmpty()) {
+	        this.reservations.clear();
+	        this.reservations.putAll(manager.getReservationsMan().getReservations());
+	    } else {
+	        this.reservations.clear();
+			this.setReservations();
+	    }
+	    System.out.println(reservations);
+	}
+
 }

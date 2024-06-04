@@ -34,23 +34,22 @@ import view.GuestFrame;
 public class AddEditReservationDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private ManageHotel manager = ManageHotel.getInstance();
-	private ReservationControler controler;
 	private Reservation editR;
+	private ReservationControler controler;
 	private JFrame parent;
 
 	private JComboBox<TypeOfRoom> cbTipSobe;
 	private JComboBox<String> cbRasporedKreveta;
 	private JDateChooser dcCheckIn;
 	private JDateChooser dcCheckOut;
-	private JList<String> listAdditionalServices;
 	
 	private Guest guest;
 
-	public AddEditReservationDialog(JFrame parent, int id, String guestUsername) {
+	public AddEditReservationDialog(JFrame parent, int id, ReservationControler controler) {
 		super(parent, true);
 		this.parent = parent;
-		this.controler = new ReservationControler(guestUsername);
-		this.guest = manager.getGuestsMan().getGuestFromUsername(guestUsername);
+		this.controler = controler;
+		this.guest = manager.getGuestsMan().getGuestFromUsername(controler.getUsername());
 
 		if (id != 0) {
 			setTitle("Izmena rezervacije");
@@ -156,12 +155,14 @@ public class AddEditReservationDialog extends JDialog {
 						manager.getReservationsMan().changeReservation(editR.getId(), editR.getRoomType(),
 								editR.getAdditionalServices(), editR.getStatus(), editR.getRoom());
 						manager.calculatePrice(editR.getId());
+						controler.updateReservations();
 					} else {
 						Reservation newReservation = new Reservation(roomType, localCheckInDate, localCheckOutDate,
 								additionalServices, ReservationStatus.WAITING);
 						newReservation.setGuest(guest.getId(), manager);
 						manager.getReservationsMan().addReservation(newReservation);
 						manager.calculatePrice(newReservation.getId());
+						controler.updateReservations();
 					}
 					((GuestFrame) parent).refreshReservationTable();
 					AddEditReservationDialog.this.dispose();
@@ -188,7 +189,7 @@ public class AddEditReservationDialog extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			AddEditReservationDialog dialog = new AddEditReservationDialog(new JFrame(), 0, "");
+			AddEditReservationDialog dialog = new AddEditReservationDialog(new JFrame(), 0, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {

@@ -184,7 +184,7 @@ public class ReceptionistFrame extends JFrame {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(ReceptionistFrame.this,
-						0, "");
+						0, null);
 				addEditReservationDialog.setVisible(true);
 				refreshReservationTable();
 				manager.getReservationsMan().writeReservations("data/reservations.csv");
