@@ -16,7 +16,10 @@ public class ReservationControler {
 	
 	public ReservationControler(String username) {
 		this.username = username;
-		this.setReservations();
+		if (username == "")
+			this.reservations = manager.getReservationsMan().getReservations();
+		else
+			this.setReservations();
 	}
 	
 	public void setReservations() {

@@ -4,6 +4,7 @@ import javax.swing.table.AbstractTableModel;
 
 import controler.ReservationControler;
 import entity.Reservation;
+import manage.ManageHotel;
 
 public class ReservationModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
@@ -76,5 +77,10 @@ public class ReservationModel extends AbstractTableModel {
 		if (this.getValueAt(0, columnIndex) == null)
 			return Object.class;
 		return this.getValueAt(0, columnIndex).getClass();
+	}
+	
+	@Override
+	public boolean isCellEditable(int row, int column) {
+	    return column == 4;
 	}
 }

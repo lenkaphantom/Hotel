@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -96,6 +98,18 @@ public class GuestFrame extends JFrame {
         TableCellEditor additionalServicesEditor = new AdditionalServicesEditor(additionalServicesList.toArray(new String[0]));
         reservationTable.getColumnModel().getColumn(4).setCellRenderer(additionalServicesRenderer);
         reservationTable.getColumnModel().getColumn(4).setCellEditor(additionalServicesEditor);
+
+        reservationTable.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                int row = reservationTable.rowAtPoint(e.getPoint());
+                int column = reservationTable.columnAtPoint(e.getPoint());
+
+                if (column == 4) {
+                    reservationTable.editCellAt(row, column);
+                }
+            }
+        });
 
         JPanel reservationPanel = createPanelWithTable(reservationTable, addBtnReservation, removeBtnReservation);
         contentPane.add(reservationPanel, "cell 0 0,grow");
@@ -190,7 +204,7 @@ public class GuestFrame extends JFrame {
                             "Da li ste sigurni da zelite da otkazete rezervaciju?", "Otkazivanje rezervacije",
                             JOptionPane.YES_NO_OPTION);
                     if (izbor == JOptionPane.YES_OPTION) {
-                        manager.getReservationsMan().getReservations().get(row).setStatus(ReservationStatus.CANCELLED);
+                        manager.getReservationsMan().getReservations().get(reservationTable.getValueAt(row, 0)).setStatus(ReservationStatus.CANCELLED);
                         refreshReservationTable();
                         manager.getReservationsMan().writeReservations("data/reservations.csv");
                     }
