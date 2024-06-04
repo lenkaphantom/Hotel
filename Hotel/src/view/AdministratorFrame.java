@@ -169,6 +169,7 @@ public class AdministratorFrame extends JFrame {
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		panel.add(scrollPane, "cell 0 1 1 2,grow");
 
 		int[] columnWidths = isEmployee ? new int[] { 50, 100, 100, 50, 150, 100, 150, 150, 100, 100, 100, 100, 150 }

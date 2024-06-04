@@ -25,10 +25,12 @@ public class ManageRoomTypes {
 		return this.roomTypes;
 	}
 	
-	public List<TypeOfRoom> getRoomTypesList() {
-		List<TypeOfRoom> types = new ArrayList<>();
+	public String[] getRoomTypesList() {
+		String[] types = new String[this.roomTypes.size()];
+		int i = 0;
 		for (RoomType roomType : this.roomTypes.values()) {
-			types.add(roomType.getType());
+			types[i] = roomType.getType().toString();
+			i++;
 		}
 		return types;
 	}

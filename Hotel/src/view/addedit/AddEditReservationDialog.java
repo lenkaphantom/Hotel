@@ -60,7 +60,7 @@ public class AddEditReservationDialog extends JDialog {
 
 		JLabel lblRoomType = new JLabel("Room Type");
 		add(lblRoomType);
-		cbRoomType = new JComboBox<>(manager.getRoomTypesMan().getRoomTypesList().toArray(new String[0]));
+		cbRoomType = new JComboBox<>(manager.getRoomTypesMan().getRoomTypesList());
 		add(cbRoomType, "growx");
 
 		JLabel lblCheckIn = new JLabel("Check-in Date");

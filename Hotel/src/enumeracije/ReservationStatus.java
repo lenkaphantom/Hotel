@@ -1,5 +1,5 @@
 package enumeracije;
 
 public enum ReservationStatus {
-	WAITING, CONFIRMED, CANCELLED, DENIED
+	WAITING, CONFIRMED, CANCELLED, DENIED, EXPIRED
 }
