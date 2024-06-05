@@ -30,6 +30,7 @@ import enumeracije.TypeOfRoom;
 import manage.ManageHotel;
 import net.miginfocom.swing.MigLayout;
 import view.GuestFrame;
+import view.ReceptionistFrame;
 
 public class AddEditReservationDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -42,7 +43,8 @@ public class AddEditReservationDialog extends JDialog {
 	private JComboBox<String> cbRasporedKreveta;
 	private JDateChooser dcCheckIn;
 	private JDateChooser dcCheckOut;
-	
+	private JList<String> listAdditionalServices;
+
 	private Guest guest;
 
 	public AddEditReservationDialog(JFrame parent, int id, ReservationControler controler) {
@@ -71,32 +73,32 @@ public class AddEditReservationDialog extends JDialog {
 		setLayout(layout);
 
 		cbTipSobe = new JComboBox<>(TypeOfRoom.values());
-	    cbRasporedKreveta = new JComboBox<>();
+		cbRasporedKreveta = new JComboBox<>();
 
-	    cbTipSobe.addActionListener(e -> {
-	        TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
-	        String[] bedLayouts = selectedType.getBedLayouts();
-	        cbRasporedKreveta.removeAllItems();
-	        for (String layoutB : bedLayouts) {
-	            cbRasporedKreveta.addItem(layoutB);
-	        }
-	        if (cbRasporedKreveta.getItemCount() > 0) {
-	            cbRasporedKreveta.setSelectedIndex(0);
-	        }
-	    });
-	    add(cbTipSobe, "growx");
+		cbTipSobe.addActionListener(e -> {
+			TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
+			String[] bedLayouts = selectedType.getBedLayouts();
+			cbRasporedKreveta.removeAllItems();
+			for (String layoutB : bedLayouts) {
+				cbRasporedKreveta.addItem(layoutB);
+			}
+			if (cbRasporedKreveta.getItemCount() > 0) {
+				cbRasporedKreveta.setSelectedIndex(0);
+			}
+		});
+		add(cbTipSobe, "growx");
 
-	    if (cbTipSobe.getItemCount() > 0) {
-	        cbTipSobe.setSelectedIndex(0);
-	    }
-	    
-	    JLabel lblTipSobe = new JLabel("Tip sobe");
-	    add(lblTipSobe);
-	    add(cbTipSobe, "growx");
+		if (cbTipSobe.getItemCount() > 0) {
+			cbTipSobe.setSelectedIndex(0);
+		}
 
-	    JLabel lblRasporedKreveta = new JLabel("Raspored kreveta");
-	    add(lblRasporedKreveta);
-	    add(cbRasporedKreveta, "growx");
+		JLabel lblTipSobe = new JLabel("Tip sobe");
+		add(lblTipSobe);
+		add(cbTipSobe, "growx");
+
+		JLabel lblRasporedKreveta = new JLabel("Raspored kreveta");
+		add(lblRasporedKreveta);
+		add(cbRasporedKreveta, "growx");
 
 		JLabel lblCheckIn = new JLabel("Check-in datum");
 		add(lblCheckIn);
@@ -114,7 +116,7 @@ public class AddEditReservationDialog extends JDialog {
 		for (String service : manager.getAdditionalServicesMan().getAdditionalServicesList()) {
 			model.addElement(service);
 		}
-		JList<String> listAdditionalServices = new JList<>(model);
+		listAdditionalServices = new JList<>(model);
 		listAdditionalServices.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 		JScrollPane scrollPane = new JScrollPane(listAdditionalServices);
 		add(scrollPane, "span, growx");
@@ -126,6 +128,14 @@ public class AddEditReservationDialog extends JDialog {
 		add(btnOK);
 
 		if (editR != null) {
+			cbTipSobe.setSelectedItem(editR.getRoomType().getType());
+			cbTipSobe.setEnabled(false);
+			cbRasporedKreveta.setSelectedItem(editR.getRoomType().getBeds());
+			cbRasporedKreveta.setEnabled(false);
+			dcCheckIn.setDate(Date.from(editR.getStartDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			dcCheckIn.setEnabled(false);
+			dcCheckOut.setDate(Date.from(editR.getEndDate().atStartOfDay(ZoneId.systemDefault()).toInstant()));
+			dcCheckOut.setEnabled(false);
 			List<String> additionalServices = manager.getAdditionalServicesList(editR.getId());
 			int[] selectedIndices = additionalServices.stream().mapToInt(service -> model.indexOf(service)).toArray();
 			listAdditionalServices.setSelectedIndices(selectedIndices);
@@ -135,28 +145,25 @@ public class AddEditReservationDialog extends JDialog {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (validateFields()) {
-					TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
-					String bedLayout = (String) cbRasporedKreveta.getSelectedItem();
-					Date checkInDate = dcCheckIn.getDate();
-					Date checkOutDate = dcCheckOut.getDate();
 					List<String> selectedServices = listAdditionalServices.getSelectedValuesList();
 					List<AdditionalServices> additionalServices = manager.getAdditionalServicesMan()
 							.getAdditionalServicesFromNames(selectedServices);
 
-					LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-					LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-					RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType, bedLayout);
-
 					if (editR != null) {
-						editR.setRoomType(roomType);
-						editR.setStartDate(localCheckInDate);
-						editR.setEndDate(localCheckOutDate);
 						editR.setAdditionalServices(additionalServices);
 						manager.getReservationsMan().changeReservation(editR.getId(), editR.getRoomType(),
 								editR.getAdditionalServices(), editR.getStatus(), editR.getRoom());
 						manager.calculatePrice(editR.getId());
 						controler.updateReservations();
 					} else {
+						TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
+						String bedLayout = (String) cbRasporedKreveta.getSelectedItem();
+						Date checkInDate = dcCheckIn.getDate();
+						Date checkOutDate = dcCheckOut.getDate();
+						LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+						RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType, bedLayout);
+
 						Reservation newReservation = new Reservation(roomType, localCheckInDate, localCheckOutDate,
 								additionalServices, ReservationStatus.WAITING);
 						newReservation.setGuest(guest.getId(), manager);
@@ -164,7 +171,10 @@ public class AddEditReservationDialog extends JDialog {
 						manager.calculatePrice(newReservation.getId());
 						controler.updateReservations();
 					}
-					((GuestFrame) parent).refreshReservationTable();
+					if (parent instanceof GuestFrame)
+						((GuestFrame) parent).refreshReservationTable();
+					else
+						((ReceptionistFrame) parent).refreshReservationTable();
 					AddEditReservationDialog.this.dispose();
 				}
 			}

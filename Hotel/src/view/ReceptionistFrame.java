@@ -3,7 +3,6 @@ package view;
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -29,6 +28,8 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import controler.ReservationControler;
+import entity.Reservation;
 import enumeracije.ReservationStatus;
 import manage.ManageHotel;
 import model.ReservationModel;
@@ -40,6 +41,7 @@ import view.comboBoxRenderer.AdditionalServicesEditor;
 public class ReceptionistFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ManageHotel manager = ManageHotel.getInstance();
+	private ReservationControler controler;
 
 	private static final Color BACKGROUND_COLOR = new Color(214, 204, 194);
 	private static final Color FOREGROUND_COLOR = new Color(102, 0, 34);
@@ -48,14 +50,9 @@ public class ReceptionistFrame extends JFrame {
 	private JTable reservationTable;
 	private JTextField tfSearchReservation;
 	private TableRowSorter<AbstractTableModel> reservationTableSorter;
-	private JButton addBtnReservation = new JButton();
-	private JButton removeBtnReservation = new JButton();
-
-	Image img = new ImageIcon("img/add.png").getImage();
-	Image newimg = img.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
-
-	Image img2 = new ImageIcon("img/remove.png").getImage();
-	Image newimg2 = img2.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
+	private JButton confirmBtn = new JButton();
+	private JButton checkInBtn = new JButton();
+	private JButton checkOutBtn = new JButton();
 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
@@ -81,11 +78,13 @@ public class ReceptionistFrame extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(new MigLayout("", "[grow]", "[grow]"));
 
-		addBtnReservation.setIcon(new ImageIcon(newimg));
-		removeBtnReservation.setIcon(new ImageIcon(newimg2));
+		confirmBtn.setText("Potvrdi");
+		checkInBtn.setText("Check in");
+		checkOutBtn.setText("Check out");
 
 		List<String> additionalServicesList = manager.getAdditionalServicesMan().getAdditionalServicesList();
 		ReservationModel reservationModel = new ReservationModel("");
+		controler = reservationModel.getControler();
 
 		reservationTable = new JTable(reservationModel);
 		reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
@@ -109,19 +108,21 @@ public class ReceptionistFrame extends JFrame {
 			}
 		});
 
-		JPanel reservationPanel = createPanelWithTable(reservationTable, addBtnReservation, removeBtnReservation);
+		JPanel reservationPanel = createPanelWithTable(reservationTable, confirmBtn, checkInBtn, checkOutBtn);
 		contentPane.add(reservationPanel, "cell 0 0,grow");
 
 		initActions();
 	}
 
-	private JPanel createPanelWithTable(JTable table, JButton addButton, JButton removeButton) {
+	private JPanel createPanelWithTable(JTable table, JButton confirmButton, JButton checkInButton,
+			JButton checkOutButton) {
 		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
-		toolBar.add(addButton);
-		toolBar.add(removeButton);
+		toolBar.add(confirmButton);
+		toolBar.add(checkInButton);
+		toolBar.add(checkOutButton);
 		panel.add(toolBar, "flowx,cell 0 0");
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -180,18 +181,7 @@ public class ReceptionistFrame extends JFrame {
 	}
 
 	private void initActions() {
-		addBtnReservation.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(ReceptionistFrame.this,
-						0, null);
-				addEditReservationDialog.setVisible(true);
-				refreshReservationTable();
-				manager.getReservationsMan().writeReservations("data/reservations.csv");
-			}
-		});
-
-		removeBtnReservation.addActionListener(new ActionListener() {
+		confirmBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int row = reservationTable.getSelectedRow();
@@ -199,15 +189,48 @@ public class ReceptionistFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
-					int izbor = JOptionPane.showConfirmDialog(null,
-							"Da li ste sigurni da zelite da otkazete rezervaciju?", "Otkazivanje rezervacije",
-							JOptionPane.YES_NO_OPTION);
-					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getReservationsMan().getReservations().get(reservationTable.getValueAt(row, 0))
-								.setStatus(ReservationStatus.CANCELLED);
+					Reservation reservation = manager.getReservationsMan().getReservations().get(row + 1);
+					if (reservation.getStatus().equals(ReservationStatus.WAITING)) {
+						manager.checkAvailableRoom(reservation.getId());
 						refreshReservationTable();
 						manager.getReservationsMan().writeReservations("data/reservations.csv");
+					} else {
+						JOptionPane.showMessageDialog(null, "Rezervacija je vec obradjena.", "Greska",
+								JOptionPane.WARNING_MESSAGE);
 					}
+				}
+			}
+		});
+
+		checkInBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = reservationTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(
+							ReceptionistFrame.this, row + 1, controler);
+					addEditReservationDialog.setVisible(true);
+					manager.checkIn(row + 1);
+					refreshReservationTable();
+					manager.getReservationsMan().writeReservations("data/reservations.csv");
+				}
+			}
+		});
+		
+		checkOutBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = reservationTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					manager.checkOut(row + 1);
+					refreshReservationTable();
+					manager.getReservationsMan().writeReservations("data/reservations.csv");
 				}
 			}
 		});

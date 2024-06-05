@@ -54,7 +54,6 @@ public class ReservationControler {
 	        this.reservations.clear();
 			this.setReservations();
 	    }
-	    System.out.println(reservations);
 	}
 
 }
