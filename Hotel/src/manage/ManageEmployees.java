@@ -5,7 +5,9 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.Employee;
@@ -14,6 +16,7 @@ import entity.Receptionist;
 import entity.Room;
 import enumeracije.Gender;
 import enumeracije.Qualifications;
+import enumeracije.RoomStatus;
 import enumeracije.Type;
 
 public class ManageEmployees {
@@ -48,6 +51,15 @@ public class ManageEmployees {
 		}
 		return receptionists;
 	}
+	
+	public HouseKeeper getHouseKeeperFromUsername(String username) {
+        for (Employee employee : this.employees.values()) {
+            if (employee instanceof HouseKeeper && employee.getUsername().equals(username)) {
+                return (HouseKeeper) employee;
+            }
+        }
+        return null;
+    }
 
 	// methods
 	public void addEmployee(String firstName, String lastName, Gender gender, LocalDate date, String phone,
@@ -129,7 +141,9 @@ public class ManageEmployees {
 					String[] rooms = data[1].split(",");
 					for (String room : rooms) {
 						Room roomToAdd = manager.getRoomsMan().getRooms().get(Integer.parseInt(room));
-						houseKeeper.getRoomsToClean().put(LocalDate.parse(data[0]), roomToAdd);
+						List<Room> roomsToClean = new ArrayList<>();
+						roomsToClean.add(roomToAdd);
+						houseKeeper.getRoomsToClean().put(LocalDate.parse(data[0]), roomsToClean);
 					}
 				}
 			}
@@ -141,12 +155,25 @@ public class ManageEmployees {
 	public void writeEmployees(String path) {
 		try {
 			FileWriter writer = new FileWriter(path);
-			for (Employee employee : this.employees.values()) {
-				writer.write(employee.toStringFile() + "\n");
+			for (Receptionist receptionist : this.getReceptionists().values()) {
+				writer.write(receptionist.toStringFile() + "\n");
+			}
+			for (HouseKeeper houseKeeper : this.getHouseKeepers().values()) {
+				writer.write(houseKeeper.toStringForFile() + "\n");
 			}
 			writer.close();
 		} catch (IOException e) {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
+	}
+	
+	public int getNumberOfRoomsToClean(int id, LocalDate date) {
+		HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(id);
+		int numberOfRooms = 0;
+		for (Room room : houseKeeper.getRoomsToClean().get(date)) {
+			if (room.getRoomStatus().equals(RoomStatus.CLEANING))
+				numberOfRooms++;
+		}
+		return numberOfRooms;
 	}
 }

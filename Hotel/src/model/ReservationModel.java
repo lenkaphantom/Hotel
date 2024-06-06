@@ -17,7 +17,7 @@ public class ReservationModel extends AbstractTableModel {
 	public ReservationModel(String username) {
 		controler = new ReservationControler(username);
 	}
-	
+
 	public ReservationControler getControler() {
 		return this.controler;
 	}
@@ -43,9 +43,7 @@ public class ReservationModel extends AbstractTableModel {
 		case 0:
 			return reservation.getId();
 		case 1:
-			if (reservation.getRoomType() != null)
-				return reservation.getRoomType().getType();
-			return null;
+			return reservation.getRoomType().getType();
 		case 2:
 			return reservation.getStartDate();
 		case 3:

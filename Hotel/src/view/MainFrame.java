@@ -5,6 +5,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.time.LocalDate;
 import java.util.Map;
 
 import javax.swing.JButton;
@@ -158,7 +159,7 @@ public class MainFrame extends JFrame {
 			userFrame = new ReceptionistFrame();
 			break;
 		case 4:
-			userFrame = new HouseKeeperFrame();
+			userFrame = new HouseKeeperFrame(username, LocalDate.now());
 			break;
 		}
 

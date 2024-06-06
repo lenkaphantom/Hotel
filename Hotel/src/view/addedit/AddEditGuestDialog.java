@@ -23,6 +23,7 @@ import manage.ManageHotel;
 import net.miginfocom.swing.MigLayout;
 import validation.Validation;
 import view.AdministratorFrame;
+import view.ReceptionistFrame;
 
 public class AddEditGuestDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
@@ -140,7 +141,10 @@ public class AddEditGuestDialog extends JDialog {
 						manager.getGuestsMan().addGuest(ime, prezime, pol, localDatumRodjenja, brojTelefona, adresa,
 								korisnickoIme, lozinka);
 					}
-					((AdministratorFrame) parent).refreshEmployeeTable();
+					if (parent instanceof AdministratorFrame)
+						((AdministratorFrame) parent).refreshGuestTable();
+					else
+						((ReceptionistFrame) parent).refreshGuestTable();
 					AddEditGuestDialog.this.dispose();
 				}
 			}

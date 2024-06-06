@@ -2,6 +2,7 @@ package entity;
 
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import enumeracije.Gender;
@@ -9,7 +10,7 @@ import enumeracije.Qualifications;
 import enumeracije.Type;
 
 public class HouseKeeper extends Employee {
-	private Map<LocalDate, Room> roomsToClean = new HashMap<>();
+	private Map<LocalDate, List<Room>> roomsToClean = new HashMap<>();
 
 	// constructors
 	public HouseKeeper() {
@@ -23,7 +24,7 @@ public class HouseKeeper extends Employee {
 	}
 
 	// getters
-	public Map<LocalDate, Room> getRoomsToClean() {
+	public Map<LocalDate, List<Room>> getRoomsToClean() {
 		return roomsToClean;
 	}
 	
@@ -35,7 +36,10 @@ public class HouseKeeper extends Employee {
 	public String toStringForFile() {
 		String rooms = "";
 		for (LocalDate date : roomsToClean.keySet()) {
-			rooms += date + ":" + roomsToClean.get(date).getId() + ",";
+			rooms += date + ":";
+			for (Room room : roomsToClean.get(date)) {
+				rooms += room.getId() + ",";
+			}
 		}
 		return super.toStringFile() + " | " + rooms;
 	}

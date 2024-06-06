@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -72,20 +73,26 @@ public class AddEditReservationDialog extends JDialog {
 		MigLayout layout = new MigLayout("wrap 2", "[][grow]", "[]10[]10[]10[]10[]20[]");
 		setLayout(layout);
 
-		cbTipSobe = new JComboBox<>(TypeOfRoom.values());
-		cbRasporedKreveta = new JComboBox<>();
+		List<TypeOfRoom> availableRoomTypes = manager.getRoomTypesMan().getRoomTypesListEnum();
+	    cbTipSobe = new JComboBox<>(availableRoomTypes.toArray(new TypeOfRoom[0]));
+	    cbRasporedKreveta = new JComboBox<>();
 
-		cbTipSobe.addActionListener(e -> {
-			TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
-			String[] bedLayouts = selectedType.getBedLayouts();
-			cbRasporedKreveta.removeAllItems();
-			for (String layoutB : bedLayouts) {
-				cbRasporedKreveta.addItem(layoutB);
-			}
-			if (cbRasporedKreveta.getItemCount() > 0) {
-				cbRasporedKreveta.setSelectedIndex(0);
-			}
-		});
+	    cbTipSobe.addActionListener(e -> {
+	        TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
+	        if (selectedType != null) {
+	            Map<TypeOfRoom, List<String>> bedLayouts = manager.getRoomTypesMan().getBedLayouts();
+	            cbRasporedKreveta.removeAllItems();
+	            List<String> layouts = bedLayouts.get(selectedType);
+	            if (layouts != null) {
+	                for (String layoutR : layouts) {
+	                    cbRasporedKreveta.addItem(layoutR);
+	                }
+	            }
+	            if (cbRasporedKreveta.getItemCount() > 0) {
+	                cbRasporedKreveta.setSelectedIndex(0);
+	            }
+	        }
+	    });
 		add(cbTipSobe, "growx");
 
 		if (cbTipSobe.getItemCount() > 0) {

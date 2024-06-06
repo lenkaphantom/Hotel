@@ -122,16 +122,37 @@ public class AddEditRoomTypeDialog extends JDialog {
 	}
 
 	private boolean validateFields() {
-		if (cbTipSobe.getSelectedItem() == null) {
-			JOptionPane.showMessageDialog(this, "Morate izabrati tip sobe.", "Greška", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
+	    TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
+	    String bedLayout = (String) cbRasporedKreveta.getSelectedItem();
 
-		if (cbRasporedKreveta.getSelectedItem() == null) {
-			JOptionPane.showMessageDialog(this, "Morate izabrati raspored kreveta.", "Greška", JOptionPane.ERROR_MESSAGE);
-			return false;
-		}
-		return true;
+	    if (selectedType == null) {
+	        JOptionPane.showMessageDialog(this, "Morate izabrati tip sobe.", "Greška", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    if (bedLayout == null) {
+	        JOptionPane.showMessageDialog(this, "Morate izabrati raspored kreveta.", "Greška", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    if (isRoomTypeAndBedLayoutAlreadyExists(selectedType, bedLayout, editRT != null ? editRT.getId() : -1)) {
+	        JOptionPane.showMessageDialog(this,
+	            "Već postoji kombinacija ovog tipa sobe i rasporeda kreveta.", "Greška", JOptionPane.ERROR_MESSAGE);
+	        return false;
+	    }
+
+	    return true;
+	}
+	
+	private boolean isRoomTypeAndBedLayoutAlreadyExists(TypeOfRoom selectedType, String bedLayout, int excludeId) {
+	    for (RoomType roomType : manager.getRoomTypesMan().getRoomTypes().values()) {
+	        if (roomType.getType().equals(selectedType) &&
+	            roomType.getBeds().equals(bedLayout) &&
+	            roomType.getId() != excludeId) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
 	private int findIndexInBedLayouts(String layout, String[] bedLayouts) {

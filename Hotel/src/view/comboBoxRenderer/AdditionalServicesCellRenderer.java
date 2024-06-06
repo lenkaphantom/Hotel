@@ -15,19 +15,20 @@ public class AdditionalServicesCellRenderer extends JComboBox<String> implements
 	}
 
 	@Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-        removeAllItems();
-        if (value != null && value instanceof List<?>) {
-            List<?> services = (List<?>) value;
-            for (Object service : services) {
-                if (service instanceof String) {
-                    addItem((String) service);
-                }
-            }
-            if (!services.isEmpty() && services.get(0) instanceof String) {
-                setSelectedItem(services.get(0));
-                }
-            }
-            return this;
-            }
+	public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus,
+			int row, int column) {
+		removeAllItems();
+		if (value != null && value instanceof List<?>) {
+			List<?> services = (List<?>) value;
+			for (Object service : services) {
+				if (service instanceof String) {
+					addItem((String) service);
+				}
+			}
+			if (!services.isEmpty() && services.get(0) instanceof String) {
+				setSelectedItem(services.get(0));
+			}
+		}
+		return this;
+	}
 }

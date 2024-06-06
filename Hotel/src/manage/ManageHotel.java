@@ -91,6 +91,10 @@ public class ManageHotel {
 		this.getEmployeesMan().loadEmployees("data/employees.csv", this);
 		this.getPricesMan().loadPrices("data/prices.csv", this);
 		this.getReservationsMan().loadReservations("data/reservations.csv", this);
+
+		for (Room room : this.roomsMan.getRooms().values()) {
+			room.setOccupiedDates(this);
+		}
 	}
 
 	public void writeData() {
@@ -155,7 +159,7 @@ public class ManageHotel {
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
 		reservation.setStatus(ReservationStatus.EXPIRED);
 		reservation.getRoom().setRoomStatus(RoomStatus.CLEANING);
-		addRoomToHouseKeeper(reservation.getRoom().getId());
+		this.addRoomToHouseKeeper(reservation.getRoom().getId());
 	}
 
 	public void addRoomToHouseKeeper(int id) {
@@ -168,26 +172,26 @@ public class ManageHotel {
 
 		int houseKeeperId = 2;
 		int minCleaning;
-		if (this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().isEmpty()) {
-			minCleaning = Integer.MAX_VALUE;
-		} else {
-			minCleaning = this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().size();
-		}
+		minCleaning = Integer.MAX_VALUE;
 		for (HouseKeeper houseKeeper : this.employeesMan.getHouseKeepers().values()) {
 			if (houseKeeper.getRoomsToClean().isEmpty()) {
 				minCleaning = 0;
 				houseKeeperId = houseKeeper.getId();
 				break;
-			} else if (houseKeeper.getRoomsToClean().size() < minCleaning) {
+			} else if (this.getEmployeesMan().getNumberOfRoomsToClean(houseKeeper.getId(),
+					LocalDate.now()) < minCleaning) {
 				minCleaning = houseKeeper.getRoomsToClean().size();
 				houseKeeperId = houseKeeper.getId();
 			}
 		}
-
-		this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(), room);
+		if (this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now()) == null) {
+			this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(),
+					new ArrayList<>());
+		}
+		this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now()).add(room);
 	}
 
-	public void cleanRooms(int idHK, int idRoom) {
+	public void cleanRoom(int idHK, int idRoom) {
 		if (!this.employeesMan.getHouseKeepers().containsKey(idHK)) {
 			System.out.println("Housekeeper sa id-jem " + idHK + " ne postoji.");
 			return;
@@ -204,69 +208,46 @@ public class ManageHotel {
 		room.setRoomStatus(RoomStatus.FREE);
 	}
 
-//	public void addRoomToReservation(int id) {
-//		if (!this.reservationsMan.getReservations().containsKey(id)) {
-//			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
-//			return;
-//		}
-//
-//		Reservation reservation = this.reservationsMan.getReservations().get(id);
-//		Map<Integer, Room> rooms = this.roomsMan.getRooms();
-//		for (Room room : rooms.values()) {
-//			if (!this.roomsMan.isOccupied(room.getId(), reservation.getStartDate(), reservation.getEndDate())) {
-//				if (room.getRoomType().equals(reservation.getRoomType())) {
-//					room.setRoomStatus(RoomStatus.OCCUPIED);
-//					reservation.setRoom(room);
-//					reservation.setStatus(ReservationStatus.CONFIRMED);
-//					room.setOccupiedDates(this);
-//					return;
-//				}
-//			}
-//		}
-//		reservation.setStatus(ReservationStatus.DENIED);
-//	}
-
 	public int numberOfAvailableRooms(RoomType roomType, LocalDate startDate, LocalDate endDate) {
-        Map<Integer, Room> rooms = this.roomsMan.getRooms();
-        int availableCount = 0;
-        for (Room room : rooms.values()) {
-            if (room.getRoomType().equals(roomType) && !this.roomsMan.isOccupied(room.getId(), startDate, endDate)) {
-                availableCount++;
-            }
-        }
-        return availableCount;
-    }
+		Map<Integer, Room> rooms = this.roomsMan.getRooms();
+		int availableCount = 0;
+		for (Room room : rooms.values()) {
+			if (room.getRoomType().equals(roomType) && !this.roomsMan.isOccupied(room.getId(), startDate, endDate)) {
+				availableCount++;
+			}
+		}
+		return availableCount;
+	}
 
-    public int numberOfReservations(RoomType roomType, LocalDate startDate, LocalDate endDate) {
-        int count = 0;
-        for (Reservation reservation : this.reservationsMan.getReservations().values()) {
-            if (reservation.getRoomType().equals(roomType) 
-                && !startDate.isAfter(reservation.getEndDate()) 
-                && !endDate.isBefore(reservation.getStartDate())) {
-                count++;
-            }
-        }
-        return count;
-    }
+	public int numberOfReservations(RoomType roomType, LocalDate startDate, LocalDate endDate) {
+		int count = 0;
+		for (Reservation reservation : this.reservationsMan.getReservations().values()) {
+			if (reservation.getRoomType().equals(roomType) && !startDate.isAfter(reservation.getEndDate())
+					&& !endDate.isBefore(reservation.getStartDate())) {
+				count++;
+			}
+		}
+		return count;
+	}
 
-    public void checkAvailableRoom(int id) {
-        if (!this.reservationsMan.getReservations().containsKey(id)) {
-            System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
-            return;
-        }
+	public void checkAvailableRoom(int id) {
+		if (!this.reservationsMan.getReservations().containsKey(id)) {
+			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
+			return;
+		}
 
-        Reservation reservation = this.reservationsMan.getReservations().get(id);
-        int availableRooms = numberOfAvailableRooms(reservation.getRoomType(), reservation.getStartDate(),
-                reservation.getEndDate());
-        int reservations = numberOfReservations(reservation.getRoomType(), reservation.getStartDate(),
-                reservation.getEndDate());
+		Reservation reservation = this.reservationsMan.getReservations().get(id);
+		int availableRooms = numberOfAvailableRooms(reservation.getRoomType(), reservation.getStartDate(),
+				reservation.getEndDate());
+		int reservations = numberOfReservations(reservation.getRoomType(), reservation.getStartDate(),
+				reservation.getEndDate());
 
-        if (availableRooms >= reservations) {
-            reservation.setStatus(ReservationStatus.CONFIRMED);
-        } else {
-            reservation.setStatus(ReservationStatus.DENIED);
-        }
-    }
+		if (availableRooms >= reservations) {
+			reservation.setStatus(ReservationStatus.CONFIRMED);
+		} else {
+			reservation.setStatus(ReservationStatus.DENIED);
+		}
+	}
 
 	public void assignRoomAtCheckIn(int id) {
 		if (!this.reservationsMan.getReservations().containsKey(id)) {

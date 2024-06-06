@@ -6,6 +6,9 @@ import java.awt.FlowLayout;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,20 +26,31 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
+import controler.ReservationControler;
 import manage.ManageHotel;
 import model.EmployeeModel;
 import model.GuestModel;
+import model.ReservationModel;
+import model.RoomModel;
 import model.RoomTypeModel;
 import net.miginfocom.swing.MigLayout;
 import view.addedit.AddEditEmployeeDialog;
 import view.addedit.AddEditGuestDialog;
+import view.addedit.AddEditRoomDialog;
 import view.addedit.AddEditRoomTypeDialog;
+import view.comboBoxRenderer.AdditionalServicesCellRenderer;
+import view.comboBoxRenderer.AdditionalServicesEditor;
+import view.comboBoxRenderer.RoomCellEditor;
+import view.comboBoxRenderer.RoomCellRenderer;
 
 public class AdministratorFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ManageHotel manager = ManageHotel.getInstance();
+	private ReservationControler controler;
 
 	private static final Color BACKGROUND_COLOR = new Color(214, 204, 194);
 	private static final Color FOREGROUND_COLOR = new Color(102, 0, 34);
@@ -46,14 +60,26 @@ public class AdministratorFrame extends JFrame {
 	private JTable employeeTable;
 	private JTable guestTable;
 	private JTable roomTypeTable;
+	private JTable reservationTable;
+	private JTable roomTable;
+	private JTable additionalServiceTable;
+	private JTable priceTable;
 
 	private JTextField tfSearchEmployee;
 	private JTextField tfSearchGuest;
 	private JTextField tfSearchRoomType;
+	private JTextField tfSearchReservation;
+	private JTextField tfSearchRoom;
+	private JTextField tfSearchAdditionalService;
+	private JTextField tfSearchPrice;
 
 	private TableRowSorter<AbstractTableModel> employeeTableSorter;
 	private TableRowSorter<AbstractTableModel> guestTableSorter;
 	private TableRowSorter<AbstractTableModel> roomTypeTableSorter;
+	private TableRowSorter<AbstractTableModel> reservationTableSorter;
+	private TableRowSorter<AbstractTableModel> roomTableSorter;
+	private TableRowSorter<AbstractTableModel> additionalServiceTableSorter;
+	private TableRowSorter<AbstractTableModel> priceTableSorter;
 
 	private JButton addBtnEmployee = new JButton();
 	private JButton editBtnEmployee = new JButton();
@@ -149,6 +175,76 @@ public class AdministratorFrame extends JFrame {
 
 		JPanel roomTypePanel = createRoomTypePanel(roomTypeTable, addBtnRoomType, editBtnRoomType, removeBtnRoomType);
 		tabbedPane.addTab("Tipovi soba", null, roomTypePanel, null);
+
+		List<String> additionalServicesList = manager.getAdditionalServicesMan().getAdditionalServicesList();
+		ReservationModel reservationModel = new ReservationModel("");
+		controler = reservationModel.getControler();
+
+		reservationTable = new JTable(reservationModel);
+		reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
+		reservationTable.setRowSorter(reservationTableSorter);
+
+		TableCellRenderer additionalServicesRenderer = new AdditionalServicesCellRenderer();
+		TableCellEditor additionalServicesEditor = new AdditionalServicesEditor(
+				additionalServicesList.toArray(new String[0]));
+		reservationTable.getColumnModel().getColumn(4).setCellRenderer(additionalServicesRenderer);
+		reservationTable.getColumnModel().getColumn(4).setCellEditor(additionalServicesEditor);
+
+		reservationTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = reservationTable.rowAtPoint(e.getPoint());
+				int column = reservationTable.columnAtPoint(e.getPoint());
+
+				if (column == 4) {
+					reservationTable.editCellAt(row, column);
+				}
+			}
+		});
+
+		JPanel reservationPanel = createReservationPanel(reservationTable);
+		tabbedPane.addTab("Rezervacije", null, reservationPanel, null);
+
+		addBtnRoom.setIcon(new ImageIcon(newimg));
+		editBtnRoom.setIcon(new ImageIcon(newimg1));
+		removeBtnRoom.setIcon(new ImageIcon(newimg2));
+
+		roomTable = new JTable(new RoomModel("", null));
+		roomTableSorter = new TableRowSorter<>((AbstractTableModel) roomTable.getModel());
+		roomTable.setRowSorter(roomTableSorter);
+
+		roomTable.getColumnModel().getColumn(5).setCellRenderer(new RoomCellRenderer());
+		roomTable.getColumnModel().getColumn(5).setCellEditor(new RoomCellEditor());
+
+		roomTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = roomTable.rowAtPoint(e.getPoint());
+				int column = roomTable.columnAtPoint(e.getPoint());
+
+				if (column == 5) {
+					roomTable.editCellAt(row, column);
+				}
+			}
+		});
+
+		JPanel roomPanel = createRoomPanel(roomTable, addBtnRoom, editBtnRoom, removeBtnRoom);
+		tabbedPane.addTab("Sobe", null, roomPanel, null);
+
+		addBtnAdditionalService.setIcon(new ImageIcon(newimg));
+		editBtnAdditionalService.setIcon(new ImageIcon(newimg1));
+		removeBtnAdditionalService.setIcon(new ImageIcon(newimg2));
+
+		JPanel additionalServicePanel = createServicesPanel(additionalServiceTable, addBtnAdditionalService,
+				editBtnAdditionalService, removeBtnAdditionalService);
+		tabbedPane.addTab("Dodatne usluge", null, additionalServicePanel, null);
+
+		addBtnPrice.setIcon(new ImageIcon(newimg));
+		editBtnPrice.setIcon(new ImageIcon(newimg1));
+		removeBtnPrice.setIcon(new ImageIcon(newimg2));
+
+		JPanel pricePanel = createPricePanel(priceTable, addBtnPrice, editBtnPrice, removeBtnPrice);
+		tabbedPane.addTab("Cenovnik", null, pricePanel, null);
 
 		initActions();
 	}
@@ -284,6 +380,146 @@ public class AdministratorFrame extends JFrame {
 		return panel;
 	}
 
+	private JPanel createReservationPanel(JTable table) {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		panel.add(toolBar, "flowx,cell 0 0");
+
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setForeground(FOREGROUND_COLOR);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPane, "cell 0 1 1 2,grow");
+
+		int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100 };
+		setTableColumnWidths(table, columnWidths);
+
+		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		searchPanel.setBackground(BACKGROUND_COLOR);
+		JTextField searchField = new JTextField(20);
+		searchPanel.add(new JLabel("Pretraga:"));
+		searchPanel.add(searchField);
+
+		panel.add(searchPanel, "cell 0 0, grow");
+
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			private void filterTable() {
+				String text = searchField.getText();
+				if (text.trim().length() == 0) {
+					reservationTableSorter.setRowFilter(null);
+				} else {
+					reservationTableSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text.trim()));
+				}
+			}
+		});
+
+		this.tfSearchReservation = searchField;
+		return panel;
+	}
+
+	private JPanel createRoomPanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		toolBar.add(addButton);
+		toolBar.add(editButton);
+		toolBar.add(removeButton);
+		panel.add(toolBar, "flowx,cell 0 0");
+
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setForeground(FOREGROUND_COLOR);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPane, "cell 0 1 1 2,grow");
+
+		int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 200 };
+		setTableColumnWidths(table, columnWidths);
+
+		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		searchPanel.setBackground(BACKGROUND_COLOR);
+		JTextField searchField = new JTextField(20);
+		searchPanel.add(new JLabel("Pretraga:"));
+		searchPanel.add(searchField);
+
+		panel.add(searchPanel, "cell 0 0, grow");
+
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			private void filterTable() {
+				String text = searchField.getText();
+				if (text.trim().length() == 0) {
+					roomTableSorter.setRowFilter(null);
+				} else {
+					roomTableSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text.trim()));
+				}
+			}
+		});
+
+		this.tfSearchRoom = searchField;
+
+		return panel;
+	}
+
+	private JPanel createServicesPanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		toolBar.add(addButton);
+		toolBar.add(editButton);
+		toolBar.add(removeButton);
+		panel.add(toolBar, "flowx,cell 0 0");
+		return panel;
+	}
+
+	private JPanel createPricePanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JToolBar toolBar = new JToolBar();
+		toolBar.setFloatable(false);
+		toolBar.add(addButton);
+		toolBar.add(editButton);
+		toolBar.add(removeButton);
+		panel.add(toolBar, "flowx,cell 0 0");
+		return panel;
+	}
+
 	private void setTableColumnWidths(JTable table, int[] columnWidths) {
 		for (int i = 0; i < columnWidths.length; i++) {
 			table.getColumnModel().getColumn(i).setPreferredWidth(columnWidths[i]);
@@ -410,7 +646,7 @@ public class AdministratorFrame extends JFrame {
 				}
 			}
 		});
-		
+
 		removeBtnRoomType.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -429,6 +665,51 @@ public class AdministratorFrame extends JFrame {
 				}
 			}
 		});
+
+		addBtnRoom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, 0);
+				addEditRoomDialog.setVisible(true);
+				refreshRoomsTable();
+				manager.getRoomsMan().writeRooms("data/rooms.csv");
+			}
+		});
+
+		editBtnRoom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = roomTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, row + 1);
+					addEditRoomDialog.setVisible(true);
+					refreshRoomsTable();
+					manager.getRoomsMan().writeRooms("data/rooms.csv");
+				}
+			}
+		});
+
+		removeBtnRoom.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = roomTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete sobu?",
+							"Brisanje sobe", JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getRoomsMan().removeRoom(row + 1);
+						manager.getRoomsMan().writeRooms("data/rooms.csv");
+					}
+					refreshRoomsTable();
+				}
+			}
+		});
 	}
 
 	public void refreshEmployeeTable() {
@@ -441,5 +722,17 @@ public class AdministratorFrame extends JFrame {
 
 	public void refreshRoomTypeTable() {
 		((AbstractTableModel) roomTypeTable.getModel()).fireTableDataChanged();
+	}
+
+	public void refreshRoomsTable() {
+		((AbstractTableModel) roomTable.getModel()).fireTableDataChanged();
+	}
+
+	public void refreshAdditionalServicesTable() {
+		((AbstractTableModel) additionalServiceTable.getModel()).fireTableDataChanged();
+	}
+
+	public void refreshPriceTable() {
+		((AbstractTableModel) priceTable.getModel()).fireTableDataChanged();
 	}
 }

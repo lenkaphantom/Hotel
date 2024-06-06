@@ -4,7 +4,9 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.RoomType;
@@ -31,6 +33,25 @@ public class ManageRoomTypes {
 			i++;
 		}
 		return types;
+	}
+	
+	public List<TypeOfRoom> getRoomTypesListEnum() {
+		List<TypeOfRoom> types = new ArrayList<>();
+		for (RoomType roomType : this.roomTypes.values()) {
+			if (!types.contains(roomType.getType()))
+				types.add(roomType.getType());
+		}
+		return types;
+	}
+	
+	public Map<TypeOfRoom, List<String>> getBedLayouts() {
+	    Map<TypeOfRoom, List<String>> bedLayouts = new HashMap<>();
+	    for (RoomType roomType : this.roomTypes.values()) {
+	        TypeOfRoom type = roomType.getType();
+	        bedLayouts.putIfAbsent(type, new ArrayList<>());
+	        bedLayouts.get(type).add(roomType.getBeds());
+	    }
+	    return bedLayouts;
 	}
 
 	// methods
