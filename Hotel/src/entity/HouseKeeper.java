@@ -34,13 +34,14 @@ public class HouseKeeper extends Employee {
 	}
 	
 	public String toStringForFile() {
-		String rooms = "";
-		for (LocalDate date : roomsToClean.keySet()) {
-			rooms += date + ":";
-			for (Room room : roomsToClean.get(date)) {
-				rooms += room.getId() + ",";
-			}
-		}
-		return super.toStringFile() + " | " + rooms;
+	    String rooms = "";
+	    for (LocalDate date : roomsToClean.keySet()) {
+	        rooms += date + ":";
+	        for (Room room : roomsToClean.get(date)) {
+	            rooms += room.getId() + "*";
+	        }
+	        rooms = rooms.substring(0, rooms.length() - 1);
+	    }
+	    return super.toStringFile() + " | " + rooms;
 	}
 }

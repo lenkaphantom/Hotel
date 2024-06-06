@@ -138,10 +138,10 @@ public class ManageEmployees {
 				if (parts[12].equals("HouseKeeper") && parts.length > 13) {
 					HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(Integer.parseInt(parts[0]));
 					String[] data = parts[13].split(":");
-					String[] rooms = data[1].split(",");
+					String[] rooms = data[1].split("\\*");
+					List<Room> roomsToClean = new ArrayList<>();
 					for (String room : rooms) {
 						Room roomToAdd = manager.getRoomsMan().getRooms().get(Integer.parseInt(room));
-						List<Room> roomsToClean = new ArrayList<>();
 						roomsToClean.add(roomToAdd);
 						houseKeeper.getRoomsToClean().put(LocalDate.parse(data[0]), roomsToClean);
 					}
