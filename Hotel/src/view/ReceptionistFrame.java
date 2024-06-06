@@ -67,6 +67,7 @@ public class ReceptionistFrame extends JFrame {
 	private TableRowSorter<AbstractTableModel> roomTableSorter;
 	private TableRowSorter<AbstractTableModel> guestTableSorter;
 
+	private JButton addBtn = new JButton();
 	private JButton confirmBtn = new JButton();
 	private JButton checkInBtn = new JButton();
 	private JButton checkOutBtn = new JButton();
@@ -112,6 +113,8 @@ public class ReceptionistFrame extends JFrame {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		contentPane.add(tabbedPane, "cell 1 0,grow");
 
+		addBtn.setIcon(new ImageIcon(newimg));
+
 		confirmBtn.setText("Potvrdi");
 		checkInBtn.setText("Check in");
 		checkOutBtn.setText("Check out");
@@ -142,7 +145,7 @@ public class ReceptionistFrame extends JFrame {
 			}
 		});
 
-		JPanel reservationPanel = createPanelWithTable(reservationTable, confirmBtn, checkInBtn, checkOutBtn);
+		JPanel reservationPanel = createPanelWithTable(reservationTable, addBtn, confirmBtn, checkInBtn, checkOutBtn);
 		tabbedPane.addTab("Rezervacije", null, reservationPanel, null);
 
 		roomTable = new JTable(new RoomModel("", null));
@@ -181,12 +184,13 @@ public class ReceptionistFrame extends JFrame {
 		initActions();
 	}
 
-	private JPanel createPanelWithTable(JTable table, JButton confirmButton, JButton checkInButton,
+	private JPanel createPanelWithTable(JTable table, JButton addBtn, JButton confirmButton, JButton checkInButton,
 			JButton checkOutButton) {
 		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
+		toolBar.add(addBtn);
 		toolBar.add(confirmButton);
 		toolBar.add(checkInButton);
 		toolBar.add(checkOutButton);
@@ -359,6 +363,17 @@ public class ReceptionistFrame extends JFrame {
 	}
 
 	private void initActions() {
+		addBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(ReceptionistFrame.this,
+						0, controler);
+				addEditReservationDialog.setVisible(true);
+				refreshReservationTable();
+				manager.getReservationsMan().writeReservations("data/reservations.csv");
+			}
+		});
+		
 		confirmBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -417,7 +432,7 @@ public class ReceptionistFrame extends JFrame {
 				}
 			}
 		});
-		
+
 		addBtnGuest.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -467,11 +482,11 @@ public class ReceptionistFrame extends JFrame {
 	public void refreshReservationTable() {
 		((AbstractTableModel) reservationTable.getModel()).fireTableDataChanged();
 	}
-	
+
 	public void refreshGuestTable() {
 		((AbstractTableModel) guestTable.getModel()).fireTableDataChanged();
 	}
-	
+
 	public void refreshRoomTable() {
 		((AbstractTableModel) roomTable.getModel()).fireTableDataChanged();
 	}

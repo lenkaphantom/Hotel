@@ -185,10 +185,11 @@ public class ManageHotel {
 			}
 		}
 		if (this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now()) == null) {
-			this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(),
-					new ArrayList<>());
+		    this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(),
+		            new ArrayList<>());
 		}
-		this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now()).add(room);
+		List<Room> roomsToClean = this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now());
+		roomsToClean.add(room);
 	}
 
 	public void cleanRoom(int idHK, int idRoom) {

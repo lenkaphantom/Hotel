@@ -2,6 +2,7 @@ package view.addedit;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 
@@ -14,6 +15,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import controler.RoomControler;
 import entity.Room;
 import entity.RoomType;
 import enumeracije.RoomStatus;
@@ -27,6 +29,7 @@ public class AddEditRoomDialog extends JDialog {
 	private static final long serialVersionUID = 1L;
 	private final JPanel contentPanel = new JPanel();
 	private ManageHotel manager = ManageHotel.getInstance();
+	private RoomControler controler;
 	private Room editR;
 	private JFrame parent;
 
@@ -37,7 +40,7 @@ public class AddEditRoomDialog extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			AddEditRoomDialog dialog = new AddEditRoomDialog(null, 0);
+			AddEditRoomDialog dialog = new AddEditRoomDialog(null, 0, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {
@@ -45,9 +48,10 @@ public class AddEditRoomDialog extends JDialog {
 		}
 	}
 
-	public AddEditRoomDialog(JFrame parent, int id) {
+	public AddEditRoomDialog(JFrame parent, int id, RoomControler controler) {
 		super(parent, true);
 		this.parent = parent;
+		this.controler = controler;
 		if (id != 0) {
 			setTitle("Edit Room");
 		} else {
@@ -135,9 +139,11 @@ public class AddEditRoomDialog extends JDialog {
 					
 					if (editR != null) {
 						manager.getRoomsMan().changeRoom(editR.getId(), floor, roomNumber, roomType);
+						controler.updateRooms(LocalDate.now());
 					}
 					else {
 						manager.getRoomsMan().addRoom(floor, roomNumber, RoomStatus.FREE, roomType.getId(), manager);
+						controler.updateRooms(LocalDate.now());
 					}
 					((AdministratorFrame) parent).refreshRoomsTable();
 					AddEditRoomDialog.this.dispose();

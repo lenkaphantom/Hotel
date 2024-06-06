@@ -170,10 +170,11 @@ public class AddEditReservationDialog extends JDialog {
 						LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 						LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 						RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType, bedLayout);
-
+						
 						Reservation newReservation = new Reservation(roomType, localCheckInDate, localCheckOutDate,
 								additionalServices, ReservationStatus.WAITING);
-						newReservation.setGuest(guest.getId(), manager);
+						if (parent instanceof GuestFrame)
+							newReservation.setGuest(guest.getId(), manager);
 						manager.getReservationsMan().addReservation(newReservation);
 						manager.calculatePrice(newReservation.getId());
 						controler.updateReservations();

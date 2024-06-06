@@ -31,17 +31,23 @@ import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
+import controler.RoomControler;
 import manage.ManageHotel;
+import model.AdditionalServicesModel;
 import model.EmployeeModel;
 import model.GuestModel;
 import model.ReservationModel;
 import model.RoomModel;
+import model.RoomPriceModel;
 import model.RoomTypeModel;
+import model.ServicePriceModel;
 import net.miginfocom.swing.MigLayout;
 import view.addedit.AddEditEmployeeDialog;
 import view.addedit.AddEditGuestDialog;
+import view.addedit.AddEditPricesDialog;
 import view.addedit.AddEditRoomDialog;
 import view.addedit.AddEditRoomTypeDialog;
+import view.addedit.AddEditServicesDialog;
 import view.comboBoxRenderer.AdditionalServicesCellRenderer;
 import view.comboBoxRenderer.AdditionalServicesEditor;
 import view.comboBoxRenderer.RoomCellEditor;
@@ -51,6 +57,7 @@ public class AdministratorFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private ManageHotel manager = ManageHotel.getInstance();
 	private ReservationControler controler;
+	private RoomControler roomControler;
 
 	private static final Color BACKGROUND_COLOR = new Color(214, 204, 194);
 	private static final Color FOREGROUND_COLOR = new Color(102, 0, 34);
@@ -63,7 +70,8 @@ public class AdministratorFrame extends JFrame {
 	private JTable reservationTable;
 	private JTable roomTable;
 	private JTable additionalServiceTable;
-	private JTable priceTable;
+	private JTable roomPriceTable;
+	private JTable servicePriceTable;
 
 	private JTextField tfSearchEmployee;
 	private JTextField tfSearchGuest;
@@ -208,8 +216,10 @@ public class AdministratorFrame extends JFrame {
 		addBtnRoom.setIcon(new ImageIcon(newimg));
 		editBtnRoom.setIcon(new ImageIcon(newimg1));
 		removeBtnRoom.setIcon(new ImageIcon(newimg2));
-
-		roomTable = new JTable(new RoomModel("", null));
+		
+		RoomModel roomModel = new RoomModel("", null);
+		roomControler = roomModel.getControler();
+		roomTable = new JTable(roomModel);
 		roomTableSorter = new TableRowSorter<>((AbstractTableModel) roomTable.getModel());
 		roomTable.setRowSorter(roomTableSorter);
 
@@ -235,6 +245,10 @@ public class AdministratorFrame extends JFrame {
 		editBtnAdditionalService.setIcon(new ImageIcon(newimg1));
 		removeBtnAdditionalService.setIcon(new ImageIcon(newimg2));
 
+		additionalServiceTable = new JTable(new AdditionalServicesModel());
+		additionalServiceTableSorter = new TableRowSorter<>((AbstractTableModel) additionalServiceTable.getModel());
+		additionalServiceTable.setRowSorter(additionalServiceTableSorter);
+
 		JPanel additionalServicePanel = createServicesPanel(additionalServiceTable, addBtnAdditionalService,
 				editBtnAdditionalService, removeBtnAdditionalService);
 		tabbedPane.addTab("Dodatne usluge", null, additionalServicePanel, null);
@@ -243,7 +257,7 @@ public class AdministratorFrame extends JFrame {
 		editBtnPrice.setIcon(new ImageIcon(newimg1));
 		removeBtnPrice.setIcon(new ImageIcon(newimg2));
 
-		JPanel pricePanel = createPricePanel(priceTable, addBtnPrice, editBtnPrice, removeBtnPrice);
+		JPanel pricePanel = createPricePanel();
 		tabbedPane.addTab("Cenovnik", null, pricePanel, null);
 
 		initActions();
@@ -337,6 +351,7 @@ public class AdministratorFrame extends JFrame {
 
 		JScrollPane scrollPane = new JScrollPane(table);
 		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		panel.add(scrollPane, "cell 0 1 1 2,grow");
 
 		int[] columnWidths = new int[] { 50, 150, 100 };
@@ -505,18 +520,83 @@ public class AdministratorFrame extends JFrame {
 		toolBar.add(editButton);
 		toolBar.add(removeButton);
 		panel.add(toolBar, "flowx,cell 0 0");
+
+		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		table.setForeground(FOREGROUND_COLOR);
+
+		JScrollPane scrollPane = new JScrollPane(table);
+		scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPane, "cell 0 1 1 2,grow");
+
+		int[] columnWidths = new int[] { 50, 150 };
+		setTableColumnWidths(table, columnWidths);
+
+		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+		searchPanel.setBackground(BACKGROUND_COLOR);
+		JTextField searchField = new JTextField(20);
+		searchPanel.add(new JLabel("Pretraga:"));
+		searchPanel.add(searchField);
+
+		panel.add(searchPanel, "cell 0 0, grow");
+
+		searchField.getDocument().addDocumentListener(new DocumentListener() {
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				filterTable();
+			}
+
+			private void filterTable() {
+				String text = searchField.getText();
+				if (text.trim().length() == 0) {
+					additionalServiceTableSorter.setRowFilter(null);
+				} else {
+					additionalServiceTableSorter.setRowFilter(RowFilter.regexFilter("(?i)" + text.trim()));
+				}
+			}
+		});
+
+		this.tfSearchAdditionalService = searchField;
 		return panel;
 	}
 
-	private JPanel createPricePanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+	private JPanel createPricePanel() {
 		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
-		toolBar.add(addButton);
-		toolBar.add(editButton);
-		toolBar.add(removeButton);
+		toolBar.add(addBtnPrice);
+		toolBar.add(editBtnPrice);
+		toolBar.add(removeBtnPrice);
 		panel.add(toolBar, "flowx,cell 0 0");
+
+		JTabbedPane priceTabbedPane = new JTabbedPane();
+
+		JPanel roomPricePanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		roomPriceTable = new JTable(new RoomPriceModel(1));
+		JScrollPane roomPriceScrollPane = new JScrollPane(roomPriceTable);
+		roomPricePanel.add(roomPriceScrollPane, "grow");
+
+		JPanel servicePricePanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		servicePriceTable = new JTable(new ServicePriceModel(1));
+		JScrollPane servicePriceScrollPane = new JScrollPane(servicePriceTable);
+		servicePricePanel.add(servicePriceScrollPane, "grow");
+
+		priceTabbedPane.add("Cene soba", roomPricePanel);
+		priceTabbedPane.add("Cene usluga", servicePricePanel);
+
+		panel.add(priceTabbedPane, "cell 0 1, grow");
+
 		return panel;
 	}
 
@@ -534,7 +614,6 @@ public class AdministratorFrame extends JFrame {
 				addEditEmployeeDialog.setVisible(true);
 				refreshEmployeeTable();
 				manager.getEmployeesMan().writeEmployees("data/employees.csv");
-				;
 			}
 		});
 
@@ -669,7 +748,7 @@ public class AdministratorFrame extends JFrame {
 		addBtnRoom.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, 0);
+				AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, 0, roomControler);
 				addEditRoomDialog.setVisible(true);
 				refreshRoomsTable();
 				manager.getRoomsMan().writeRooms("data/rooms.csv");
@@ -684,7 +763,8 @@ public class AdministratorFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
-					AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, row + 1);
+					AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, row + 1,
+							roomControler);
 					addEditRoomDialog.setVisible(true);
 					refreshRoomsTable();
 					manager.getRoomsMan().writeRooms("data/rooms.csv");
@@ -707,6 +787,98 @@ public class AdministratorFrame extends JFrame {
 						manager.getRoomsMan().writeRooms("data/rooms.csv");
 					}
 					refreshRoomsTable();
+				}
+			}
+		});
+
+		addBtnAdditionalService.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditServicesDialog addEditServicesDialog = new AddEditServicesDialog(AdministratorFrame.this, 0);
+				addEditServicesDialog.setVisible(true);
+				refreshAdditionalServicesTable();
+				manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
+			}
+		});
+
+		editBtnAdditionalService.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = additionalServiceTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditServicesDialog addEditServicesDialog = new AddEditServicesDialog(AdministratorFrame.this,
+							row + 1);
+					addEditServicesDialog.setVisible(true);
+					refreshAdditionalServicesTable();
+					manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
+				}
+			}
+		});
+
+		removeBtnAdditionalService.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = additionalServiceTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int izbor = JOptionPane.showConfirmDialog(null,
+							"Da li ste sigurni da zelite da obrisete dodatnu uslugu?", "Brisanje dodatne usluge",
+							JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getAdditionalServicesMan().removeAdditionalService(row + 1);
+						manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
+					}
+					refreshAdditionalServicesTable();
+				}
+			}
+		});
+
+		addBtnPrice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				AddEditPricesDialog addEditPricesDialog = new AddEditPricesDialog(AdministratorFrame.this, 0);
+				addEditPricesDialog.setVisible(true);
+				refreshPriceTable();
+				manager.getPricesMan().writePrices("data/prices.csv");
+			}
+		});
+
+		editBtnPrice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = roomPriceTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					AddEditPricesDialog addEditPricesDialog = new AddEditPricesDialog(AdministratorFrame.this, row + 1);
+					addEditPricesDialog.setVisible(true);
+					refreshPriceTable();
+					manager.getPricesMan().writePrices("data/prices.csv");
+				}
+			}
+		});
+
+		removeBtnPrice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = roomPriceTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete cenovnik?",
+							"Brisanje cenovnika", JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getPricesMan().removePrices(row + 1);
+						manager.getPricesMan().writePrices("data/prices.csv");
+					}
+					refreshPriceTable();
 				}
 			}
 		});
@@ -733,6 +905,7 @@ public class AdministratorFrame extends JFrame {
 	}
 
 	public void refreshPriceTable() {
-		((AbstractTableModel) priceTable.getModel()).fireTableDataChanged();
+		((AbstractTableModel) roomPriceTable.getModel()).fireTableDataChanged();
+		((AbstractTableModel) servicePriceTable.getModel()).fireTableDataChanged();
 	}
 }

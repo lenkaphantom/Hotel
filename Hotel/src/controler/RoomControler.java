@@ -43,7 +43,7 @@ public class RoomControler {
 		}
 	}
 
-	public void updateReservations(LocalDate date) {
+	public void updateRooms(LocalDate date) {
 		if (username.isEmpty()) {
 			this.rooms.clear();
 			this.rooms.putAll(manager.getRoomsMan().getRooms());

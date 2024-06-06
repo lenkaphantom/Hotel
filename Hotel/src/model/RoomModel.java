@@ -68,4 +68,8 @@ public class RoomModel extends AbstractTableModel {
     public boolean isCellEditable(int row, int column) {
         return column == 5;
     }
+    
+	public RoomControler getControler() {
+		return controler;
+	}
 }
