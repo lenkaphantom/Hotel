@@ -98,4 +98,13 @@ public class ManageAdditionalServices {
 		}
 		return services;
 	}
+	
+	public Map<AdditionalServices, Double> getDefaultPrices() {
+	    Map<AdditionalServices, Double> defaultPrices = new HashMap<>();
+	    for (AdditionalServices service : getAdditionalServices().values()) {
+	        defaultPrices.put(service, 0.0);
+	    }
+	    return defaultPrices;
+	}
+
 }

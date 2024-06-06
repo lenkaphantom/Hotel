@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.JOptionPane;
+
 import entity.AdditionalServices;
 import entity.HouseKeeper;
 import entity.Prices;
@@ -185,10 +187,11 @@ public class ManageHotel {
 			}
 		}
 		if (this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now()) == null) {
-		    this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(),
-		            new ArrayList<>());
+			this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().put(LocalDate.now(),
+					new ArrayList<>());
 		}
-		List<Room> roomsToClean = this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean().get(LocalDate.now());
+		List<Room> roomsToClean = this.employeesMan.getHouseKeepers().get(houseKeeperId).getRoomsToClean()
+				.get(LocalDate.now());
 		roomsToClean.add(room);
 	}
 
@@ -240,6 +243,11 @@ public class ManageHotel {
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
 		int availableRooms = numberOfAvailableRooms(reservation.getRoomType(), reservation.getStartDate(),
 				reservation.getEndDate());
+		if (availableRooms == 0) {
+			JOptionPane.showMessageDialog(null, "Ne postoji soba odabranog tipa u hotelu.", "Obaveštenje",
+					JOptionPane.INFORMATION_MESSAGE);
+			return;
+		}
 		int reservations = numberOfReservations(reservation.getRoomType(), reservation.getStartDate(),
 				reservation.getEndDate());
 

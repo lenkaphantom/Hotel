@@ -11,16 +11,21 @@ import manage.ManageHotel;
 public class ServicePriceModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private ManageHotel manager = ManageHotel.getInstance();
-    private Prices prices;
+    private Map<AdditionalServices, Double> pricePerService;
     private String[] columnNames = { "Naziv usluge", "Cena" };
 
     public ServicePriceModel(int pricesId) {
-        prices = manager.getPricesMan().getPrices().get(pricesId);
+        if (pricesId != -1) {
+            Prices prices = manager.getPricesMan().getPrices().get(pricesId);
+            this.pricePerService = prices.getPricePerService();
+        } else {
+            this.pricePerService = manager.getAdditionalServicesMan().getDefaultPrices();
+        }
     }
 
     @Override
     public int getRowCount() {
-        return prices.getPricePerService().size();
+        return pricePerService.size();
     }
 
     @Override
@@ -30,10 +35,8 @@ public class ServicePriceModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        @SuppressWarnings("unchecked")
-		Map.Entry<AdditionalServices, Double> entry = (Map.Entry<AdditionalServices, Double>) prices.getPricePerService().entrySet().toArray()[rowIndex];
-        AdditionalServices service = entry.getKey();
-        Double price = entry.getValue();
+        AdditionalServices service = (AdditionalServices) pricePerService.keySet().toArray()[rowIndex];
+        Double price = pricePerService.get(service);
 
         switch (columnIndex) {
             case 0:
@@ -46,12 +49,35 @@ public class ServicePriceModel extends AbstractTableModel {
     }
 
     @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        AdditionalServices service = (AdditionalServices) pricePerService.keySet().toArray()[rowIndex];
+        if (columnIndex == 1) {
+            pricePerService.put(service, (Double) aValue);
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+    }
+
+    @Override
     public String getColumnName(int column) {
-        return this.columnNames[column];
+        return columnNames[column];
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex == 1;
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
         return (columnIndex == 1) ? Double.class : String.class;
+    }
+
+    public Map<AdditionalServices, Double> getPrices() {
+        return pricePerService;
+    }
+
+    public void setPrices(Map<AdditionalServices, Double> prices) {
+        this.pricePerService = prices;
+        fireTableDataChanged();
     }
 }

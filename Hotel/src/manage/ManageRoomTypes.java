@@ -128,4 +128,13 @@ public class ManageRoomTypes {
 		}
 		return null;
 	}
+	
+	public Map<RoomType, Double> getDefaultPrices() {
+	    Map<RoomType, Double> defaultPrices = new HashMap<>();
+	    for (RoomType roomType : getRoomTypes().values()) {
+	        defaultPrices.put(roomType, 0.0);
+	    }
+	    return defaultPrices;
+	}
+
 }

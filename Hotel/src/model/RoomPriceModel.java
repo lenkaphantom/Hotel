@@ -11,16 +11,21 @@ import manage.ManageHotel;
 public class RoomPriceModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private ManageHotel manager = ManageHotel.getInstance();
-    private Prices prices;
+    private Map<RoomType, Double> pricePerRoom;
     private String[] columnNames = { "Tip sobe", "Broj kreveta", "Cena" };
 
     public RoomPriceModel(int pricesId) {
-        prices = manager.getPricesMan().getPrices().get(pricesId);
+        if (pricesId != -1) {
+            Prices prices = manager.getPricesMan().getPrices().get(pricesId);
+            this.pricePerRoom = prices.getPricePerRoom();
+        } else {
+            this.pricePerRoom = manager.getRoomTypesMan().getDefaultPrices();
+        }
     }
 
     @Override
     public int getRowCount() {
-        return prices.getPricePerRoom().size();
+        return pricePerRoom.size();
     }
 
     @Override
@@ -30,10 +35,8 @@ public class RoomPriceModel extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        @SuppressWarnings("unchecked")
-		Map.Entry<RoomType, Double> entry = (Map.Entry<RoomType, Double>) prices.getPricePerRoom().entrySet().toArray()[rowIndex];
-        RoomType roomType = entry.getKey();
-        Double price = entry.getValue();
+        RoomType roomType = (RoomType) pricePerRoom.keySet().toArray()[rowIndex];
+        Double price = pricePerRoom.get(roomType);
 
         switch (columnIndex) {
             case 0:
@@ -48,19 +51,35 @@ public class RoomPriceModel extends AbstractTableModel {
     }
 
     @Override
+    public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
+        RoomType roomType = (RoomType) pricePerRoom.keySet().toArray()[rowIndex];
+        if (columnIndex == 2) {
+            pricePerRoom.put(roomType, (Double) aValue);
+            fireTableCellUpdated(rowIndex, columnIndex);
+        }
+    }
+
+    @Override
     public String getColumnName(int column) {
-        return this.columnNames[column];
+        return columnNames[column];
+    }
+
+    @Override
+    public boolean isCellEditable(int rowIndex, int columnIndex) {
+        return columnIndex == 2;
     }
 
     @Override
     public Class<?> getColumnClass(int columnIndex) {
-        switch (columnIndex) {
-            case 1:
-                return Integer.class;
-            case 2:
-                return Double.class;
-            default:
-                return String.class;
-        }
+        return (columnIndex == 2) ? Double.class : String.class;
+    }
+
+    public Map<RoomType, Double> getPrices() {
+        return pricePerRoom;
+    }
+
+    public void setPrices(Map<RoomType, Double> prices) {
+        this.pricePerRoom = prices;
+        fireTableDataChanged();
     }
 }
