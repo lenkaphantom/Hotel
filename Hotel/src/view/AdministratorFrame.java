@@ -32,6 +32,7 @@ import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
 import controler.RoomControler;
+import entity.Prices;
 import manage.ManageHotel;
 import model.AdditionalServicesModel;
 import model.EmployeeModel;
@@ -216,7 +217,7 @@ public class AdministratorFrame extends JFrame {
 		addBtnRoom.setIcon(new ImageIcon(newimg));
 		editBtnRoom.setIcon(new ImageIcon(newimg1));
 		removeBtnRoom.setIcon(new ImageIcon(newimg2));
-		
+
 		RoomModel roomModel = new RoomModel("", null);
 		roomControler = roomModel.getControler();
 		roomTable = new JTable(roomModel);
@@ -582,20 +583,66 @@ public class AdministratorFrame extends JFrame {
 
 		JTabbedPane priceTabbedPane = new JTabbedPane();
 
-		JPanel roomPricePanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
-		roomPriceTable = new JTable(new RoomPriceModel(1));
-		JScrollPane roomPriceScrollPane = new JScrollPane(roomPriceTable);
-		roomPricePanel.add(roomPriceScrollPane, "grow");
+		for (Prices prices : manager.getPricesMan().getPrices().values()) {
+			int pricesId = prices.getId();
 
-		JPanel servicePricePanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
-		servicePriceTable = new JTable(new ServicePriceModel(1));
-		JScrollPane servicePriceScrollPane = new JScrollPane(servicePriceTable);
-		servicePricePanel.add(servicePriceScrollPane, "grow");
+			JPanel roomPricePanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+			roomPriceTable = new JTable(new RoomPriceModel(pricesId));
+			JScrollPane roomPriceScrollPane = new JScrollPane(roomPriceTable);
+			roomPricePanel.add(roomPriceScrollPane, "grow");
 
-		priceTabbedPane.add("Cene soba", roomPricePanel);
-		priceTabbedPane.add("Cene usluga", servicePricePanel);
+			JPanel servicePricePanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+			servicePriceTable = new JTable(new ServicePriceModel(pricesId));
+			JScrollPane servicePriceScrollPane = new JScrollPane(servicePriceTable);
+			servicePricePanel.add(servicePriceScrollPane, "grow");
+
+			JPanel combinedPanel = new JPanel(new MigLayout("", "[grow][grow]", "[][grow]"));
+			combinedPanel.add(roomPricePanel, "grow");
+			combinedPanel.add(servicePricePanel, "grow");
+
+			priceTabbedPane.addTab("Cenovnik " + pricesId, combinedPanel);
+			priceTabbedPane.setToolTipTextAt(priceTabbedPane.getTabCount() - 1, String.valueOf(pricesId)); // Store the
+																											// ID
+		}
 
 		panel.add(priceTabbedPane, "cell 0 1, grow");
+
+		// Adding ActionListeners for edit and remove buttons
+		editBtnPrice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selectedIndex = priceTabbedPane.getSelectedIndex();
+				if (selectedIndex == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati tab.", "Greska", JOptionPane.WARNING_MESSAGE);
+				} else {
+					int pricesId = Integer.parseInt(priceTabbedPane.getToolTipTextAt(selectedIndex));
+					AddEditPricesDialog addEditPricesDialog = new AddEditPricesDialog(AdministratorFrame.this,
+							pricesId);
+					addEditPricesDialog.setVisible(true);
+					refreshPriceTable();
+					manager.getPricesMan().writePrices("data/prices.csv");
+				}
+			}
+		});
+
+		removeBtnPrice.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int selectedIndex = priceTabbedPane.getSelectedIndex();
+				if (selectedIndex == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati tab.", "Greska", JOptionPane.WARNING_MESSAGE);
+				} else {
+					int pricesId = Integer.parseInt(priceTabbedPane.getToolTipTextAt(selectedIndex));
+					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete cenovnik?",
+							"Brisanje cenovnika", JOptionPane.YES_NO_OPTION);
+					if (izbor == JOptionPane.YES_OPTION) {
+						manager.getPricesMan().removePrices(pricesId);
+						manager.getPricesMan().writePrices("data/prices.csv");
+						refreshPriceTable();
+					}
+				}
+			}
+		});
 
 		return panel;
 	}
@@ -845,41 +892,6 @@ public class AdministratorFrame extends JFrame {
 				addEditPricesDialog.setVisible(true);
 				refreshPriceTable();
 				manager.getPricesMan().writePrices("data/prices.csv");
-			}
-		});
-
-		editBtnPrice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = roomPriceTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					AddEditPricesDialog addEditPricesDialog = new AddEditPricesDialog(AdministratorFrame.this, row + 1);
-					addEditPricesDialog.setVisible(true);
-					refreshPriceTable();
-					manager.getPricesMan().writePrices("data/prices.csv");
-				}
-			}
-		});
-
-		removeBtnPrice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = roomPriceTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete cenovnik?",
-							"Brisanje cenovnika", JOptionPane.YES_NO_OPTION);
-					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getPricesMan().removePrices(row + 1);
-						manager.getPricesMan().writePrices("data/prices.csv");
-					}
-					refreshPriceTable();
-				}
 			}
 		});
 	}
