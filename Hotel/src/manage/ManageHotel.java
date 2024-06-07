@@ -250,6 +250,7 @@ public class ManageHotel {
 			reservation.setStatus(ReservationStatus.CONFIRMED);
 		} else {
 			reservation.setStatus(ReservationStatus.DENIED);
+			reservation.setTotalPrice(0.0);
 		}
 	}
 
