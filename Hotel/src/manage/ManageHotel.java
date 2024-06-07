@@ -243,11 +243,6 @@ public class ManageHotel {
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
 		int availableRooms = numberOfAvailableRooms(reservation.getRoomType(), reservation.getStartDate(),
 				reservation.getEndDate());
-		if (availableRooms == 0) {
-			JOptionPane.showMessageDialog(null, "Ne postoji soba odabranog tipa u hotelu.", "Obaveštenje",
-					JOptionPane.INFORMATION_MESSAGE);
-			return;
-		}
 		int reservations = numberOfReservations(reservation.getRoomType(), reservation.getStartDate(),
 				reservation.getEndDate());
 

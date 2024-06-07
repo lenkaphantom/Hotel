@@ -28,6 +28,9 @@ public class ReservationControler {
 	
 	public void setReservations() {
 		for (Map.Entry<Integer, Reservation> entry : manager.getReservationsMan().getReservations().entrySet()) {
+			if (entry.getValue().getGuest() == null) {
+				continue;
+			}
 			if (entry.getValue().getGuest().getUsername().equals(username)) {
 				reservations.put(entry.getKey(), entry.getValue());
 			}

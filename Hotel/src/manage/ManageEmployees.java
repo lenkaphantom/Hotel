@@ -137,13 +137,16 @@ public class ManageEmployees {
 						Integer.parseInt(parts[11]), Type.valueOf(parts[12]));
 				if (parts[12].equals("HouseKeeper") && parts.length > 13) {
 					HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(Integer.parseInt(parts[0]));
-					String[] data = parts[13].split(":");
-					String[] rooms = data[1].split("\\*");
-					List<Room> roomsToClean = new ArrayList<>();
-					for (String room : rooms) {
-						Room roomToAdd = manager.getRoomsMan().getRooms().get(Integer.parseInt(room));
-						roomsToClean.add(roomToAdd);
-						houseKeeper.getRoomsToClean().put(LocalDate.parse(data[0]), roomsToClean);
+					String[] data = parts[13].split("\\|");
+					for (String room : data) {
+						String[] roomData = room.split(":");
+						LocalDate date = LocalDate.parse(roomData[0]);
+						String[] rooms = roomData[1].split("\\*");
+						List<Room> roomsToClean = new ArrayList<>();
+						for (String roomId : rooms) {
+							roomsToClean.add(manager.getRoomsMan().getRooms().get(Integer.parseInt(roomId)));
+						}
+						houseKeeper.getRoomsToClean().put(date, roomsToClean);
 					}
 				}
 			}
@@ -170,6 +173,9 @@ public class ManageEmployees {
 	public int getNumberOfRoomsToClean(int id, LocalDate date) {
 		HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(id);
 		int numberOfRooms = 0;
+		if (houseKeeper.getRoomsToClean().get(date) == null) {
+			return 0;
+		}
 		for (Room room : houseKeeper.getRoomsToClean().get(date)) {
 			if (room.getRoomStatus().equals(RoomStatus.CLEANING))
 				numberOfRooms++;

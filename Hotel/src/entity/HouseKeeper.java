@@ -41,6 +41,7 @@ public class HouseKeeper extends Employee {
 	            rooms += room.getId() + "*";
 	        }
 	        rooms = rooms.substring(0, rooms.length() - 1);
+	        rooms += "|";
 	    }
 	    return super.toStringFile() + " | " + rooms;
 	}
