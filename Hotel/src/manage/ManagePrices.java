@@ -114,4 +114,24 @@ public class ManagePrices {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
+	
+	public void removeServicePrices(int serviceId) {
+		for (Prices price : this.prices.values()) {
+			for (AdditionalServices service : price.getPricePerService().keySet()) {
+				if (service.getId() == serviceId) {
+					price.getPricePerService().remove(service);
+				}
+			}
+		}
+	}
+	
+	public void removeRoomTypePrices(int roomId) {
+		for (Prices price : this.prices.values()) {
+			for (RoomType roomType : price.getPricePerRoom().keySet()) {
+				if (roomType.getId() == roomId) {
+					price.getPricePerRoom().remove(roomType);
+				}
+			}
+		}
+	}
 }

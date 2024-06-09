@@ -338,4 +338,21 @@ public class ManageHotel {
 		}
 		return additionalServices;
 	}
+	
+	public boolean checkRoomType(int id) {
+		if (!this.roomTypesMan.getRoomTypes().containsKey(id)) {
+            JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " ne postoji.", "Greška",
+                    JOptionPane.WARNING_MESSAGE);
+            return false;
+        }
+		
+		for (Room room : this.roomsMan.getRooms().values()) {
+			if (room.getRoomType().getId() == id) {
+				JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " se koristi.", "Greška",
+						JOptionPane.WARNING_MESSAGE);
+				return false;
+			}
+		}
+        return true;
+	}
 }

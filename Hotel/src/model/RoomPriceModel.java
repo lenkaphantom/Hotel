@@ -18,6 +18,11 @@ public class RoomPriceModel extends AbstractTableModel {
         if (pricesId != -1) {
             Prices prices = manager.getPricesMan().getPrices().get(pricesId);
             this.pricePerRoom = prices.getPricePerRoom();
+			for (RoomType roomType : manager.getRoomTypesMan().getRoomTypes().values()) {
+				if (!pricePerRoom.containsKey(roomType)) {
+					pricePerRoom.put(roomType, 0.0);
+				}
+			}
         } else {
             this.pricePerRoom = manager.getRoomTypesMan().getDefaultPrices();
         }

@@ -752,6 +752,7 @@ public class AdministratorFrame extends JFrame {
 				AddEditRoomTypeDialog addEditRoomTypeDialog = new AddEditRoomTypeDialog(AdministratorFrame.this, 0);
 				addEditRoomTypeDialog.setVisible(true);
 				refreshRoomTypeTable();
+				refreshPriceTable();
 				manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
 			}
 		});
@@ -768,6 +769,8 @@ public class AdministratorFrame extends JFrame {
 							row + 1);
 					addEditRoomTypeDialog.setVisible(true);
 					refreshRoomTypeTable();
+					refreshPriceTable();
+					refreshRoomsTable();
 					manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
 				}
 			}
@@ -784,7 +787,10 @@ public class AdministratorFrame extends JFrame {
 					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete tip sobe?",
 							"Brisanje tipa sobe", JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
+						if (!manager.checkRoomType(row + 1))
+							return;
 						manager.getRoomTypesMan().removeRoomType(row + 1);
+						manager.getPricesMan().removeRoomTypePrices(row + 1);
 						manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
 					}
 					refreshRoomTypeTable();
@@ -844,6 +850,7 @@ public class AdministratorFrame extends JFrame {
 				AddEditServicesDialog addEditServicesDialog = new AddEditServicesDialog(AdministratorFrame.this, 0);
 				addEditServicesDialog.setVisible(true);
 				refreshAdditionalServicesTable();
+				refreshPriceTable();
 				manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 			}
 		});
@@ -860,6 +867,7 @@ public class AdministratorFrame extends JFrame {
 							row + 1);
 					addEditServicesDialog.setVisible(true);
 					refreshAdditionalServicesTable();
+					refreshPriceTable();
 					manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 				}
 			}
@@ -878,9 +886,11 @@ public class AdministratorFrame extends JFrame {
 							JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
 						manager.getAdditionalServicesMan().removeAdditionalService(row + 1);
+						manager.getPricesMan().removeServicePrices(row + 1);
 						manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 					}
 					refreshAdditionalServicesTable();
+					refreshPriceTable();
 				}
 			}
 		});
