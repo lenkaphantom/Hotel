@@ -1,9 +1,11 @@
 package entity;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import enumeracije.RoomSpecs;
 import enumeracije.RoomStatus;
 import manage.ManageHotel;
 
@@ -14,19 +16,22 @@ public class Room {
 	private int roomNumber;
 	private RoomStatus roomStatus;
 	private RoomType roomType;
-	private Map<LocalDate, LocalDate> occupiedDates =  new HashMap<>();
+	private Map<LocalDate, LocalDate> occupiedDates = new HashMap<>();
+	private ArrayList<RoomSpecs> roomSpecs = new ArrayList<>();
 
 	// constructors
 	public Room() {
 		this.id = idCounter++;
 	}
 
-	public Room(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel) {
+	public Room(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel,
+			ArrayList<RoomSpecs> roomSpecs) {
 		this.id = idCounter++;
 		this.floor = floor;
 		this.roomNumber = roomNumber;
 		this.roomStatus = roomStatus;
 		this.roomType = hotel.getRoomTypesMan().getRoomTypes().get(idRoomType);
+		this.roomSpecs = roomSpecs;
 		this.setOccupiedDates(hotel);
 	}
 
@@ -37,6 +42,7 @@ public class Room {
 		this.roomNumber = room.roomNumber;
 		this.roomStatus = room.roomStatus;
 		this.roomType = room.roomType;
+		this.roomSpecs = room.roomSpecs;
 	}
 
 	// getters
@@ -62,6 +68,10 @@ public class Room {
 
 	public Map<LocalDate, LocalDate> getOccupiedDates() {
 		return occupiedDates;
+	}
+	
+	public ArrayList<RoomSpecs> getRoomSpecs() {
+		return roomSpecs;
 	}
 
 	// setters
@@ -91,6 +101,10 @@ public class Room {
 			}
 		}
 	}
+	
+	public void setRoomSpecs(ArrayList<RoomSpecs> roomSpecs) {
+		this.roomSpecs = roomSpecs;
+	}
 
 	// methods
 	@Override
@@ -100,7 +114,11 @@ public class Room {
 	}
 
 	public String toStringFile() {
+		String roomSpecsString = "";
+		for (RoomSpecs roomSpec : this.roomSpecs) {
+			roomSpecsString += roomSpec + "*";
+		}
 		return this.id + " | " + this.floor + " | " + this.roomNumber + " | " + this.roomStatus + " | "
-				+ this.roomType.getId();
+				+ this.roomType.getId() + " | " + roomSpecsString.substring(0, roomSpecsString.length() - 1);
 	}
 }

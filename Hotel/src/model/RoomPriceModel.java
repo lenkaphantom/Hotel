@@ -19,8 +19,8 @@ public class RoomPriceModel extends AbstractTableModel {
             Prices prices = manager.getPricesMan().getPrices().get(pricesId);
             this.pricePerRoom = prices.getPricePerRoom();
 			for (RoomType roomType : manager.getRoomTypesMan().getRoomTypes().values()) {
-				if (!pricePerRoom.containsKey(roomType)) {
-					pricePerRoom.put(roomType, 0.0);
+				if (!this.pricePerRoom.containsKey(roomType)) {
+					this.pricePerRoom.put(roomType, 0.0);
 				}
 			}
         } else {

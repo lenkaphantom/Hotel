@@ -77,8 +77,8 @@ public class ManagePrices {
 				Map<RoomType, Double> pricePerRoom = new HashMap<>();
 				for (String roomPrice : roomPrices) {
 					String[] roomParts = roomPrice.split("\\*");
-					int roomId = Integer.parseInt(roomParts[0].trim());
-					RoomType roomType = manager.getRoomsMan().getRooms().get(roomId).getRoomType();
+					int roomTypeId = Integer.parseInt(roomParts[0].trim());
+					RoomType roomType = manager.getRoomTypesMan().getRoomTypes().get(roomTypeId);
 					Double price = Double.parseDouble(roomParts[1].trim());
 					pricePerRoom.put(roomType, price);
 				}

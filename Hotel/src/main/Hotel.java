@@ -8,8 +8,7 @@ public class Hotel {
 	public static void main(String[] args) {
 		ManageHotel manager = ManageHotel.getInstance();		
 		manager.loadData();
-		manager.getPricesMan().printPrices();
-//		MainFrame mainFrame = new MainFrame();
+		MainFrame mainFrame = new MainFrame();
 		manager.writeData();
 	}
 }

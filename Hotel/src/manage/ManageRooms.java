@@ -5,11 +5,13 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 import entity.Room;
 import entity.RoomType;
+import enumeracije.RoomSpecs;
 import enumeracije.RoomStatus;
 
 public class ManageRooms {
@@ -26,8 +28,9 @@ public class ManageRooms {
 	}
 
 	// methods
-	public void addRoom(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel) {
-		Room room = new Room(floor, roomNumber, roomStatus, idRoomType, hotel);
+	public void addRoom(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel,
+			ArrayList<RoomSpecs> roomSpecs) {
+		Room room = new Room(floor, roomNumber, roomStatus, idRoomType, hotel, roomSpecs);
 		this.rooms.put(room.getId(), room);
 	}
 
@@ -36,7 +39,7 @@ public class ManageRooms {
 		this.rooms.remove(room.getId());
 	}
 
-	public void changeRoom(int id, int floor, int roomNumber, RoomType roomType) {
+	public void changeRoom(int id, int floor, int roomNumber, RoomType roomType, ArrayList<RoomSpecs> roomSpecs) {
 		if (!this.rooms.containsKey(id)) {
 			System.out.println("Soba sa id-jem " + id + " ne postoji.");
 			return;
@@ -53,6 +56,9 @@ public class ManageRooms {
 		if (roomType != null) {
 			room.setRoomType(roomType);
 		}
+		if (roomSpecs != null) {
+			room.setRoomSpecs(roomSpecs);
+		}
 	}
 
 	public void printRooms() {
@@ -66,14 +72,19 @@ public class ManageRooms {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				String[] parts = line.split(" \\| ");
+				ArrayList<RoomSpecs> roomSpecs = new ArrayList<RoomSpecs>();
+				String[] specs = parts[5].split("*");
+				for (String spec : specs) {
+					roomSpecs.add(RoomSpecs.valueOf(spec));
+				}
 				this.addRoom(Integer.parseInt(parts[1]), Integer.parseInt(parts[2]), RoomStatus.valueOf(parts[3]),
-						Integer.parseInt(parts[4]), hotel);
+						Integer.parseInt(parts[4]), hotel, roomSpecs);
 			}
 		} catch (IOException e) {
 			System.out.println("Greška prilikom čitanja iz fajla.");
 		}
 	}
-	
+
 	public void writeRooms(String path) {
 		try {
 			FileWriter writer = new FileWriter(path);
@@ -85,15 +96,15 @@ public class ManageRooms {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
-	
+
 	public boolean isOccupied(int id, LocalDate date1, LocalDate date2) {
 		if (!this.rooms.containsKey(id)) {
 			System.out.println("Soba sa id-jem " + id + " ne postoji.");
 			return false;
 		}
-		
+
 		Room room = this.rooms.get(id);
-		
+
 		if (room.getOccupiedDates() == null)
 			return false;
 		for (LocalDate startDate : room.getOccupiedDates().keySet()) {

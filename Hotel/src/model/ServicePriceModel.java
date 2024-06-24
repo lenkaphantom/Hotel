@@ -19,8 +19,8 @@ public class ServicePriceModel extends AbstractTableModel {
             Prices prices = manager.getPricesMan().getPrices().get(pricesId);
             this.pricePerService = prices.getPricePerService();
 			for (AdditionalServices service : manager.getAdditionalServicesMan().getAdditionalServices().values()) {
-				if (!pricePerService.containsKey(service)) {
-					pricePerService.put(service, 0.0);
+				if (!this.pricePerService.containsKey(service)) {
+					this.pricePerService.put(service, 0.0);
 				}
 			}
         } else {
