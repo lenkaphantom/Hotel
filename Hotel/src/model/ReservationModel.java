@@ -35,7 +35,13 @@ public class ReservationModel extends AbstractTableModel {
 	@Override
 	public Object getValueAt(int rowIndex, int columnIndex) {
 		List<Reservation> reservations = new ArrayList<>(controler.getReservations().values());
+
+		if (rowIndex >= reservations.size()) {
+			return null;
+		}
+
 		Reservation reservation = reservations.get(rowIndex);
+
 		if (reservation == null)
 			return null;
 
@@ -49,7 +55,7 @@ public class ReservationModel extends AbstractTableModel {
 		case 3:
 			return reservation.getEndDate();
 		case 4:
-			return controler.getAdditionalServices(reservation.getId());
+			return "Usluge";
 		case 5:
 			return reservation.getStatus();
 		case 6:
@@ -73,9 +79,11 @@ public class ReservationModel extends AbstractTableModel {
 
 	@Override
 	public Class<?> getColumnClass(int columnIndex) {
-		if (this.getValueAt(0, columnIndex) == null)
+		if (getRowCount() == 0) {
 			return Object.class;
-		return this.getValueAt(0, columnIndex).getClass();
+		}
+		Object value = this.getValueAt(0, columnIndex);
+		return value != null ? value.getClass() : Object.class;
 	}
 
 	@Override

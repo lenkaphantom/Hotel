@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -26,13 +25,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
 import controler.RoomControler;
 import entity.Prices;
+import entity.Reservation;
 import manage.ManageHotel;
 import model.AdditionalServicesModel;
 import model.EmployeeModel;
@@ -50,9 +49,9 @@ import view.addedit.AddEditRoomDialog;
 import view.addedit.AddEditRoomTypeDialog;
 import view.addedit.AddEditServicesDialog;
 import view.comboBoxRenderer.AdditionalServicesCellRenderer;
-import view.comboBoxRenderer.AdditionalServicesEditor;
 import view.comboBoxRenderer.RoomCellEditor;
 import view.comboBoxRenderer.RoomCellRenderer;
+import view.popup.AdditionalServicesPopup;
 
 public class AdministratorFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -185,7 +184,6 @@ public class AdministratorFrame extends JFrame {
 		JPanel roomTypePanel = createRoomTypePanel(roomTypeTable, addBtnRoomType, editBtnRoomType, removeBtnRoomType);
 		tabbedPane.addTab("Tipovi soba", null, roomTypePanel, null);
 
-		List<String> additionalServicesList = manager.getAdditionalServicesMan().getAdditionalServicesList();
 		ReservationModel reservationModel = new ReservationModel("");
 		controler = reservationModel.getControler();
 
@@ -193,20 +191,22 @@ public class AdministratorFrame extends JFrame {
 		reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
 		reservationTable.setRowSorter(reservationTableSorter);
 
+		reservationTable.setRowHeight(20);
+
 		TableCellRenderer additionalServicesRenderer = new AdditionalServicesCellRenderer();
-		TableCellEditor additionalServicesEditor = new AdditionalServicesEditor(
-				additionalServicesList.toArray(new String[0]));
 		reservationTable.getColumnModel().getColumn(4).setCellRenderer(additionalServicesRenderer);
-		reservationTable.getColumnModel().getColumn(4).setCellEditor(additionalServicesEditor);
 
 		reservationTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = reservationTable.rowAtPoint(e.getPoint());
 				int column = reservationTable.columnAtPoint(e.getPoint());
+				int modelRow = reservationTable.convertRowIndexToModel(row);
 
 				if (column == 4) {
-					reservationTable.editCellAt(row, column);
+					Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+					new AdditionalServicesPopup(AdministratorFrame.this,
+							manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
 				}
 			}
 		});
@@ -672,8 +672,9 @@ public class AdministratorFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
+					int modelRow = employeeTable.convertRowIndexToModel(row);
 					AddEditEmployeeDialog addEditEmployeeDialog = new AddEditEmployeeDialog(AdministratorFrame.this,
-							row + 1);
+							modelRow + 1);
 					addEditEmployeeDialog.setVisible(true);
 					refreshEmployeeTable();
 					manager.getEmployeesMan().writeEmployees("data/employees.csv");
@@ -693,7 +694,8 @@ public class AdministratorFrame extends JFrame {
 							"Da li ste sigurni da zelite da obrisete zaposlenog?", "Brisanje zaposlenog",
 							JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getEmployeesMan().removeEmployee(row + 1);
+						int modelRow = employeeTable.convertRowIndexToModel(row);
+						manager.getEmployeesMan().removeEmployee(modelRow + 1);
 						manager.getEmployeesMan().writeEmployees("data/employees.csv");
 					}
 					refreshEmployeeTable();
@@ -719,7 +721,9 @@ public class AdministratorFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
-					AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this, row + 1);
+					int modelRow = guestTable.convertRowIndexToModel(row);
+					AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(AdministratorFrame.this,
+							modelRow + 1);
 					addEditGuestDialog.setVisible(true);
 					refreshGuestTable();
 					manager.getGuestsMan().writeGuests("data/guests.csv");
@@ -738,7 +742,8 @@ public class AdministratorFrame extends JFrame {
 					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete gosta?",
 							"Brisanje gosta", JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getGuestsMan().removeGuest(row + 1);
+						int modelRow = guestTable.convertRowIndexToModel(row);
+						manager.getGuestsMan().removeGuest(modelRow + 1);
 						manager.getGuestsMan().writeGuests("data/guests.csv");
 					}
 					refreshGuestTable();
@@ -765,8 +770,9 @@ public class AdministratorFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
+					int modelRow = roomTypeTable.convertRowIndexToModel(row);
 					AddEditRoomTypeDialog addEditRoomTypeDialog = new AddEditRoomTypeDialog(AdministratorFrame.this,
-							row + 1);
+							modelRow + 1);
 					addEditRoomTypeDialog.setVisible(true);
 					refreshRoomTypeTable();
 					refreshPriceTable();
@@ -787,10 +793,11 @@ public class AdministratorFrame extends JFrame {
 					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete tip sobe?",
 							"Brisanje tipa sobe", JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
-						if (!manager.checkRoomType(row + 1))
+						int modelRow = roomTypeTable.convertRowIndexToModel(row);
+						if (!manager.checkRoomType(modelRow + 1))
 							return;
-						manager.getRoomTypesMan().removeRoomType(row + 1);
-						manager.getPricesMan().removeRoomTypePrices(row + 1);
+						manager.getRoomTypesMan().removeRoomType(modelRow + 1);
+						manager.getPricesMan().removeRoomTypePrices(modelRow + 1);
 						manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
 					}
 					refreshRoomTypeTable();
@@ -816,7 +823,8 @@ public class AdministratorFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
-					AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, row + 1,
+					int modelRow = roomTable.convertRowIndexToModel(row);
+					AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, modelRow + 1,
 							roomControler);
 					addEditRoomDialog.setVisible(true);
 					refreshRoomsTable();
@@ -836,7 +844,8 @@ public class AdministratorFrame extends JFrame {
 					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete sobu?",
 							"Brisanje sobe", JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getRoomsMan().removeRoom(row + 1);
+						int modelRow = roomTable.convertRowIndexToModel(row);
+						manager.getRoomsMan().removeRoom(modelRow + 1);
 						manager.getRoomsMan().writeRooms("data/rooms.csv");
 					}
 					refreshRoomsTable();
@@ -863,8 +872,9 @@ public class AdministratorFrame extends JFrame {
 					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
 							JOptionPane.WARNING_MESSAGE);
 				} else {
+					int modelRow = additionalServiceTable.convertRowIndexToModel(row);
 					AddEditServicesDialog addEditServicesDialog = new AddEditServicesDialog(AdministratorFrame.this,
-							row + 1);
+							modelRow + 1);
 					addEditServicesDialog.setVisible(true);
 					refreshAdditionalServicesTable();
 					refreshPriceTable();
@@ -885,8 +895,9 @@ public class AdministratorFrame extends JFrame {
 							"Da li ste sigurni da zelite da obrisete dodatnu uslugu?", "Brisanje dodatne usluge",
 							JOptionPane.YES_NO_OPTION);
 					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getAdditionalServicesMan().removeAdditionalService(row + 1);
-						manager.getPricesMan().removeServicePrices(row + 1);
+						int modelRow = additionalServiceTable.convertRowIndexToModel(row);
+						manager.getAdditionalServicesMan().removeAdditionalService(modelRow + 1);
+						manager.getPricesMan().removeServicePrices(modelRow + 1);
 						manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 					}
 					refreshAdditionalServicesTable();
