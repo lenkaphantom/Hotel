@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import entity.Room;
@@ -29,7 +30,7 @@ public class ManageRooms {
 
 	// methods
 	public void addRoom(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel,
-			ArrayList<RoomSpecs> roomSpecs) {
+			List<RoomSpecs> roomSpecs) {
 		Room room = new Room(floor, roomNumber, roomStatus, idRoomType, hotel, roomSpecs);
 		this.rooms.put(room.getId(), room);
 	}
@@ -39,7 +40,7 @@ public class ManageRooms {
 		this.rooms.remove(room.getId());
 	}
 
-	public void changeRoom(int id, int floor, int roomNumber, RoomType roomType, ArrayList<RoomSpecs> roomSpecs) {
+	public void changeRoom(int id, int floor, int roomNumber, RoomType roomType, List<RoomSpecs> roomSpecs) {
 		if (!this.rooms.containsKey(id)) {
 			System.out.println("Soba sa id-jem " + id + " ne postoji.");
 			return;
@@ -121,5 +122,26 @@ public class ManageRooms {
 			}
 		}
 		return false;
+	}
+	
+	public List<LocalDate> getOccupiedDatesList(int id) {
+		if (!this.rooms.containsKey(id)) {
+            System.out.println("Soba sa id-jem " + id + " ne postoji.");
+            return null;
+        }
+
+        Room room = this.rooms.get(id);
+        List<LocalDate> occupiedDates = new ArrayList<LocalDate>();
+        if (room.getOccupiedDates() == null)
+            return occupiedDates;
+        for (LocalDate startDate : room.getOccupiedDates().keySet()) {
+            LocalDate endDate = room.getOccupiedDates().get(startDate);
+            LocalDate date = startDate;
+            while (!date.isAfter(endDate)) {
+                occupiedDates.add(date);
+                date = date.plusDays(1);
+            }
+        }
+        return occupiedDates;
 	}
 }

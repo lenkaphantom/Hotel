@@ -88,7 +88,10 @@ public class ManageReservations {
 					}
 				}
 
-				Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices, status);
+				LocalDate creationDate = LocalDate.parse(parts[9]);
+
+				Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices, status,
+						creationDate);
 
 				Room room = null;
 				if (!parts[6].isEmpty()) {
@@ -119,5 +122,15 @@ public class ManageReservations {
 		} catch (IOException e) {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
+	}
+	
+	public double getTotalCostForGuest(String username) {
+		double totalCost = 0;
+		for (Reservation reservation : this.reservations.values()) {
+			if (reservation.getGuest() != null && reservation.getGuest().getUsername().equals(username)) {
+				totalCost += reservation.getTotalPrice();
+			}
+		}
+		return totalCost;
 	}
 }

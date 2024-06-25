@@ -18,6 +18,7 @@ public class Reservation {
 	private Room room;
 	private Guest guest;
 	private double totalPrice;
+	private LocalDate creationDate;
 
 	// constructors
 	public Reservation() {
@@ -26,7 +27,7 @@ public class Reservation {
 
 	// constructor
 	public Reservation(RoomType roomType, LocalDate startDate, LocalDate endDate,
-			List<AdditionalServices> additionalServices, ReservationStatus status) {
+			List<AdditionalServices> additionalServices, ReservationStatus status, LocalDate creationDate) {
 		this.id = idCounter++;
 		this.roomType = roomType;
 		this.startDate = startDate;
@@ -36,6 +37,7 @@ public class Reservation {
 		this.room = null;
 		this.guest = null;
 		this.totalPrice = 0;
+		this.creationDate = creationDate;
 	}
 
 	// copy constructor
@@ -47,6 +49,7 @@ public class Reservation {
 		this.room = reservation.room;
 		this.guest = reservation.guest;
 		this.totalPrice = reservation.totalPrice;
+		this.startDate = reservation.startDate;
 	}
 
 	// getters
@@ -85,6 +88,10 @@ public class Reservation {
 	public double getTotalPrice() {
 		return totalPrice;
 	}
+	
+	public LocalDate getCreationDate() {
+		return creationDate;
+	}
 
 	// setters
 	public void setRoomType(RoomType roomType) {
@@ -117,6 +124,10 @@ public class Reservation {
 
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
+	}
+	
+	public void setCreationDate(LocalDate creationDate) {
+		this.creationDate = creationDate;
 	}
 
 	// methods
@@ -156,6 +167,6 @@ public class Reservation {
 			result += " | " + this.guest.getId();
 		else
 			result += " | ";
-		return result + " | " + this.totalPrice;
+		return result + " | " + this.totalPrice + " | " + this.creationDate;
 	}
 }

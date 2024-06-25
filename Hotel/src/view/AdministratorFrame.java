@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,13 +27,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
 import controler.RoomControler;
 import entity.Prices;
 import entity.Reservation;
+import entity.Room;
 import manage.ManageHotel;
 import model.AdditionalServicesModel;
 import model.EmployeeModel;
@@ -48,10 +50,9 @@ import view.addedit.AddEditPricesDialog;
 import view.addedit.AddEditRoomDialog;
 import view.addedit.AddEditRoomTypeDialog;
 import view.addedit.AddEditServicesDialog;
-import view.comboBoxRenderer.AdditionalServicesCellRenderer;
-import view.comboBoxRenderer.RoomCellEditor;
-import view.comboBoxRenderer.RoomCellRenderer;
 import view.popup.AdditionalServicesPopup;
+import view.popup.OccupiedDatesPopup;
+import view.popup.RoomSpecsPopup;
 
 public class AdministratorFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -191,11 +192,6 @@ public class AdministratorFrame extends JFrame {
 		reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
 		reservationTable.setRowSorter(reservationTableSorter);
 
-		reservationTable.setRowHeight(20);
-
-		TableCellRenderer additionalServicesRenderer = new AdditionalServicesCellRenderer();
-		reservationTable.getColumnModel().getColumn(4).setCellRenderer(additionalServicesRenderer);
-
 		reservationTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -224,17 +220,22 @@ public class AdministratorFrame extends JFrame {
 		roomTableSorter = new TableRowSorter<>((AbstractTableModel) roomTable.getModel());
 		roomTable.setRowSorter(roomTableSorter);
 
-		roomTable.getColumnModel().getColumn(5).setCellRenderer(new RoomCellRenderer());
-		roomTable.getColumnModel().getColumn(5).setCellEditor(new RoomCellEditor());
-
 		roomTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = roomTable.rowAtPoint(e.getPoint());
 				int column = roomTable.columnAtPoint(e.getPoint());
+				
+				int modelRow = roomTable.convertRowIndexToModel(row);
 
 				if (column == 5) {
-					roomTable.editCellAt(row, column);
+					List<LocalDate> occupiedDates = manager.getRoomsMan().getOccupiedDatesList(modelRow + 1);
+					new OccupiedDatesPopup(AdministratorFrame.this, occupiedDates).setVisible(true);
+				}
+
+				if (column == 6) {
+					Room room = manager.getRoomsMan().getRooms().get(row + 1);
+					new RoomSpecsPopup(AdministratorFrame.this, room.getRoomSpecs()).setVisible(true);
 				}
 			}
 		});

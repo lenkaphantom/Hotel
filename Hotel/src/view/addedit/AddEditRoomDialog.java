@@ -153,7 +153,7 @@ public class AddEditRoomDialog extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				if (validateFields()) {
 					List<String> selectedSpecs = listSpecs.getSelectedValuesList();
-					ArrayList<RoomSpecs> specs = manager.getRoomSpecsFromStrings(selectedSpecs);
+					List<RoomSpecs> specs = manager.getRoomSpecsFromStrings(selectedSpecs);
 
 					int floor = Integer.parseInt(tfFloor.getText());
 					int roomNumber = Integer.parseInt(tfRoomNumber.getText());

@@ -3,6 +3,7 @@ package entity;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import enumeracije.RoomSpecs;
@@ -17,7 +18,7 @@ public class Room {
 	private RoomStatus roomStatus;
 	private RoomType roomType;
 	private Map<LocalDate, LocalDate> occupiedDates = new HashMap<>();
-	private ArrayList<RoomSpecs> roomSpecs = new ArrayList<>();
+	private List<RoomSpecs> roomSpecs = new ArrayList<>();
 
 	// constructors
 	public Room() {
@@ -25,7 +26,7 @@ public class Room {
 	}
 
 	public Room(int floor, int roomNumber, RoomStatus roomStatus, int idRoomType, ManageHotel hotel,
-			ArrayList<RoomSpecs> roomSpecs) {
+			List<RoomSpecs> roomSpecs) {
 		this.id = idCounter++;
 		this.floor = floor;
 		this.roomNumber = roomNumber;
@@ -70,7 +71,7 @@ public class Room {
 		return occupiedDates;
 	}
 	
-	public ArrayList<RoomSpecs> getRoomSpecs() {
+	public List<RoomSpecs> getRoomSpecs() {
 		return roomSpecs;
 	}
 
@@ -102,7 +103,7 @@ public class Room {
 		}
 	}
 	
-	public void setRoomSpecs(ArrayList<RoomSpecs> roomSpecs) {
+	public void setRoomSpecs(List<RoomSpecs> roomSpecs) {
 		this.roomSpecs = roomSpecs;
 	}
 

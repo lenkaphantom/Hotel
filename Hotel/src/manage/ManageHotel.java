@@ -98,6 +98,16 @@ public class ManageHotel {
 		for (Room room : this.roomsMan.getRooms().values()) {
 			room.setOccupiedDates(this);
 		}
+
+		for (Reservation reservation : this.reservationsMan.getReservations().values()) {
+			if (reservation.getRoom() == null) {
+				continue;
+			}
+			if (!reservation.getRoom().getRoomStatus().equals(RoomStatus.OCCUPIED)
+					&& reservation.getStartDate().isBefore(LocalDate.now())) {
+				reservation.setStatus(ReservationStatus.EXPIRED);
+			}
+		}
 	}
 
 	public void writeData() {
@@ -124,7 +134,7 @@ public class ManageHotel {
 
 		RoomType roomType = this.roomTypesMan.getRoomTypes().get(roomTypeID);
 		Reservation reservation = new Reservation(roomType, startDate, endDate, additionalServices,
-				ReservationStatus.WAITING);
+				ReservationStatus.WAITING, LocalDate.now());
 		reservation.setGuest(guestID, this);
 		this.calculatePrice(reservation.getId());
 
@@ -144,6 +154,15 @@ public class ManageHotel {
 	public void checkIn(int id) {
 		if (!this.reservationsMan.getReservations().containsKey(id)) {
 			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
+			return;
+		}
+
+		if (LocalDate.now().isBefore(this.reservationsMan.getReservations().get(id).getStartDate())) {
+			System.out.println("Ne može se izvršiti check-in pre datuma početka rezervacije.");
+			return;
+		} else if (LocalDate.now().isAfter(this.reservationsMan.getReservations().get(id).getEndDate())) {
+			System.out.println("Rezervacija je istekla.");
+			this.reservationsMan.getReservations().get(id).setStatus(ReservationStatus.EXPIRED);
 			return;
 		}
 
@@ -339,14 +358,14 @@ public class ManageHotel {
 		}
 		return additionalServices;
 	}
-	
+
 	public boolean checkRoomType(int id) {
 		if (!this.roomTypesMan.getRoomTypes().containsKey(id)) {
-            JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " ne postoji.", "Greška",
-                    JOptionPane.WARNING_MESSAGE);
-            return false;
-        }
-		
+			JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " ne postoji.", "Greška",
+					JOptionPane.WARNING_MESSAGE);
+			return false;
+		}
+
 		for (Room room : this.roomsMan.getRooms().values()) {
 			if (room.getRoomType().getId() == id) {
 				JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " se koristi.", "Greška",
@@ -354,23 +373,23 @@ public class ManageHotel {
 				return false;
 			}
 		}
-        return true;
+		return true;
 	}
-	
+
 	public List<String> getRoomsSpecsList(int id) {
 		if (!this.roomTypesMan.getRoomTypes().containsKey(id)) {
 			JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " ne postoji.", "Greška",
 					JOptionPane.WARNING_MESSAGE);
 			return null;
 		}
-		
+
 		List<String> roomsSpec = new ArrayList<>();
 		for (RoomSpecs spec : this.roomsMan.getRooms().get(id).getRoomSpecs()) {
 			roomsSpec.add(spec.toString());
 		}
 		return roomsSpec;
 	}
-	
+
 	public ArrayList<RoomSpecs> getRoomSpecsFromStrings(List<String> selectedSpecs) {
 		ArrayList<RoomSpecs> specs = new ArrayList<>();
 		for (String spec : selectedSpecs) {

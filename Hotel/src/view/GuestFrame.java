@@ -8,7 +8,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,18 +24,16 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
+import entity.Reservation;
 import enumeracije.ReservationStatus;
 import manage.ManageHotel;
 import model.ReservationModel;
 import net.miginfocom.swing.MigLayout;
 import view.addedit.AddEditReservationDialog;
-import view.comboBoxRenderer.AdditionalServicesCellRenderer;
-import view.comboBoxRenderer.AdditionalServicesEditor;
+import view.popup.AdditionalServicesPopup;
 
 public class GuestFrame extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -53,6 +50,8 @@ public class GuestFrame extends JFrame {
     private JButton addBtnReservation = new JButton();
     private JButton removeBtnReservation = new JButton();
     private String guestUsername; 
+
+    private JLabel totalCostLabel = new JLabel();
 
     Image img = new ImageIcon("img/add.png").getImage();
     Image newimg = img.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
@@ -89,7 +88,6 @@ public class GuestFrame extends JFrame {
         addBtnReservation.setIcon(new ImageIcon(newimg));
         removeBtnReservation.setIcon(new ImageIcon(newimg2));
 
-        List<String> additionalServicesList = manager.getAdditionalServicesMan().getAdditionalServicesList();
         ReservationModel reservationModel = new ReservationModel(guestUsername);
         controler = reservationModel.getControler();
 
@@ -97,19 +95,17 @@ public class GuestFrame extends JFrame {
         reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
         reservationTable.setRowSorter(reservationTableSorter);
 
-        TableCellRenderer additionalServicesRenderer = new AdditionalServicesCellRenderer();
-        TableCellEditor additionalServicesEditor = new AdditionalServicesEditor(additionalServicesList.toArray(new String[0]));
-        reservationTable.getColumnModel().getColumn(4).setCellRenderer(additionalServicesRenderer);
-        reservationTable.getColumnModel().getColumn(4).setCellEditor(additionalServicesEditor);
-
         reservationTable.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 int row = reservationTable.rowAtPoint(e.getPoint());
                 int column = reservationTable.columnAtPoint(e.getPoint());
+                int modelRow = reservationTable.convertRowIndexToModel(row);
 
                 if (column == 4) {
-                    reservationTable.editCellAt(row, column); 
+                    Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+                    new AdditionalServicesPopup(GuestFrame.this,
+                            manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
                 }
             }
         });
@@ -117,11 +113,13 @@ public class GuestFrame extends JFrame {
         JPanel reservationPanel = createPanelWithTable(reservationTable, addBtnReservation, removeBtnReservation);
         contentPane.add(reservationPanel, "cell 0 0,grow");
 
+        updateTotalCostLabel();
+
         initActions();
     }
 
     private JPanel createPanelWithTable(JTable table, JButton addButton, JButton removeButton) {
-        JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+        JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow][]"));
 
         JToolBar toolBar = new JToolBar();
         toolBar.setFloatable(false);
@@ -175,6 +173,8 @@ public class GuestFrame extends JFrame {
         });
 
         this.tfSearchReservation = searchField;
+        panel.add(totalCostLabel, "cell 0 3, grow");
+
         return panel;
     }
 
@@ -207,7 +207,8 @@ public class GuestFrame extends JFrame {
                             "Da li ste sigurni da zelite da otkazete rezervaciju?", "Otkazivanje rezervacije",
                             JOptionPane.YES_NO_OPTION);
                     if (izbor == JOptionPane.YES_OPTION) {
-                        manager.getReservationsMan().getReservations().get(reservationTable.getValueAt(row, 0)).setStatus(ReservationStatus.CANCELLED);
+                    	int modelRow = reservationTable.convertRowIndexToModel(row);
+                        manager.getReservationsMan().getReservations().get(reservationTable.getValueAt(modelRow, 0)).setStatus(ReservationStatus.CANCELLED);
                         refreshReservationTable();
                         manager.getReservationsMan().writeReservations("data/reservations.csv");
                     }
@@ -218,5 +219,11 @@ public class GuestFrame extends JFrame {
 
     public void refreshReservationTable() {
         ((AbstractTableModel) reservationTable.getModel()).fireTableDataChanged();
+        updateTotalCostLabel();
+    }
+
+    private void updateTotalCostLabel() {
+        double totalCost = manager.getReservationsMan().getTotalCostForGuest(guestUsername);
+        totalCostLabel.setText("Ukupna cena svih rezervacija: " + totalCost + " RSD");
     }
 }

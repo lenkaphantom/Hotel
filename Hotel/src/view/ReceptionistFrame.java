@@ -8,6 +8,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalDate;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -25,11 +27,12 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
 import entity.Reservation;
+import entity.Room;
+import enumeracije.ReservationStatus;
 import manage.ManageHotel;
 import model.GuestModel;
 import model.ReservationModel;
@@ -37,8 +40,9 @@ import model.RoomModel;
 import net.miginfocom.swing.MigLayout;
 import view.addedit.AddEditGuestDialog;
 import view.addedit.AddEditReservationDialog;
-import view.comboBoxRenderer.AdditionalServicesCellRenderer;
 import view.popup.AdditionalServicesPopup;
+import view.popup.OccupiedDatesPopup;
+import view.popup.RoomSpecsPopup;
 
 public class ReceptionistFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -120,11 +124,6 @@ public class ReceptionistFrame extends JFrame {
 		reservationTable = new JTable(reservationModel);
 		reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
 		reservationTable.setRowSorter(reservationTableSorter);
-		
-		reservationTable.setRowHeight(20);
-
-		TableCellRenderer additionalServicesRenderer = new AdditionalServicesCellRenderer();
-		reservationTable.getColumnModel().getColumn(4).setCellRenderer(additionalServicesRenderer);
 
 		reservationTable.addMouseListener(new MouseAdapter() {
 			@Override
@@ -147,8 +146,26 @@ public class ReceptionistFrame extends JFrame {
 		roomTable = new JTable(new RoomModel("", null));
 		roomTableSorter = new TableRowSorter<>((AbstractTableModel) roomTable.getModel());
 		roomTable.setRowSorter(roomTableSorter);
-		
-		roomTable.setRowHeight(20);
+
+		roomTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = roomTable.rowAtPoint(e.getPoint());
+				int column = roomTable.columnAtPoint(e.getPoint());
+
+				int modelRow = roomTable.convertRowIndexToModel(row);
+
+				if (column == 5) {
+					List<LocalDate> occupiedDates = manager.getRoomsMan().getOccupiedDatesList(modelRow + 1);
+					new OccupiedDatesPopup(ReceptionistFrame.this, occupiedDates).setVisible(true);
+				}
+
+				if (column == 6) {
+					Room room = manager.getRoomsMan().getRooms().get(row + 1);
+					new RoomSpecsPopup(ReceptionistFrame.this, room.getRoomSpecs()).setVisible(true);
+				}
+			}
+		});
 
 		JPanel roomPanel = createRoomPanel(roomTable);
 		tabbedPane.addTab("Sobe", null, roomPanel, null);
@@ -160,8 +177,6 @@ public class ReceptionistFrame extends JFrame {
 		guestTable = new JTable(new GuestModel());
 		guestTableSorter = new TableRowSorter<>((AbstractTableModel) guestTable.getModel());
 		guestTable.setRowSorter(guestTableSorter);
-		
-		guestTable.setRowHeight(20);
 
 		JPanel guestPanel = createGuestPanel(guestTable, addBtnGuest, editBtnGuest, removeBtnGuest);
 		tabbedPane.addTab("Gosti", null, guestPanel, null);
@@ -357,6 +372,74 @@ public class ReceptionistFrame extends JFrame {
 						0, controler);
 				addEditReservationDialog.setVisible(true);
 				refreshReservationTable();
+				manager.getReservationsMan().writeReservations("data/reservations.csv");
+			}
+		});
+
+		confirmBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = reservationTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int modelRow = reservationTable.convertRowIndexToModel(row);
+					Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+					if (reservation.getStatus().equals(ReservationStatus.WAITING)) {
+						manager.checkAvailableRoom(reservation.getId());
+						refreshReservationTable();
+						manager.getReservationsMan().writeReservations("data/reservations.csv");
+					} else {
+						JOptionPane.showMessageDialog(null, "Rezervacija je vec obradjena.", "Greska",
+								JOptionPane.WARNING_MESSAGE);
+					}
+				}
+			}
+		});
+
+		checkInBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = reservationTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int modelRow = reservationTable.convertRowIndexToModel(row);
+					AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(
+							ReceptionistFrame.this, modelRow + 1, controler);
+					addEditReservationDialog.setVisible(true);
+					manager.checkIn(row + 1);
+					refreshReservationTable();
+					refreshRoomTable();
+					manager.getReservationsMan().writeReservations("data/reservations.csv");
+					manager.getRoomsMan().writeRooms("data/rooms.csv");
+				}
+			}
+		});
+
+		checkOutBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				int row = reservationTable.getSelectedRow();
+				if (row == -1) {
+					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+				} else {
+					int modelRow = reservationTable.convertRowIndexToModel(row);
+					if (manager.getReservationsMan().getReservations().get(modelRow + 1).getRoom() == null) {
+						JOptionPane.showMessageDialog(null, "Gost nije cekirao.", "Greska",
+								JOptionPane.WARNING_MESSAGE);
+					} else {
+						manager.checkOut(modelRow + 1);
+						refreshReservationTable();
+						refreshRoomTable();
+						manager.getReservationsMan().writeReservations("data/reservations.csv");
+						manager.getRoomsMan().writeRooms("data/rooms.csv");
+						manager.getEmployeesMan().writeEmployees("data/employees.csv");
+					}
+				}
 			}
 		});
 
@@ -375,7 +458,8 @@ public class ReceptionistFrame extends JFrame {
 				int selectedRow = guestTable.getSelectedRow();
 				if (selectedRow != -1) {
 					int modelRow = guestTable.convertRowIndexToModel(selectedRow);
-					AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(ReceptionistFrame.this, modelRow + 1);
+					AddEditGuestDialog addEditGuestDialog = new AddEditGuestDialog(ReceptionistFrame.this,
+							modelRow + 1);
 					addEditGuestDialog.setVisible(true);
 					refreshGuestTable();
 				} else {
@@ -407,5 +491,9 @@ public class ReceptionistFrame extends JFrame {
 
 	public void refreshGuestTable() {
 		((AbstractTableModel) guestTable.getModel()).fireTableDataChanged();
+	}
+
+	public void refreshRoomTable() {
+		((AbstractTableModel) roomTable.getModel()).fireTableDataChanged();
 	}
 }

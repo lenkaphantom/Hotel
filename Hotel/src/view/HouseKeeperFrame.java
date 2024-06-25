@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -30,8 +31,8 @@ import enumeracije.RoomStatus;
 import manage.ManageHotel;
 import model.RoomModel;
 import net.miginfocom.swing.MigLayout;
-import view.comboBoxRenderer.RoomCellEditor;
-import view.comboBoxRenderer.RoomCellRenderer;
+import view.popup.OccupiedDatesPopup;
+import view.popup.RoomSpecsPopup;
 
 public class HouseKeeperFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -80,17 +81,22 @@ public class HouseKeeperFrame extends JFrame {
 		roomTableSorter = new TableRowSorter<>((AbstractTableModel) roomTable.getModel());
 		roomTable.setRowSorter(roomTableSorter);
 
-		roomTable.getColumnModel().getColumn(5).setCellRenderer(new RoomCellRenderer());
-		roomTable.getColumnModel().getColumn(5).setCellEditor(new RoomCellEditor());
-
 		roomTable.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				int row = roomTable.rowAtPoint(e.getPoint());
 				int column = roomTable.columnAtPoint(e.getPoint());
+				
+				int modelRow = roomTable.convertRowIndexToModel(row);
 
 				if (column == 5) {
-					roomTable.editCellAt(row, column);
+					List<LocalDate> occupiedDates = manager.getRoomsMan().getOccupiedDatesList(modelRow + 1);
+					new OccupiedDatesPopup(HouseKeeperFrame.this, occupiedDates).setVisible(true);
+				}
+
+				if (column == 6) {
+					Room room = manager.getRoomsMan().getRooms().get(row + 1);
+					new RoomSpecsPopup(HouseKeeperFrame.this, room.getRoomSpecs()).setVisible(true);
 				}
 			}
 		});
@@ -176,7 +182,8 @@ public class HouseKeeperFrame extends JFrame {
 				JOptionPane.showMessageDialog(null, "Morate selektovati sobu koju želite da očistite.", "Greška",
 						JOptionPane.ERROR_MESSAGE);
 			} else {
-				Room room = manager.getRoomsMan().getRooms().get(roomTable.getValueAt(row, 0));
+				int modelRow = roomTable.convertRowIndexToModel(row);
+				Room room = manager.getRoomsMan().getRooms().get(roomTable.getValueAt(modelRow, 0));
 				if (room.getRoomStatus().equals(RoomStatus.FREE))
 					JOptionPane.showMessageDialog(null, "Soba je već čista.", "Greška", JOptionPane.ERROR_MESSAGE);
 				else {

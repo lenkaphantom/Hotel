@@ -172,7 +172,7 @@ public class AddEditReservationDialog extends JDialog {
 						RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType, bedLayout);
 						
 						Reservation newReservation = new Reservation(roomType, localCheckInDate, localCheckOutDate,
-								additionalServices, ReservationStatus.WAITING);
+								additionalServices, ReservationStatus.WAITING, LocalDate.now());
 						if (parent instanceof GuestFrame)
 							newReservation.setGuest(guest.getId(), manager);
 						manager.getReservationsMan().addReservation(newReservation);

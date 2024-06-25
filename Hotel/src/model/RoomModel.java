@@ -46,9 +46,9 @@ public class RoomModel extends AbstractTableModel {
             case 4:
                 return room.getRoomType().getType();
             case 5:
-                return room.getOccupiedDates();
+                return "Zauzeti datumi";
             case 6:
-            	return room.getRoomSpecs();
+            	return "Osobine";
             default:
                 return null;
         }
