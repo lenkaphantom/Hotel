@@ -3,21 +3,27 @@ package view.addedit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 
 import controler.RoomControler;
 import entity.Room;
 import entity.RoomType;
+import enumeracije.RoomSpecs;
 import enumeracije.RoomStatus;
 import enumeracije.TypeOfRoom;
 import manage.ManageHotel;
@@ -37,6 +43,7 @@ public class AddEditRoomDialog extends JDialog {
 	private JTextField tfRoomNumber;
 	private JComboBox<TypeOfRoom> cbRoomType;
 	private JComboBox<String> cbBedLayout;
+	private JList<String> listSpecs;
 
 	public static void main(String[] args) {
 		try {
@@ -67,7 +74,7 @@ public class AddEditRoomDialog extends JDialog {
 	}
 
 	public void initGUI() {
-		MigLayout migLayout = new MigLayout("wrap 2", "[][]", "[]10[]10[]10[]10[]20[]");
+		MigLayout migLayout = new MigLayout("wrap 2", "[][]", "[]10[]10[]10[]10[]20[]10[]");
 		setLayout(migLayout);
 
 		JLabel lblFloor = new JLabel("Floor:");
@@ -113,6 +120,18 @@ public class AddEditRoomDialog extends JDialog {
 				}
 			}
 		});
+
+		JLabel lblSpecs = new JLabel("Dodatne osobine");
+		add(lblSpecs);
+		DefaultListModel<String> model = new DefaultListModel<>();
+		for (RoomSpecs service : RoomSpecs.values()) {
+			model.addElement(service.toString());
+		}
+		listSpecs = new JList<>(model);
+		listSpecs.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+		JScrollPane scrollPane = new JScrollPane(listSpecs);
+		add(scrollPane, "span, growx");
+
 		JButton btnCancel = new JButton("Cancel");
 		add(btnCancel);
 
@@ -124,25 +143,31 @@ public class AddEditRoomDialog extends JDialog {
 			tfRoomNumber.setText(String.valueOf(editR.getRoomNumber()));
 			cbRoomType.setSelectedItem(editR.getRoomType().getType());
 			cbBedLayout.setSelectedItem(editR.getRoomType().getBeds());
+			List<String> selectedSpecs = manager.getRoomsSpecsList(editR.getId());
+			int[] selectedIndices = selectedSpecs.stream().mapToInt(s -> RoomSpecs.valueOf(s).ordinal()).toArray();
+			listSpecs.setSelectedIndices(selectedIndices);
 		}
-		
+
 		btnOK.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (validateFields()) {
+					List<String> selectedSpecs = listSpecs.getSelectedValuesList();
+					ArrayList<RoomSpecs> specs = manager.getRoomSpecsFromStrings(selectedSpecs);
+
 					int floor = Integer.parseInt(tfFloor.getText());
 					int roomNumber = Integer.parseInt(tfRoomNumber.getText());
 					TypeOfRoom selectedType = (TypeOfRoom) cbRoomType.getSelectedItem();
 					String bedLayout = (String) cbBedLayout.getSelectedItem();
 
 					RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType, bedLayout);
-					
+
 					if (editR != null) {
-						manager.getRoomsMan().changeRoom(editR.getId(), floor, roomNumber, roomType);
+						manager.getRoomsMan().changeRoom(editR.getId(), floor, roomNumber, roomType, specs);
 						controler.updateRooms(LocalDate.now());
-					}
-					else {
-						manager.getRoomsMan().addRoom(floor, roomNumber, RoomStatus.FREE, roomType.getId(), manager);
+					} else {
+						manager.getRoomsMan().addRoom(floor, roomNumber, RoomStatus.FREE, roomType.getId(), manager,
+								specs);
 						controler.updateRooms(LocalDate.now());
 					}
 					((AdministratorFrame) parent).refreshRoomsTable();
@@ -162,24 +187,26 @@ public class AddEditRoomDialog extends JDialog {
 	private boolean validateFields() {
 		if (Validation.isStringEmpty(tfFloor.getText()) || Validation.isStringEmpty(tfRoomNumber.getText())
 				|| cbRoomType.getSelectedIndex() == -1 || cbBedLayout.getSelectedIndex() == -1) {
-			JOptionPane.showMessageDialog(this, "Sva polja moraju biti popunjena.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Sva polja sem dodatnih osobina moraju biti popunjena.", "Error", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		
+
 		try {
 			Integer.parseInt(tfFloor.getText());
 			Integer.parseInt(tfRoomNumber.getText());
 		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(this, "Sprat i broj sobe moraju biti celi brojevi.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Sprat i broj sobe moraju biti celi brojevi.", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		
+
 		if (Validation.isNumberNegative(Integer.parseInt(tfFloor.getText()))
 				|| Validation.isNumberNegative(Integer.parseInt(tfRoomNumber.getText()))) {
-			JOptionPane.showMessageDialog(this, "Sprat i broj sobe moraju biti pozitivni brojevi.", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Sprat i broj sobe moraju biti pozitivni brojevi.", "Error",
+					JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
-		
+
 		if (Integer.parseInt(tfRoomNumber.getText()) > 999 || Integer.parseInt(tfRoomNumber.getText()) < 101) {
 			JOptionPane.showMessageDialog(this, "Broj sobe ne sme biti veci od 999.", "Error",
 					JOptionPane.ERROR_MESSAGE);

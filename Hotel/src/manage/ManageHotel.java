@@ -14,6 +14,7 @@ import entity.Reservation;
 import entity.Room;
 import entity.RoomType;
 import enumeracije.ReservationStatus;
+import enumeracije.RoomSpecs;
 import enumeracije.RoomStatus;
 
 public class ManageHotel {
@@ -354,5 +355,27 @@ public class ManageHotel {
 			}
 		}
         return true;
+	}
+	
+	public List<String> getRoomsSpecsList(int id) {
+		if (!this.roomTypesMan.getRoomTypes().containsKey(id)) {
+			JOptionPane.showMessageDialog(null, "Tip sobe sa id-jem " + id + " ne postoji.", "Greška",
+					JOptionPane.WARNING_MESSAGE);
+			return null;
+		}
+		
+		List<String> roomsSpec = new ArrayList<>();
+		for (RoomSpecs spec : this.roomsMan.getRooms().get(id).getRoomSpecs()) {
+			roomsSpec.add(spec.toString());
+		}
+		return roomsSpec;
+	}
+	
+	public ArrayList<RoomSpecs> getRoomSpecsFromStrings(List<String> selectedSpecs) {
+		ArrayList<RoomSpecs> specs = new ArrayList<>();
+		for (String spec : selectedSpecs) {
+			specs.add(RoomSpecs.valueOf(spec));
+		}
+		return specs;
 	}
 }

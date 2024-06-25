@@ -12,7 +12,7 @@ import entity.Room;
 public class RoomModel extends AbstractTableModel {
     private static final long serialVersionUID = 1L;
     private RoomControler controler;
-    private String[] columnNames = { "ID", "Sprat", "Broj sobe", "Status", "Tip sobe", "Zauzeti datumi" };
+    private String[] columnNames = { "ID", "Sprat", "Broj sobe", "Status", "Tip sobe", "Zauzeti datumi", "Osobine" };
     
 	public RoomModel(String username, LocalDate date) {
 		this.controler = new RoomControler(username, date);
@@ -47,6 +47,8 @@ public class RoomModel extends AbstractTableModel {
                 return room.getRoomType().getType();
             case 5:
                 return room.getOccupiedDates();
+            case 6:
+            	return room.getRoomSpecs();
             default:
                 return null;
         }
@@ -66,7 +68,7 @@ public class RoomModel extends AbstractTableModel {
 
     @Override
     public boolean isCellEditable(int row, int column) {
-        return column == 5;
+        return column == 5 || column == 6;
     }
     
 	public RoomControler getControler() {

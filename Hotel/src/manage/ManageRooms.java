@@ -73,7 +73,7 @@ public class ManageRooms {
 			while ((line = reader.readLine()) != null) {
 				String[] parts = line.split(" \\| ");
 				ArrayList<RoomSpecs> roomSpecs = new ArrayList<RoomSpecs>();
-				String[] specs = parts[5].split("*");
+				String[] specs = parts[5].split("\\*");
 				for (String spec : specs) {
 					roomSpecs.add(RoomSpecs.valueOf(spec));
 				}
