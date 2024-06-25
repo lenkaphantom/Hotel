@@ -151,25 +151,27 @@ public class ManageHotel {
 		reservation.setStatus(ReservationStatus.CANCELLED);
 	}
 
-	public void checkIn(int id) {
+	public int checkIn(int id) {
 		if (!this.reservationsMan.getReservations().containsKey(id)) {
 			System.out.println("Rezervacija sa id-jem " + id + " ne postoji.");
-			return;
+			return 1;
 		}
 
 		if (LocalDate.now().isBefore(this.reservationsMan.getReservations().get(id).getStartDate())) {
 			System.out.println("Ne može se izvršiti check-in pre datuma početka rezervacije.");
-			return;
+			return -1;
 		} else if (LocalDate.now().isAfter(this.reservationsMan.getReservations().get(id).getEndDate())) {
 			System.out.println("Rezervacija je istekla.");
 			this.reservationsMan.getReservations().get(id).setStatus(ReservationStatus.EXPIRED);
-			return;
+			return -2;
 		}
 
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
 		this.assignRoomAtCheckIn(reservation.getId());
 		reservation.getRoom().setRoomStatus(RoomStatus.OCCUPIED);
 		this.calculatePrice(id);
+		
+		return 0;
 	}
 
 	public void checkOut(int id) {

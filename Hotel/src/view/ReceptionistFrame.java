@@ -30,6 +30,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 
 import controler.ReservationControler;
+import controler.RoomTypeControler;
 import entity.Reservation;
 import entity.Room;
 import enumeracije.ReservationStatus;
@@ -43,6 +44,7 @@ import view.addedit.AddEditReservationDialog;
 import view.popup.AdditionalServicesPopup;
 import view.popup.OccupiedDatesPopup;
 import view.popup.RoomSpecsPopup;
+import view.search.RoomSearchDialog;
 
 public class ReceptionistFrame extends JFrame {
 	private static final long serialVersionUID = 1L;
@@ -368,9 +370,8 @@ public class ReceptionistFrame extends JFrame {
 		addBtn.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(ReceptionistFrame.this,
-						0, controler);
-				addEditReservationDialog.setVisible(true);
+				RoomSearchDialog roomSearchDialog = new RoomSearchDialog(ReceptionistFrame.this, controler);
+				roomSearchDialog.setVisible(true);
 				refreshReservationTable();
 				manager.getReservationsMan().writeReservations("data/reservations.csv");
 			}
@@ -407,10 +408,18 @@ public class ReceptionistFrame extends JFrame {
 							JOptionPane.WARNING_MESSAGE);
 				} else {
 					int modelRow = reservationTable.convertRowIndexToModel(row);
+					if (manager.checkIn(modelRow + 1) == -1) {
+						JOptionPane.showMessageDialog(null,
+								"Ne može se izvršiti check-in pre datuma početka rezervacije.", "Greška",
+								JOptionPane.WARNING_MESSAGE);
+					} else if (manager.checkIn(modelRow + 1) == -2) {
+						JOptionPane.showMessageDialog(null, "Rezervacija je istekla.", "Greška",
+								JOptionPane.WARNING_MESSAGE);
+					}
 					AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(
-							ReceptionistFrame.this, modelRow + 1, controler);
+							ReceptionistFrame.this, modelRow + 1, controler, new RoomTypeControler(null));
 					addEditReservationDialog.setVisible(true);
-					manager.checkIn(row + 1);
+					manager.checkIn(modelRow + 1);
 					refreshReservationTable();
 					refreshRoomTable();
 					manager.getReservationsMan().writeReservations("data/reservations.csv");

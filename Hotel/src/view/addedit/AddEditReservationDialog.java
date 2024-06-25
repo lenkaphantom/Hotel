@@ -22,6 +22,7 @@ import javax.swing.ListSelectionModel;
 import com.toedter.calendar.JDateChooser;
 
 import controler.ReservationControler;
+import controler.RoomTypeControler;
 import entity.AdditionalServices;
 import entity.Guest;
 import entity.Reservation;
@@ -38,6 +39,7 @@ public class AddEditReservationDialog extends JDialog {
 	private ManageHotel manager = ManageHotel.getInstance();
 	private Reservation editR;
 	private ReservationControler controler;
+	private RoomTypeControler controlerRoomType;
 	private JFrame parent;
 
 	private JComboBox<TypeOfRoom> cbTipSobe;
@@ -48,10 +50,12 @@ public class AddEditReservationDialog extends JDialog {
 
 	private Guest guest;
 
-	public AddEditReservationDialog(JFrame parent, int id, ReservationControler controler) {
+	public AddEditReservationDialog(JFrame parent, int id, ReservationControler controler,
+			RoomTypeControler controlerRoomType) {
 		super(parent, true);
 		this.parent = parent;
 		this.controler = controler;
+		this.controlerRoomType = controlerRoomType;
 		this.guest = manager.getGuestsMan().getGuestFromUsername(controler.getUsername());
 
 		if (id != 0) {
@@ -73,26 +77,26 @@ public class AddEditReservationDialog extends JDialog {
 		MigLayout layout = new MigLayout("wrap 2", "[][grow]", "[]10[]10[]10[]10[]20[]");
 		setLayout(layout);
 
-		List<TypeOfRoom> availableRoomTypes = manager.getRoomTypesMan().getRoomTypesListEnum();
-	    cbTipSobe = new JComboBox<>(availableRoomTypes.toArray(new TypeOfRoom[0]));
-	    cbRasporedKreveta = new JComboBox<>();
+		List<TypeOfRoom> availableRoomTypes = controlerRoomType.getRoomTypesListEnum();
+		cbTipSobe = new JComboBox<>(availableRoomTypes.toArray(new TypeOfRoom[0]));
+		cbRasporedKreveta = new JComboBox<>();
 
-	    cbTipSobe.addActionListener(e -> {
-	        TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
-	        if (selectedType != null) {
-	            Map<TypeOfRoom, List<String>> bedLayouts = manager.getRoomTypesMan().getBedLayouts();
-	            cbRasporedKreveta.removeAllItems();
-	            List<String> layouts = bedLayouts.get(selectedType);
-	            if (layouts != null) {
-	                for (String layoutR : layouts) {
-	                    cbRasporedKreveta.addItem(layoutR);
-	                }
-	            }
-	            if (cbRasporedKreveta.getItemCount() > 0) {
-	                cbRasporedKreveta.setSelectedIndex(0);
-	            }
-	        }
-	    });
+		cbTipSobe.addActionListener(e -> {
+			TypeOfRoom selectedType = (TypeOfRoom) cbTipSobe.getSelectedItem();
+			if (selectedType != null) {
+				Map<TypeOfRoom, List<String>> bedLayouts = manager.getRoomTypesMan().getBedLayouts();
+				cbRasporedKreveta.removeAllItems();
+				List<String> layouts = bedLayouts.get(selectedType);
+				if (layouts != null) {
+					for (String layoutR : layouts) {
+						cbRasporedKreveta.addItem(layoutR);
+					}
+				}
+				if (cbRasporedKreveta.getItemCount() > 0) {
+					cbRasporedKreveta.setSelectedIndex(0);
+				}
+			}
+		});
 		add(cbTipSobe, "growx");
 
 		if (cbTipSobe.getItemCount() > 0) {
@@ -167,10 +171,13 @@ public class AddEditReservationDialog extends JDialog {
 						String bedLayout = (String) cbRasporedKreveta.getSelectedItem();
 						Date checkInDate = dcCheckIn.getDate();
 						Date checkOutDate = dcCheckOut.getDate();
-						LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-						RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType, bedLayout);
-						
+						LocalDate localCheckInDate = checkInDate.toInstant().atZone(ZoneId.systemDefault())
+								.toLocalDate();
+						LocalDate localCheckOutDate = checkOutDate.toInstant().atZone(ZoneId.systemDefault())
+								.toLocalDate();
+						RoomType roomType = manager.getRoomTypesMan().getRoomTypeFromTypeAndBeds(selectedType,
+								bedLayout);
+
 						Reservation newReservation = new Reservation(roomType, localCheckInDate, localCheckOutDate,
 								additionalServices, ReservationStatus.WAITING, LocalDate.now());
 						if (parent instanceof GuestFrame)
@@ -207,7 +214,7 @@ public class AddEditReservationDialog extends JDialog {
 
 	public static void main(String[] args) {
 		try {
-			AddEditReservationDialog dialog = new AddEditReservationDialog(new JFrame(), 0, null);
+			AddEditReservationDialog dialog = new AddEditReservationDialog(new JFrame(), 0, null, null);
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		} catch (Exception e) {

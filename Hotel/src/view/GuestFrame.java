@@ -32,8 +32,8 @@ import enumeracije.ReservationStatus;
 import manage.ManageHotel;
 import model.ReservationModel;
 import net.miginfocom.swing.MigLayout;
-import view.addedit.AddEditReservationDialog;
 import view.popup.AdditionalServicesPopup;
+import view.search.RoomSearchDialog;
 
 public class GuestFrame extends JFrame {
     private static final long serialVersionUID = 1L;
@@ -188,8 +188,8 @@ public class GuestFrame extends JFrame {
         addBtnReservation.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(GuestFrame.this, 0, controler);
-                addEditReservationDialog.setVisible(true);
+                RoomSearchDialog roomSearchDialog = new RoomSearchDialog(GuestFrame.this, controler);
+                roomSearchDialog.setVisible(true);
                 refreshReservationTable();
                 manager.getReservationsMan().writeReservations("data/reservations.csv");
             }
