@@ -50,6 +50,7 @@ import view.addedit.AddEditPricesDialog;
 import view.addedit.AddEditRoomDialog;
 import view.addedit.AddEditRoomTypeDialog;
 import view.addedit.AddEditServicesDialog;
+import view.cellrenderer.ServicesCellRenderer;
 import view.popup.AdditionalServicesPopup;
 import view.popup.OccupiedDatesPopup;
 import view.popup.RoomSpecsPopup;
@@ -189,6 +190,8 @@ public class AdministratorFrame extends JFrame {
 		reservationTable = new JTable(reservationModel);
 		reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
 		reservationTable.setRowSorter(reservationTableSorter);
+		
+		reservationTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
 
 		reservationTable.addMouseListener(new MouseAdapter() {
 			@Override
@@ -257,6 +260,12 @@ public class AdministratorFrame extends JFrame {
 
 		JPanel pricePanel = createPricePanel();
 		tabbedPane.addTab("Cenovnik", null, pricePanel, null);
+		
+		JPanel chartsPanel = createChartsPanel();
+		tabbedPane.addTab("Grafikoni", null, chartsPanel, null);
+		
+		JPanel reportsPanel = createReportsPanel();
+		tabbedPane.addTab("Izvestaji", null, reportsPanel, null);
 
 		initActions(tabbedPane);
 	}
@@ -408,7 +417,7 @@ public class AdministratorFrame extends JFrame {
 		scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
 		panel.add(scrollPane, "cell 0 1 1 2,grow");
 
-		int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100 };
+		int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100 };
 		setTableColumnWidths(table, columnWidths);
 
 		JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
@@ -601,6 +610,50 @@ public class AdministratorFrame extends JFrame {
 
 		panel.add(priceTabbedPane, "cell 0 1, grow");
 
+		return panel;
+	}
+	
+	private JPanel createChartsPanel() {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JTabbedPane chartTabbedPane = new JTabbedPane();
+		
+		JPanel roomTypeChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		JPanel housekeepingChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		JPanel reservationStatusChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		chartTabbedPane.addTab("Grafikon tipova soba", roomTypeChartPanel);
+		chartTabbedPane.addTab("Grafikon odrzavanja", housekeepingChartPanel);
+		chartTabbedPane.addTab("Grafikon statusa rezervacija", reservationStatusChartPanel);
+		
+		panel.add(chartTabbedPane, "cell 0 1, grow");
+		return panel;
+	}
+	
+	private JPanel createReportsPanel() {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
+
+		JTabbedPane reportTabbedPane = new JTabbedPane();
+		
+		JPanel revenueExpenseReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		JPanel houseKeepingReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		JPanel reservationReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		JPanel roomReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		JPanel totalRoomReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		
+		reportTabbedPane.addTab("Izvestaj o prihodima i troskovima", revenueExpenseReportPanel);
+		reportTabbedPane.addTab("Izvestaj o odrzavanju", houseKeepingReportPanel);
+		reportTabbedPane.addTab("Izvestaj o rezervacijama", reservationReportPanel);
+		reportTabbedPane.addTab("Izvestaj o sobama", roomReportPanel);
+		reportTabbedPane.addTab("Izvestaj o ukupnim prihodima po sobama", totalRoomReportPanel);
+
+		panel.add(reportTabbedPane, "cell 0 1, grow");
 		return panel;
 	}
 
@@ -895,8 +948,17 @@ public class AdministratorFrame extends JFrame {
 	}
 
 	public void refreshPriceTable(JTabbedPane tabbedPane) {
+		tabbedPane.removeTabAt(tabbedPane.getTabCount() - 3);
+		tabbedPane.removeTabAt(tabbedPane.getTabCount() - 2);
 		tabbedPane.removeTabAt(tabbedPane.getTabCount() - 1);
+		
 		JPanel pricePanel = createPricePanel();
 		tabbedPane.addTab("Cenovnik", null, pricePanel, null);
+		
+		JPanel chartsPanel = createChartsPanel();
+		tabbedPane.addTab("Grafikoni", null, chartsPanel, null);
+		
+		JPanel reportsPanel = createReportsPanel();
+		tabbedPane.addTab("Izvestaji", null, reportsPanel, null);
 	}
 }

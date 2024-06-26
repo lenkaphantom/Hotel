@@ -104,6 +104,17 @@ public class ManageReservations {
 					int guestId = Integer.parseInt(parts[7]);
 					reservation.setGuest(guestId, manager);
 				}
+				
+				if (!parts[10].equals("null")) {
+					LocalDate checkInDate = LocalDate.parse(parts[10]);
+					reservation.setCheckInDate(checkInDate);
+				}
+				
+				if (!parts[11].equals("null")) {
+					LocalDate checkOutDate = LocalDate.parse(parts[11]);
+					reservation.setCheckOutDate(checkOutDate);
+				}
+				
 				reservation.setTotalPrice(Double.parseDouble(parts[8]));
 				this.reservations.put(reservation.getId(), reservation);
 			}

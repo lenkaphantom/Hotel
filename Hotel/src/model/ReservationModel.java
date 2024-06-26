@@ -6,13 +6,16 @@ import java.util.List;
 import javax.swing.table.AbstractTableModel;
 
 import controler.ReservationControler;
+import entity.AdditionalServices;
 import entity.Reservation;
+import manage.ManageHotel;
 
 public class ReservationModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
+	private ManageHotel manager = ManageHotel.getInstance();
 	private ReservationControler controler;
-	private String[] columnNames = { "ID", "Tip sobe", "Check-in datum", "Check-out datum", "Dodatne usluge", "Status",
-			"Soba", "Gost", "Ukupna cena" };
+	private String[] columnNames = { "ID", "Tip sobe", "Početak rezervacije", "Kraj rezervacije", "Dodatne usluge",
+			"Status", "Soba", "Gost", "Ukupna cena", "Check-in datum", "Check-out datum" };
 
 	public ReservationModel(String username) {
 		controler = new ReservationControler(username);
@@ -55,7 +58,7 @@ public class ReservationModel extends AbstractTableModel {
 		case 3:
 			return reservation.getEndDate();
 		case 4:
-			return "Usluge";
+			return reservation.getAdditionalServices();
 		case 5:
 			return reservation.getStatus();
 		case 6:
@@ -68,8 +71,17 @@ public class ReservationModel extends AbstractTableModel {
 			return null;
 		case 8:
 			return reservation.getTotalPrice();
+		case 9:
+			if (reservation.getCheckInDate() != null)
+				return reservation.getCheckInDate();
+			return null;
+		case 10:
+			if (reservation.getCheckOutDate() != null)
+				return reservation.getCheckOutDate();
+			return null;
+		default:
+			return null;
 		}
-		return null;
 	}
 
 	@Override
@@ -89,5 +101,17 @@ public class ReservationModel extends AbstractTableModel {
 	@Override
 	public boolean isCellEditable(int row, int column) {
 		return column == 4;
+	}
+
+	public boolean containsAdditionalService(int reservationId, String service) {
+		Reservation reservation = manager.getReservationsMan().getReservations().get(reservationId);
+		if (reservation != null) {
+			for (AdditionalServices additionalService : reservation.getAdditionalServices()) {
+				if (additionalService.getService().equalsIgnoreCase(service)) {
+					return true;
+				}
+			}
+		}
+		return false;
 	}
 }

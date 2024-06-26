@@ -2,6 +2,7 @@ package manage;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,7 @@ import entity.RoomType;
 import enumeracije.ReservationStatus;
 import enumeracije.RoomSpecs;
 import enumeracije.RoomStatus;
+import enumeracije.TypeOfRoom;
 
 public class ManageHotel {
 	private ManageAdditionalServices additionalServicesMan;
@@ -399,4 +401,10 @@ public class ManageHotel {
 		}
 		return specs;
 	}
+	
+	public Map<LocalDate, Map<TypeOfRoom, Double>> getRevenueDataForLast12Months() {
+		Map<LocalDate, Map<TypeOfRoom, Double>> revenueData = new HashMap<>();
+		LocalDate date = LocalDate.now().minusMonths(12);
+		return revenueData;
+    }
 }

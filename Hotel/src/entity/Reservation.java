@@ -19,6 +19,8 @@ public class Reservation {
 	private Guest guest;
 	private double totalPrice;
 	private LocalDate creationDate;
+	private LocalDate checkInDate;
+	private LocalDate checkOutDate;
 
 	// constructors
 	public Reservation() {
@@ -38,6 +40,8 @@ public class Reservation {
 		this.guest = null;
 		this.totalPrice = 0;
 		this.creationDate = creationDate;
+		this.checkInDate = null;
+		this.checkOutDate = null;
 	}
 
 	// copy constructor
@@ -50,6 +54,8 @@ public class Reservation {
 		this.guest = reservation.guest;
 		this.totalPrice = reservation.totalPrice;
 		this.startDate = reservation.startDate;
+		this.endDate = reservation.endDate;
+		this.creationDate = reservation.creationDate;
 	}
 
 	// getters
@@ -88,9 +94,17 @@ public class Reservation {
 	public double getTotalPrice() {
 		return totalPrice;
 	}
-	
+
 	public LocalDate getCreationDate() {
 		return creationDate;
+	}
+
+	public LocalDate getCheckInDate() {
+		return checkInDate;
+	}
+
+	public LocalDate getCheckOutDate() {
+		return checkOutDate;
 	}
 
 	// setters
@@ -125,9 +139,17 @@ public class Reservation {
 	public void setTotalPrice(double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-	
+
 	public void setCreationDate(LocalDate creationDate) {
 		this.creationDate = creationDate;
+	}
+
+	public void setCheckInDate(LocalDate checkInDate) {
+		this.checkInDate = checkInDate;
+	}
+
+	public void setCheckOutDate(LocalDate checkOutDate) {
+		this.checkOutDate = checkOutDate;
 	}
 
 	// methods
@@ -167,6 +189,15 @@ public class Reservation {
 			result += " | " + this.guest.getId();
 		else
 			result += " | ";
-		return result + " | " + this.totalPrice + " | " + this.creationDate;
+		result += " | " + this.totalPrice + " | " + this.creationDate;
+		if (this.checkInDate != null)
+			result += " | " + this.checkInDate;
+		else
+			result += " | " + "null";
+		if (this.checkOutDate != null)
+			result += " | " + this.checkOutDate;
+		else
+			result += " | " + "null";
+		return result;
 	}
 }

@@ -9,5 +9,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/MigLayout"/>
 	<classpathentry kind="lib" path="jcalendar-1.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/5"/>
+	<classpathentry kind="lib" path="D:/=Docs=/Desktop/Fakultet/1. godina/Letnji semestar/OOP1/Projekat/xchart-3.8.8/xchart-3.8.8.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

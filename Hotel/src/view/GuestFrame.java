@@ -32,6 +32,7 @@ import enumeracije.ReservationStatus;
 import manage.ManageHotel;
 import model.ReservationModel;
 import net.miginfocom.swing.MigLayout;
+import view.cellrenderer.ServicesCellRenderer;
 import view.popup.AdditionalServicesPopup;
 import view.search.RoomSearchDialog;
 
@@ -94,6 +95,8 @@ public class GuestFrame extends JFrame {
         reservationTable = new JTable(reservationModel);
         reservationTableSorter = new TableRowSorter<>((AbstractTableModel) reservationTable.getModel());
         reservationTable.setRowSorter(reservationTableSorter);
+        
+        reservationTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
 
         reservationTable.addMouseListener(new MouseAdapter() {
             @Override
@@ -135,7 +138,7 @@ public class GuestFrame extends JFrame {
         scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
         panel.add(scrollPane, "cell 0 1 1 2,grow");
 
-        int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100 };
+        int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100 };
         setTableColumnWidths(table, columnWidths);
 
         JPanel searchPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
