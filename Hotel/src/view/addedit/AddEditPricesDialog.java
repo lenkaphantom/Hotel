@@ -91,7 +91,6 @@ public class AddEditPricesDialog extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if (validateFields()) {
                     savePrices();
-                    ((AdministratorFrame) parent).refreshPriceTable();
                     AddEditPricesDialog.this.dispose();
                 }
             }

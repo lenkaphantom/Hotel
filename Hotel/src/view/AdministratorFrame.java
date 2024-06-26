@@ -111,8 +111,6 @@ public class AdministratorFrame extends JFrame {
 	private JButton removeBtnAdditionalService = new JButton();
 
 	private JButton addBtnPrice = new JButton();
-	private JButton editBtnPrice = new JButton();
-	private JButton removeBtnPrice = new JButton();
 
 	Image img = new ImageIcon("img/add.png").getImage();
 	Image newimg = img.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
@@ -256,13 +254,11 @@ public class AdministratorFrame extends JFrame {
 		tabbedPane.addTab("Dodatne usluge", null, additionalServicePanel, null);
 
 		addBtnPrice.setIcon(new ImageIcon(newimg));
-		editBtnPrice.setIcon(new ImageIcon(newimg1));
-		removeBtnPrice.setIcon(new ImageIcon(newimg2));
 
 		JPanel pricePanel = createPricePanel();
 		tabbedPane.addTab("Cenovnik", null, pricePanel, null);
 
-		initActions();
+		initActions(tabbedPane);
 	}
 
 	private JPanel createPanelWithTable(JTable table, JButton addButton, JButton editButton, JButton removeButton,
@@ -578,8 +574,6 @@ public class AdministratorFrame extends JFrame {
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(addBtnPrice);
-		toolBar.add(editBtnPrice);
-		toolBar.add(removeBtnPrice);
 		panel.add(toolBar, "flowx,cell 0 0");
 
 		JTabbedPane priceTabbedPane = new JTabbedPane();
@@ -602,48 +596,10 @@ public class AdministratorFrame extends JFrame {
 			combinedPanel.add(servicePricePanel, "grow");
 
 			priceTabbedPane.addTab("Cenovnik " + pricesId, combinedPanel);
-			priceTabbedPane.setToolTipTextAt(priceTabbedPane.getTabCount() - 1, String.valueOf(pricesId)); // Store the
-																											// ID
+			priceTabbedPane.setToolTipTextAt(priceTabbedPane.getTabCount() - 1, String.valueOf(pricesId));
 		}
 
 		panel.add(priceTabbedPane, "cell 0 1, grow");
-
-		// Adding ActionListeners for edit and remove buttons
-		editBtnPrice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selectedIndex = priceTabbedPane.getSelectedIndex();
-				if (selectedIndex == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati tab.", "Greska", JOptionPane.WARNING_MESSAGE);
-				} else {
-					int pricesId = Integer.parseInt(priceTabbedPane.getToolTipTextAt(selectedIndex));
-					AddEditPricesDialog addEditPricesDialog = new AddEditPricesDialog(AdministratorFrame.this,
-							pricesId);
-					addEditPricesDialog.setVisible(true);
-					refreshPriceTable();
-					manager.getPricesMan().writePrices("data/prices.csv");
-				}
-			}
-		});
-
-		removeBtnPrice.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int selectedIndex = priceTabbedPane.getSelectedIndex();
-				if (selectedIndex == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati tab.", "Greska", JOptionPane.WARNING_MESSAGE);
-				} else {
-					int pricesId = Integer.parseInt(priceTabbedPane.getToolTipTextAt(selectedIndex));
-					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete cenovnik?",
-							"Brisanje cenovnika", JOptionPane.YES_NO_OPTION);
-					if (izbor == JOptionPane.YES_OPTION) {
-						manager.getPricesMan().removePrices(pricesId);
-						manager.getPricesMan().writePrices("data/prices.csv");
-						refreshPriceTable();
-					}
-				}
-			}
-		});
 
 		return panel;
 	}
@@ -654,7 +610,7 @@ public class AdministratorFrame extends JFrame {
 		}
 	}
 
-	private void initActions() {
+	private void initActions(JTabbedPane tabbedPane) {
 		addBtnEmployee.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -758,7 +714,7 @@ public class AdministratorFrame extends JFrame {
 				AddEditRoomTypeDialog addEditRoomTypeDialog = new AddEditRoomTypeDialog(AdministratorFrame.this, 0);
 				addEditRoomTypeDialog.setVisible(true);
 				refreshRoomTypeTable();
-				refreshPriceTable();
+				refreshPriceTable(tabbedPane);
 				manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
 			}
 		});
@@ -776,7 +732,7 @@ public class AdministratorFrame extends JFrame {
 							modelRow + 1);
 					addEditRoomTypeDialog.setVisible(true);
 					refreshRoomTypeTable();
-					refreshPriceTable();
+					refreshPriceTable(tabbedPane);
 					refreshRoomsTable();
 					manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
 				}
@@ -860,7 +816,7 @@ public class AdministratorFrame extends JFrame {
 				AddEditServicesDialog addEditServicesDialog = new AddEditServicesDialog(AdministratorFrame.this, 0);
 				addEditServicesDialog.setVisible(true);
 				refreshAdditionalServicesTable();
-				refreshPriceTable();
+				refreshPriceTable(tabbedPane);
 				manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 			}
 		});
@@ -878,7 +834,7 @@ public class AdministratorFrame extends JFrame {
 							modelRow + 1);
 					addEditServicesDialog.setVisible(true);
 					refreshAdditionalServicesTable();
-					refreshPriceTable();
+					refreshPriceTable(tabbedPane);
 					manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 				}
 			}
@@ -902,7 +858,7 @@ public class AdministratorFrame extends JFrame {
 						manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
 					}
 					refreshAdditionalServicesTable();
-					refreshPriceTable();
+					refreshPriceTable(tabbedPane);
 				}
 			}
 		});
@@ -912,7 +868,7 @@ public class AdministratorFrame extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				AddEditPricesDialog addEditPricesDialog = new AddEditPricesDialog(AdministratorFrame.this, 0);
 				addEditPricesDialog.setVisible(true);
-				refreshPriceTable();
+				refreshPriceTable(tabbedPane);
 				manager.getPricesMan().writePrices("data/prices.csv");
 			}
 		});
@@ -938,8 +894,9 @@ public class AdministratorFrame extends JFrame {
 		((AbstractTableModel) additionalServiceTable.getModel()).fireTableDataChanged();
 	}
 
-	public void refreshPriceTable() {
-		((AbstractTableModel) roomPriceTable.getModel()).fireTableDataChanged();
-		((AbstractTableModel) servicePriceTable.getModel()).fireTableDataChanged();
+	public void refreshPriceTable(JTabbedPane tabbedPane) {
+		tabbedPane.removeTabAt(tabbedPane.getTabCount() - 1);
+		JPanel pricePanel = createPricePanel();
+		tabbedPane.addTab("Cenovnik", null, pricePanel, null);
 	}
 }
