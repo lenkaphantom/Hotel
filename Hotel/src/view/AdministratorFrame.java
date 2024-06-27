@@ -34,6 +34,8 @@ import javax.swing.table.TableRowSorter;
 
 import com.toedter.calendar.JDateChooser;
 
+import charts.HotelRevenueChart;
+import charts.HouseKeepersChart;
 import controler.ReportsControler;
 import controler.ReservationControler;
 import controler.RoomControler;
@@ -646,13 +648,17 @@ public class AdministratorFrame extends JFrame {
 
 		JTabbedPane chartTabbedPane = new JTabbedPane();
 		
-		JPanel roomTypeChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		JPanel hotelRevenueChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		HotelRevenueChart hotelRevenueChart = new HotelRevenueChart();
+		hotelRevenueChartPanel.add(hotelRevenueChart.createChartPanel(), "cell 0 1");
 		
 		JPanel housekeepingChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		HouseKeepersChart houseKeepersChart = new HouseKeepersChart();
+		housekeepingChartPanel.add(houseKeepersChart.createPieChartPanel(), "cell 0 1");
 		
 		JPanel reservationStatusChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
 		
-		chartTabbedPane.addTab("Grafikon tipova soba", roomTypeChartPanel);
+		chartTabbedPane.addTab("Grafikon prihoda hotela", hotelRevenueChartPanel);
 		chartTabbedPane.addTab("Grafikon odrzavanja", housekeepingChartPanel);
 		chartTabbedPane.addTab("Grafikon statusa rezervacija", reservationStatusChartPanel);
 		
@@ -677,6 +683,7 @@ public class AdministratorFrame extends JFrame {
 		
 		JPanel houseKeepingReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
 		houseKeepingReportPanel.setBackground(BACKGROUND_COLOR);
+		houseKeepingReportPanel.setForeground(FOREGROUND_COLOR);
 		generateHouseKeepingReportBtn.setText("Generisi izvestaj");
 		houseKeepingReportPanel.add(new JLabel("Datum od: "), "cell 0 0");
 		houseKeepingReportPanel.add(startDateHouseKeeping, "cell 1 0, width 200!");

@@ -198,4 +198,14 @@ public abstract class ReportsControler {
 		}
 		return roomsReport;
 	}
+	
+	public static double getRoomTypeRevenueByMonth(LocalDate startDate, LocalDate endDate, int id) {
+		double revenue = 0;
+        for (Room room : manager.getRoomsMan().getRooms().values()) {
+            if (room.getRoomType().getId() == id) {
+                revenue += getRevenueForRoom(room.getId(), startDate, endDate);
+            }
+        }
+        return revenue * 117;
+	}
 }
