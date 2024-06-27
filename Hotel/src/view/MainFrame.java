@@ -164,7 +164,7 @@ public class MainFrame extends JFrame {
 		}
 
 		if (userFrame != null) {
-			userFrame.setSize(800, 600);
+			userFrame.setSize(1000, 600);
 			userFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 			userFrame.setLocationRelativeTo(null);
 			userFrame.setVisible(true);

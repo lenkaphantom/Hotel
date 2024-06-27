@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -20,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.RowFilter;
@@ -29,6 +32,9 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 
+import com.toedter.calendar.JDateChooser;
+
+import controler.ReportsControler;
 import controler.ReservationControler;
 import controler.RoomControler;
 import entity.Prices;
@@ -112,6 +118,28 @@ public class AdministratorFrame extends JFrame {
 	private JButton removeBtnAdditionalService = new JButton();
 
 	private JButton addBtnPrice = new JButton();
+	
+	private JButton generateRevenueExpenseReportBtn = new JButton();
+	private JButton generateHouseKeepingReportBtn = new JButton();
+	private JButton generateReservationReportBtn = new JButton();
+	private JButton generateRoomReportBtn = new JButton();
+	
+	private JDateChooser startDateRevenue = new JDateChooser();
+	private JDateChooser endDateRevenue = new JDateChooser();
+	private JDateChooser startDateHouseKeeping = new JDateChooser();
+	private JDateChooser endDateHouseKeeping = new JDateChooser();
+	private JDateChooser startDateReservation = new JDateChooser();
+	private JDateChooser endDateReservation = new JDateChooser();
+	private JDateChooser startDateRoom = new JDateChooser();
+	private JDateChooser endDateRoom = new JDateChooser();
+	
+	private JLabel revenueExpenseReportLabel = new JLabel();
+	private JTextArea houseKeepingReportLabel = new JTextArea();
+	private JLabel reservationReportLabel = new JLabel();
+	private JLabel reservationConfirmedReportLabel = new JLabel();
+	private JLabel reservationCancelledReportLabel = new JLabel();
+	private JLabel reservationDeniedReportLabel = new JLabel();
+	private JTextArea roomReportLabel = new JTextArea();
 
 	Image img = new ImageIcon("img/add.png").getImage();
 	Image newimg = img.getScaledInstance(15, 15, java.awt.Image.SCALE_SMOOTH);
@@ -638,20 +666,52 @@ public class AdministratorFrame extends JFrame {
 		JTabbedPane reportTabbedPane = new JTabbedPane();
 		
 		JPanel revenueExpenseReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		revenueExpenseReportPanel.setBackground(BACKGROUND_COLOR);
+		generateRevenueExpenseReportBtn.setText("Generisi izvestaj");
+		revenueExpenseReportPanel.add(new JLabel("Datum od: "), "cell 0 0");
+		revenueExpenseReportPanel.add(startDateRevenue, "cell 1 0, width 200!");
+		revenueExpenseReportPanel.add(new JLabel("Datum do: "), "cell 0 1");
+		revenueExpenseReportPanel.add(endDateRevenue, "cell 1 1, width 200!");
+		revenueExpenseReportPanel.add(generateRevenueExpenseReportBtn, "cell 0 2");
+		revenueExpenseReportPanel.add(revenueExpenseReportLabel, "cell 0 3, grow");
 		
 		JPanel houseKeepingReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		houseKeepingReportPanel.setBackground(BACKGROUND_COLOR);
+		generateHouseKeepingReportBtn.setText("Generisi izvestaj");
+		houseKeepingReportPanel.add(new JLabel("Datum od: "), "cell 0 0");
+		houseKeepingReportPanel.add(startDateHouseKeeping, "cell 1 0, width 200!");
+		houseKeepingReportPanel.add(new JLabel("Datum do: "), "cell 0 1");
+		houseKeepingReportPanel.add(endDateHouseKeeping, "cell 1 1, width 200!");
+		houseKeepingReportPanel.add(generateHouseKeepingReportBtn, "cell 0 2");
+		houseKeepingReportPanel.add(houseKeepingReportLabel, "cell 0 3, grow");
 		
 		JPanel reservationReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		reservationReportPanel.setBackground(BACKGROUND_COLOR);
+		generateReservationReportBtn.setText("Generisi izvestaj");
+		reservationReportPanel.add(new JLabel("Datum od: "), "cell 0 0");
+		reservationReportPanel.add(startDateReservation, "cell 1 0, width 200!");
+		reservationReportPanel.add(new JLabel("Datum do: "), "cell 0 1");
+		reservationReportPanel.add(endDateReservation, "cell 1 1, width 200!");
+		reservationReportPanel.add(generateReservationReportBtn, "cell 0 2");
+		reservationReportPanel.add(reservationReportLabel, "cell 0 3");
+		reservationReportPanel.add(reservationConfirmedReportLabel, "cell 0 4");
+		reservationReportPanel.add(reservationCancelledReportLabel, "cell 0 5");
+		reservationReportPanel.add(reservationDeniedReportLabel, "cell 0 6");
 		
 		JPanel roomReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
-		
-		JPanel totalRoomReportPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		roomReportPanel.setBackground(BACKGROUND_COLOR);
+		generateRoomReportBtn.setText("Generisi izvestaj");
+		roomReportPanel.add(new JLabel("Datum od: "), "cell 0 0");
+		roomReportPanel.add(startDateRoom, "cell 1 0, width 200!");
+		roomReportPanel.add(new JLabel("Datum do: "), "cell 0 1");
+		roomReportPanel.add(endDateRoom, "cell 1 1, width 200!");
+		roomReportPanel.add(generateRoomReportBtn, "cell 0 2");
+		roomReportPanel.add(roomReportLabel, "cell 0 3, grow");
 		
 		reportTabbedPane.addTab("Izvestaj o prihodima i troskovima", revenueExpenseReportPanel);
 		reportTabbedPane.addTab("Izvestaj o odrzavanju", houseKeepingReportPanel);
 		reportTabbedPane.addTab("Izvestaj o rezervacijama", reservationReportPanel);
 		reportTabbedPane.addTab("Izvestaj o sobama", roomReportPanel);
-		reportTabbedPane.addTab("Izvestaj o ukupnim prihodima po sobama", totalRoomReportPanel);
 
 		panel.add(reportTabbedPane, "cell 0 1, grow");
 		return panel;
@@ -923,6 +983,69 @@ public class AdministratorFrame extends JFrame {
 				addEditPricesDialog.setVisible(true);
 				refreshPriceTable(tabbedPane);
 				manager.getPricesMan().writePrices("data/prices.csv");
+			}
+		});
+		
+		generateRevenueExpenseReportBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Date startDateD = startDateRevenue.getDate();
+				LocalDate startDate = startDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				Date endDateD = endDateRevenue.getDate();
+				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				double revenue = ReportsControler.getRevenue(startDate, endDate);
+				double expense = ReportsControler.getExpenses(startDate, endDate);
+				
+				revenueExpenseReportLabel.setText("Prihodi: " + revenue * 117 + " Din, Rashodi: " + expense + " Din");
+			}
+		});
+		
+		generateHouseKeepingReportBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Date startDateD = startDateHouseKeeping.getDate();
+				LocalDate startDate = startDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+				Date endDateD = endDateHouseKeeping.getDate();
+				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				houseKeepingReportLabel.setText(ReportsControler.getHouseKeeping(startDate, endDate));
+			}
+		});
+		
+		generateReservationReportBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Date startDateD = startDateReservation.getDate();
+				LocalDate startDate = startDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+				Date endDateD = endDateReservation.getDate();
+				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+				int processed = ReportsControler.getNumOfProcessedReservations(startDate, endDate);
+				int confirmed = ReportsControler.getNumOfConfirmedReservations(startDate, endDate);
+				int cancelled = ReportsControler.getNumOfCancelledReservations(startDate, endDate);
+				int denied = ReportsControler.getNumOfDeniedReservations(startDate, endDate);
+				
+				reservationReportLabel.setText("Obradjene rezervacije: " + processed);
+				reservationConfirmedReportLabel.setText("Potvrdjene rezervacije: " + confirmed);
+				reservationCancelledReportLabel.setText("Otkazane rezervacije: " + cancelled);
+				reservationDeniedReportLabel.setText("Odbijene rezervacije: " + denied);
+			}
+		});
+		
+		generateRoomReportBtn.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				Date startDateD = startDateRoom.getDate();
+				LocalDate startDate = startDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+				Date endDateD = endDateRoom.getDate();
+				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+
+				roomReportLabel.setText(ReportsControler.getRoomsReport(startDate, endDate));
 			}
 		});
 	}
