@@ -19,19 +19,21 @@ public class HouseKeepersChart {
 	private Map<String, Integer> houseKeepers = new HashMap<>();
 
 	public HouseKeepersChart() {
+		LocalDate startDate = LocalDate.now().minusDays(30);
+		LocalDate endDate = LocalDate.now();
 		for (HouseKeeper hKeepr : manager.getEmployeesMan().getHouseKeepers().values()) {
-			houseKeepers.put(hKeepr.getUsername(), ReportsControler.getNumOfCleanedRooms(LocalDate.now().minusYears(1),
-					LocalDate.now(), hKeepr.getId()));
+			houseKeepers.put(hKeepr.getUsername(),
+					ReportsControler.getNumOfCleanedRooms(startDate, endDate, hKeepr.getId()));
 		}
 	}
 
 	public JPanel createPieChartPanel() {
 		PieChart chart = new PieChartBuilder().width(800).height(600).title("Odnos broja očišćenih soba").build();
-		
+
 		for (Map.Entry<String, Integer> entry : houseKeepers.entrySet()) {
 			chart.addSeries(entry.getKey(), entry.getValue());
 		}
-		
+
 		return new XChartPanel<>(chart);
 	}
 }

@@ -36,6 +36,7 @@ import com.toedter.calendar.JDateChooser;
 
 import charts.HotelRevenueChart;
 import charts.HouseKeepersChart;
+import charts.ReservationsStatusChart;
 import controler.ReportsControler;
 import controler.ReservationControler;
 import controler.RoomControler;
@@ -657,6 +658,8 @@ public class AdministratorFrame extends JFrame {
 		housekeepingChartPanel.add(houseKeepersChart.createPieChartPanel(), "cell 0 1");
 		
 		JPanel reservationStatusChartPanel = new JPanel(new MigLayout("", "[grow]", "[][grow]"));
+		ReservationsStatusChart reservationStatusChart = new ReservationsStatusChart();
+		reservationStatusChartPanel.add(reservationStatusChart.createPieChartPanel(), "cell 0 1");
 		
 		chartTabbedPane.addTab("Grafikon prihoda hotela", hotelRevenueChartPanel);
 		chartTabbedPane.addTab("Grafikon odrzavanja", housekeepingChartPanel);
@@ -1002,6 +1005,12 @@ public class AdministratorFrame extends JFrame {
 				Date endDateD = endDateRevenue.getDate();
 				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 				
+				if (startDate.isAfter(endDate)) {
+					JOptionPane.showMessageDialog(null, "Datum od mora biti pre datuma do.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
 				double revenue = ReportsControler.getRevenue(startDate, endDate);
 				double expense = ReportsControler.getExpenses(startDate, endDate);
 				
@@ -1018,6 +1027,12 @@ public class AdministratorFrame extends JFrame {
 				Date endDateD = endDateHouseKeeping.getDate();
 				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
 				
+				if (startDate.isAfter(endDate)) {
+					JOptionPane.showMessageDialog(null, "Datum od mora biti pre datuma do.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				
 				houseKeepingReportLabel.setText(ReportsControler.getHouseKeeping(startDate, endDate));
 			}
 		});
@@ -1030,6 +1045,12 @@ public class AdministratorFrame extends JFrame {
 
 				Date endDateD = endDateReservation.getDate();
 				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				if (startDate.isAfter(endDate)) {
+					JOptionPane.showMessageDialog(null, "Datum od mora biti pre datuma do.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 
 				int processed = ReportsControler.getNumOfProcessedReservations(startDate, endDate);
 				int confirmed = ReportsControler.getNumOfConfirmedReservations(startDate, endDate);
@@ -1051,6 +1072,12 @@ public class AdministratorFrame extends JFrame {
 
 				Date endDateD = endDateRoom.getDate();
 				LocalDate endDate = endDateD.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+				
+				if (startDate.isAfter(endDate)) {
+					JOptionPane.showMessageDialog(null, "Datum od mora biti pre datuma do.", "Greska",
+							JOptionPane.WARNING_MESSAGE);
+					return;
+				}
 
 				roomReportLabel.setText(ReportsControler.getRoomsReport(startDate, endDate));
 			}

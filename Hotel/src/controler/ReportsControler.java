@@ -101,6 +101,21 @@ public abstract class ReportsControler {
 
 		return numOfProcessedReservations;
 	}
+	
+	public static int getNumOfWaitingReservations(LocalDate startDate, LocalDate endDate) {
+        int numOfWaitingReservations = 0;
+        for (Reservation reservation : manager.getReservationsMan().getReservations().values()) {
+            if (!reservation.getStatus().equals(ReservationStatus.WAITING))
+                continue;
+            LocalDate tsDate = startDate.minusDays(1);
+            LocalDate teDate = endDate.plusDays(1);
+            if (tsDate.isBefore(reservation.getCreationDate()) && teDate.isAfter(reservation.getCreationDate())) {
+                numOfWaitingReservations++;
+            }
+        }
+
+        return numOfWaitingReservations;
+    }
 
 	public static int getNumOfCancelledReservations(LocalDate startDate, LocalDate endDate) {
 		int numOfCancelledReservations = 0;
@@ -130,6 +145,21 @@ public abstract class ReportsControler {
 		}
 
 		return numOfDeniedReservations;
+	}
+	
+	public static int getNumOfExpiredReservations(LocalDate startDate, LocalDate endDate) {
+		int numOfExpiredReservations = 0;
+		for (Reservation reservation : manager.getReservationsMan().getReservations().values()) {
+			if (!reservation.getStatus().equals(ReservationStatus.EXPIRED))
+				continue;
+			LocalDate tsDate = startDate.minusDays(1);
+			LocalDate teDate = endDate.plusDays(1);
+			if (tsDate.isBefore(reservation.getCreationDate()) && teDate.isAfter(reservation.getCreationDate())) {
+				numOfExpiredReservations++;
+			}
+		}
+
+		return numOfExpiredReservations;
 	}
 
 	public static int getNumOfNights(LocalDate startDate, LocalDate endDate, int id) {
