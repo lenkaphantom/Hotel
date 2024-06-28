@@ -64,6 +64,9 @@ public class ReceptionistFrame extends JFrame {
 	private JTextField tfSearchReservation;
 	private JTextField tfSearchRoom;
 	private JTextField tfSearchGuest;
+    private JTextField tfMinPrice;
+    private JTextField tfMaxPrice;
+    private JButton btnFilterPrice;
 
 	private TableRowSorter<AbstractTableModel> reservationTableSorter;
 	private TableRowSorter<AbstractTableModel> roomTableSorter;
@@ -218,6 +221,24 @@ public class ReceptionistFrame extends JFrame {
 		searchPanel.add(new JLabel("Pretraga:"));
 		searchPanel.add(searchField);
 
+		searchPanel.add(new JLabel("Min cena:"));
+        tfMinPrice = new JTextField(5);
+        searchPanel.add(tfMinPrice);
+
+        searchPanel.add(new JLabel("Max cena:"));
+        tfMaxPrice = new JTextField(5);
+        searchPanel.add(tfMaxPrice);
+
+        btnFilterPrice = new JButton("Filter");
+        searchPanel.add(btnFilterPrice);
+
+        btnFilterPrice.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                filterByPrice();
+            }
+        });
+
 		panel.add(searchPanel, "cell 0 0, grow");
 
 		searchField.getDocument().addDocumentListener(new DocumentListener() {
@@ -248,6 +269,27 @@ public class ReceptionistFrame extends JFrame {
 
 		return panel;
 	}
+
+    private void filterByPrice() {
+        String minPriceText = tfMinPrice.getText();
+        String maxPriceText = tfMaxPrice.getText();
+        
+        try {
+            double minPrice = Double.parseDouble(minPriceText);
+            double maxPrice = Double.parseDouble(maxPriceText);
+            
+            RowFilter<AbstractTableModel, Object> priceFilter = new RowFilter<AbstractTableModel, Object>() {
+                @Override
+                public boolean include(Entry<? extends AbstractTableModel, ? extends Object> entry) {
+                    double price = (double) entry.getValue(8);
+                    return price >= minPrice && price <= maxPrice;
+                }
+            };
+            reservationTableSorter.setRowFilter(priceFilter);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Unesite ispravne numeričke vrednosti za cene.", "Greška", JOptionPane.ERROR_MESSAGE);
+        }
+    }
 
 	private void setTableColumnWidths(JTable table, int[] columnWidths) {
 		for (int i = 0; i < columnWidths.length; i++) {

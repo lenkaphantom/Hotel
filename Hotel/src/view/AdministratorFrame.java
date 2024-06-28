@@ -109,16 +109,10 @@ public class AdministratorFrame extends JFrame {
 	private JButton removeBtnGuest = new JButton();
 
 	private JButton addBtnRoomType = new JButton();
-	private JButton editBtnRoomType = new JButton();
-	private JButton removeBtnRoomType = new JButton();
 
 	private JButton addBtnRoom = new JButton();
-	private JButton editBtnRoom = new JButton();
-	private JButton removeBtnRoom = new JButton();
 
 	private JButton addBtnAdditionalService = new JButton();
-	private JButton editBtnAdditionalService = new JButton();
-	private JButton removeBtnAdditionalService = new JButton();
 
 	private JButton addBtnPrice = new JButton();
 	
@@ -205,14 +199,12 @@ public class AdministratorFrame extends JFrame {
 		tabbedPane.addTab("Gosti", null, guestPanel, null);
 
 		addBtnRoomType.setIcon(new ImageIcon(newimg));
-		editBtnRoomType.setIcon(new ImageIcon(newimg1));
-		removeBtnRoomType.setIcon(new ImageIcon(newimg2));
 
 		roomTypeTable = new JTable(new RoomTypeModel());
 		roomTypeTableSorter = new TableRowSorter<>((AbstractTableModel) roomTypeTable.getModel());
 		roomTypeTable.setRowSorter(roomTypeTableSorter);
 
-		JPanel roomTypePanel = createRoomTypePanel(roomTypeTable, addBtnRoomType, editBtnRoomType, removeBtnRoomType);
+		JPanel roomTypePanel = createRoomTypePanel(roomTypeTable, addBtnRoomType);
 		tabbedPane.addTab("Tipovi soba", null, roomTypePanel, null);
 
 		ReservationModel reservationModel = new ReservationModel("");
@@ -243,8 +235,6 @@ public class AdministratorFrame extends JFrame {
 		tabbedPane.addTab("Rezervacije", null, reservationPanel, null);
 
 		addBtnRoom.setIcon(new ImageIcon(newimg));
-		editBtnRoom.setIcon(new ImageIcon(newimg1));
-		removeBtnRoom.setIcon(new ImageIcon(newimg2));
 
 		RoomModel roomModel = new RoomModel("", null);
 		roomControler = roomModel.getControler();
@@ -272,19 +262,16 @@ public class AdministratorFrame extends JFrame {
 			}
 		});
 
-		JPanel roomPanel = createRoomPanel(roomTable, addBtnRoom, editBtnRoom, removeBtnRoom);
+		JPanel roomPanel = createRoomPanel(roomTable, addBtnRoom);
 		tabbedPane.addTab("Sobe", null, roomPanel, null);
 
 		addBtnAdditionalService.setIcon(new ImageIcon(newimg));
-		editBtnAdditionalService.setIcon(new ImageIcon(newimg1));
-		removeBtnAdditionalService.setIcon(new ImageIcon(newimg2));
 
 		additionalServiceTable = new JTable(new AdditionalServicesModel());
 		additionalServiceTableSorter = new TableRowSorter<>((AbstractTableModel) additionalServiceTable.getModel());
 		additionalServiceTable.setRowSorter(additionalServiceTableSorter);
 
-		JPanel additionalServicePanel = createServicesPanel(additionalServiceTable, addBtnAdditionalService,
-				editBtnAdditionalService, removeBtnAdditionalService);
+		JPanel additionalServicePanel = createServicesPanel(additionalServiceTable, addBtnAdditionalService);
 		tabbedPane.addTab("Dodatne usluge", null, additionalServicePanel, null);
 
 		addBtnPrice.setIcon(new ImageIcon(newimg));
@@ -374,14 +361,12 @@ public class AdministratorFrame extends JFrame {
 		return panel;
 	}
 
-	private JPanel createRoomTypePanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+	private JPanel createRoomTypePanel(JTable table, JButton addButton) {
 		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(addButton);
-		toolBar.add(editButton);
-		toolBar.add(removeButton);
 		panel.add(toolBar, "flowx,cell 0 0");
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -489,14 +474,12 @@ public class AdministratorFrame extends JFrame {
 		return panel;
 	}
 
-	private JPanel createRoomPanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+	private JPanel createRoomPanel(JTable table, JButton addButton) {
 		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(addButton);
-		toolBar.add(editButton);
-		toolBar.add(removeButton);
 		panel.add(toolBar, "flowx,cell 0 0");
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -549,14 +532,12 @@ public class AdministratorFrame extends JFrame {
 		return panel;
 	}
 
-	private JPanel createServicesPanel(JTable table, JButton addButton, JButton editButton, JButton removeButton) {
+	private JPanel createServicesPanel(JTable table, JButton addButton) {
 		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][][grow]"));
 
 		JToolBar toolBar = new JToolBar();
 		toolBar.setFloatable(false);
 		toolBar.add(addButton);
-		toolBar.add(editButton);
-		toolBar.add(removeButton);
 		panel.add(toolBar, "flowx,cell 0 0");
 
 		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
@@ -842,49 +823,6 @@ public class AdministratorFrame extends JFrame {
 			}
 		});
 
-		editBtnRoomType.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = roomTypeTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int modelRow = roomTypeTable.convertRowIndexToModel(row);
-					AddEditRoomTypeDialog addEditRoomTypeDialog = new AddEditRoomTypeDialog(AdministratorFrame.this,
-							modelRow + 1);
-					addEditRoomTypeDialog.setVisible(true);
-					refreshRoomTypeTable();
-					refreshPriceTable(tabbedPane);
-					refreshRoomsTable();
-					manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
-				}
-			}
-		});
-
-		removeBtnRoomType.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = roomTypeTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete tip sobe?",
-							"Brisanje tipa sobe", JOptionPane.YES_NO_OPTION);
-					if (izbor == JOptionPane.YES_OPTION) {
-						int modelRow = roomTypeTable.convertRowIndexToModel(row);
-						if (!manager.checkRoomType(modelRow + 1))
-							return;
-						manager.getRoomTypesMan().removeRoomType(modelRow + 1);
-						manager.getPricesMan().removeRoomTypePrices(modelRow + 1);
-						manager.getRoomTypesMan().writeRoomTypes("data/room_types.csv");
-					}
-					refreshRoomTypeTable();
-				}
-			}
-		});
-
 		addBtnRoom.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -892,44 +830,6 @@ public class AdministratorFrame extends JFrame {
 				addEditRoomDialog.setVisible(true);
 				refreshRoomsTable();
 				manager.getRoomsMan().writeRooms("data/rooms.csv");
-			}
-		});
-
-		editBtnRoom.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = roomTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int modelRow = roomTable.convertRowIndexToModel(row);
-					AddEditRoomDialog addEditRoomDialog = new AddEditRoomDialog(AdministratorFrame.this, modelRow + 1,
-							roomControler);
-					addEditRoomDialog.setVisible(true);
-					refreshRoomsTable();
-					manager.getRoomsMan().writeRooms("data/rooms.csv");
-				}
-			}
-		});
-
-		removeBtnRoom.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = roomTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int izbor = JOptionPane.showConfirmDialog(null, "Da li ste sigurni da zelite da obrisete sobu?",
-							"Brisanje sobe", JOptionPane.YES_NO_OPTION);
-					if (izbor == JOptionPane.YES_OPTION) {
-						int modelRow = roomTable.convertRowIndexToModel(row);
-						manager.getRoomsMan().removeRoom(modelRow + 1);
-						manager.getRoomsMan().writeRooms("data/rooms.csv");
-					}
-					refreshRoomsTable();
-				}
 			}
 		});
 
@@ -941,48 +841,6 @@ public class AdministratorFrame extends JFrame {
 				refreshAdditionalServicesTable();
 				refreshPriceTable(tabbedPane);
 				manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
-			}
-		});
-
-		editBtnAdditionalService.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = additionalServiceTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int modelRow = additionalServiceTable.convertRowIndexToModel(row);
-					AddEditServicesDialog addEditServicesDialog = new AddEditServicesDialog(AdministratorFrame.this,
-							modelRow + 1);
-					addEditServicesDialog.setVisible(true);
-					refreshAdditionalServicesTable();
-					refreshPriceTable(tabbedPane);
-					manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
-				}
-			}
-		});
-
-		removeBtnAdditionalService.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int row = additionalServiceTable.getSelectedRow();
-				if (row == -1) {
-					JOptionPane.showMessageDialog(null, "Morate odabrati red u tabeli.", "Greska",
-							JOptionPane.WARNING_MESSAGE);
-				} else {
-					int izbor = JOptionPane.showConfirmDialog(null,
-							"Da li ste sigurni da zelite da obrisete dodatnu uslugu?", "Brisanje dodatne usluge",
-							JOptionPane.YES_NO_OPTION);
-					if (izbor == JOptionPane.YES_OPTION) {
-						int modelRow = additionalServiceTable.convertRowIndexToModel(row);
-						manager.getAdditionalServicesMan().removeAdditionalService(modelRow + 1);
-						manager.getPricesMan().removeServicePrices(modelRow + 1);
-						manager.getAdditionalServicesMan().writeAdditionalServices("data/additional_services.csv");
-					}
-					refreshAdditionalServicesTable();
-					refreshPriceTable(tabbedPane);
-				}
 			}
 		});
 

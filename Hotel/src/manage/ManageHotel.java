@@ -172,6 +172,7 @@ public class ManageHotel {
 		this.assignRoomAtCheckIn(reservation.getId());
 		reservation.getRoom().setRoomStatus(RoomStatus.OCCUPIED);
 		this.calculatePrice(id);
+		reservation.setCheckInDate(LocalDate.now());
 		
 		return 0;
 	}
@@ -185,6 +186,7 @@ public class ManageHotel {
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
 		reservation.setStatus(ReservationStatus.EXPIRED);
 		reservation.getRoom().setRoomStatus(RoomStatus.CLEANING);
+		reservation.setCheckOutDate(LocalDate.now());
 		this.addRoomToHouseKeeper(reservation.getRoom().getId());
 	}
 

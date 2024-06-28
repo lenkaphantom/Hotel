@@ -16,27 +16,24 @@ import com.toedter.calendar.JCalendar;
 
 public class OccupiedDatesPopup extends JDialog {
 
-	private static final long serialVersionUID = 1L;
-	private JCalendar calendar;
+    private static final long serialVersionUID = 1L;
+    private JCalendar calendar;
 
-	public OccupiedDatesPopup(JFrame parent, List<LocalDate> occupiedDates) {
-		super(parent, "Zauzeti datumi", true);
-		setSize(new Dimension(400, 400));
-		setLocationRelativeTo(null);
+    public OccupiedDatesPopup(JFrame parent, List<LocalDate> occupiedDates) {
+        super(parent, "Zauzeti datumi", true);
+        setSize(new Dimension(400, 400));
+        setLocationRelativeTo(null);
 
-		calendar = new JCalendar();
+        calendar = new JCalendar();
+
         JPanel panel = new JPanel();
         panel.add(calendar);
 
         add(new JScrollPane(panel));
 
         highlightOccupiedDates(occupiedDates);
-
-        if (!occupiedDates.isEmpty()) {
-            LocalDate firstOccupiedDate = occupiedDates.get(0);
-            calendar.setDate(Date.from(firstOccupiedDate.atStartOfDay(ZoneId.systemDefault()).toInstant()));
-        }
         
+        calendar.setDate(calendar.getDate());
         calendar.repaint();
     }
 
@@ -46,7 +43,7 @@ public class OccupiedDatesPopup extends JDialog {
             calendar.getDayChooser().addDateEvaluator(new OccupiedDateEvaluator(utilDate));
         }
     }
-    
+
     private class OccupiedDateEvaluator implements com.toedter.calendar.IDateEvaluator {
         private Date date;
 
