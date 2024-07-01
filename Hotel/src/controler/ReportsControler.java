@@ -2,6 +2,7 @@ package controler;
 
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.ArrayList;
 import java.util.List;
 
 import entity.Employee;
@@ -101,21 +102,21 @@ public abstract class ReportsControler {
 
 		return numOfProcessedReservations;
 	}
-	
-	public static int getNumOfWaitingReservations(LocalDate startDate, LocalDate endDate) {
-        int numOfWaitingReservations = 0;
-        for (Reservation reservation : manager.getReservationsMan().getReservations().values()) {
-            if (!reservation.getStatus().equals(ReservationStatus.WAITING))
-                continue;
-            LocalDate tsDate = startDate.minusDays(1);
-            LocalDate teDate = endDate.plusDays(1);
-            if (tsDate.isBefore(reservation.getCreationDate()) && teDate.isAfter(reservation.getCreationDate())) {
-                numOfWaitingReservations++;
-            }
-        }
 
-        return numOfWaitingReservations;
-    }
+	public static int getNumOfWaitingReservations(LocalDate startDate, LocalDate endDate) {
+		int numOfWaitingReservations = 0;
+		for (Reservation reservation : manager.getReservationsMan().getReservations().values()) {
+			if (!reservation.getStatus().equals(ReservationStatus.WAITING))
+				continue;
+			LocalDate tsDate = startDate.minusDays(1);
+			LocalDate teDate = endDate.plusDays(1);
+			if (tsDate.isBefore(reservation.getCreationDate()) && teDate.isAfter(reservation.getCreationDate())) {
+				numOfWaitingReservations++;
+			}
+		}
+
+		return numOfWaitingReservations;
+	}
 
 	public static int getNumOfCancelledReservations(LocalDate startDate, LocalDate endDate) {
 		int numOfCancelledReservations = 0;
@@ -146,7 +147,7 @@ public abstract class ReportsControler {
 
 		return numOfDeniedReservations;
 	}
-	
+
 	public static int getNumOfExpiredReservations(LocalDate startDate, LocalDate endDate) {
 		int numOfExpiredReservations = 0;
 		for (Reservation reservation : manager.getReservationsMan().getReservations().values()) {
@@ -223,19 +224,39 @@ public abstract class ReportsControler {
 			numOfNights = getNumOfNights(startDate, endDate, id);
 			revenue = getRevenueForRoom(id, startDate, endDate) * 117;
 			roomNumber = romm.getRoomNumber();
-			roomsReport += "Soba: " + roomNumber + " | Broj nocenja: " + numOfNights + " | Prihod: " + revenue
-					+ "\n";
+			roomsReport += "Soba: " + roomNumber + " | Broj nocenja: " + numOfNights + " | Prihod: " + revenue + "\n";
 		}
 		return roomsReport;
 	}
-	
+
 	public static double getRoomTypeRevenueByMonth(LocalDate startDate, LocalDate endDate, int id) {
 		double revenue = 0;
-        for (Room room : manager.getRoomsMan().getRooms().values()) {
-            if (room.getRoomType().getId() == id) {
-                revenue += getRevenueForRoom(room.getId(), startDate, endDate);
-            }
-        }
-        return revenue * 117;
+		for (Room room : manager.getRoomsMan().getRooms().values()) {
+			if (room.getRoomType().getId() == id) {
+				revenue += getRevenueForRoom(room.getId(), startDate, endDate);
+			}
+		}
+		return revenue * 117;
+	}
+
+	private static List<Room> getOccupiedRooms() {
+		LocalDate today = LocalDate.now();
+		List<Room> occupiedRooms = new ArrayList<>();
+		for (Room room : manager.getRoomsMan().getRooms().values()) {
+			if (manager.getRoomsMan().getOccupiedDatesList(room.getId()).contains(today)) {
+				occupiedRooms.add(room);
+			}
+		}
+		return occupiedRooms;
+	}
+
+	public static String getOccupiedRoomsReport() {
+		String occupiedRoomsReport = "";
+		List<Room> occupiedRooms = getOccupiedRooms();
+		for (Room room : occupiedRooms) {
+			occupiedRoomsReport += "Soba: " + room.getRoomNumber() + " | Tip sobe: " + room.getRoomType().getType()
+					+ "(" + room.getRoomType().getBeds() + ")\n";
+		}
+		return occupiedRoomsReport;
 	}
 }

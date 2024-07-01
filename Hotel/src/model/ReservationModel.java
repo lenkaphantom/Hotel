@@ -102,16 +102,4 @@ public class ReservationModel extends AbstractTableModel {
 	public boolean isCellEditable(int row, int column) {
 		return column == 4;
 	}
-
-	public boolean containsAdditionalService(int reservationId, String service) {
-		Reservation reservation = manager.getReservationsMan().getReservations().get(reservationId);
-		if (reservation != null) {
-			for (AdditionalServices additionalService : reservation.getAdditionalServices()) {
-				if (additionalService.getService().equalsIgnoreCase(service)) {
-					return true;
-				}
-			}
-		}
-		return false;
-	}
 }

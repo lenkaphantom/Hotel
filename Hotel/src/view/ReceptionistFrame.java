@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.RowFilter;
@@ -29,12 +30,15 @@ import javax.swing.event.DocumentListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableRowSorter;
 
+import controler.ReportsControler;
 import controler.ReservationControler;
 import controler.RoomTypeControler;
 import entity.Reservation;
 import entity.Room;
 import enumeracije.ReservationStatus;
 import manage.ManageHotel;
+import model.DailyCheckInModel;
+import model.DailyCheckOutModel;
 import model.GuestModel;
 import model.ReservationModel;
 import model.RoomModel;
@@ -60,6 +64,8 @@ public class ReceptionistFrame extends JFrame {
 	private JTable reservationTable;
 	private JTable roomTable;
 	private JTable guestTable;
+	private JTable dailyCheckInTable;
+	private JTable dailyCheckOutTable;
 
 	private JTextField tfSearchReservation;
 	private JTextField tfSearchRoom;
@@ -188,6 +194,9 @@ public class ReceptionistFrame extends JFrame {
 
 		JPanel guestPanel = createGuestPanel(guestTable, addBtnGuest, editBtnGuest, removeBtnGuest);
 		tabbedPane.addTab("Gosti", null, guestPanel, null);
+		
+		JPanel dailyReportPanel = createDailyReportPanel();
+		tabbedPane.addTab("Dnevni izveštaj", null, dailyReportPanel, null);
 
 		initActions();
 	}
@@ -408,6 +417,75 @@ public class ReceptionistFrame extends JFrame {
 			}
 		});
 
+		return panel;
+	}
+	
+	private JPanel createDailyReportPanel() {
+		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][grow][grow][grow]"));
+		
+		DailyCheckInModel checkIn = new DailyCheckInModel();
+		dailyCheckInTable = new JTable(checkIn);
+		
+		dailyCheckInTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
+
+		dailyCheckInTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = dailyCheckInTable.rowAtPoint(e.getPoint());
+				int column = dailyCheckInTable.columnAtPoint(e.getPoint());
+				int modelRow = dailyCheckInTable.convertRowIndexToModel(row);
+
+				if (column == 4) {
+					Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+					new AdditionalServicesPopup(ReceptionistFrame.this,
+							manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
+				}
+			}
+		});
+		
+		JScrollPane scrollPaneCheckIn = new JScrollPane(dailyCheckInTable);
+		scrollPaneCheckIn.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneCheckIn.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPaneCheckIn, "cell 0 1,grow");
+		
+		DailyCheckOutModel checkOut = new DailyCheckOutModel();
+		dailyCheckOutTable = new JTable(checkOut);
+		
+		dailyCheckOutTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
+		
+		dailyCheckOutTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				int row = dailyCheckOutTable.rowAtPoint(e.getPoint());
+				int column = dailyCheckOutTable.columnAtPoint(e.getPoint());
+				int modelRow = dailyCheckOutTable.convertRowIndexToModel(row);
+
+				if (column == 4) {
+					Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+					new AdditionalServicesPopup(ReceptionistFrame.this,
+							manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
+				}
+			}
+		});
+		
+		JScrollPane scrollPaneCheckOut = new JScrollPane(dailyCheckOutTable);
+		scrollPaneCheckOut.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		scrollPaneCheckOut.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+		panel.add(scrollPaneCheckOut, "cell 0 2,grow");
+		
+        int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100 };
+        setTableColumnWidths(dailyCheckInTable, columnWidths);
+        setTableColumnWidths(dailyCheckOutTable, columnWidths);
+        
+        JTextArea textArea = new JTextArea();
+        textArea.setEditable(false);
+        textArea.setText(ReportsControler.getOccupiedRoomsReport());
+        
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+        panel.add(scrollPane, "cell 0 3,grow");
+        
 		return panel;
 	}
 
