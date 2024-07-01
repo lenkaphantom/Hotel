@@ -51,8 +51,14 @@ public class DailyCheckOutModel extends AbstractTableModel {
 		case 5:
 			return checkOut.getStatus().toString();
 		case 6:
+			if (checkOut.getRoom() == null) {
+				return null;
+			}
 			return checkOut.getRoom().getRoomNumber();
 		case 7:
+			if (checkOut.getGuest() == null) {
+				return null;
+			}
 			return checkOut.getGuest().getUsername();
 		case 8:
 			return checkOut.getTotalPrice();

@@ -1,6 +1,7 @@
 package view;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.EventQueue;
 import java.awt.FlowLayout;
 import java.awt.Image;
@@ -421,73 +422,86 @@ public class ReceptionistFrame extends JFrame {
 	}
 	
 	private JPanel createDailyReportPanel() {
-		JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][grow][grow][grow]"));
-		
-		DailyCheckInModel checkIn = new DailyCheckInModel();
-		dailyCheckInTable = new JTable(checkIn);
-		
-		dailyCheckInTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
+	    JPanel panel = new JPanel(new MigLayout("", "[grow]", "[][grow][grow][grow][grow]"));
 
-		dailyCheckInTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int row = dailyCheckInTable.rowAtPoint(e.getPoint());
-				int column = dailyCheckInTable.columnAtPoint(e.getPoint());
-				int modelRow = dailyCheckInTable.convertRowIndexToModel(row);
+	    JLabel checkInLabel = new JLabel("Dnevni dolasci: ");
+	    panel.add(checkInLabel, "cell 0 0");
+	    
+	    DailyCheckInModel checkIn = new DailyCheckInModel();
+	    dailyCheckInTable = new JTable(checkIn);
+	    dailyCheckInTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
 
-				if (column == 4) {
-					Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
-					new AdditionalServicesPopup(ReceptionistFrame.this,
-							manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
-				}
-			}
-		});
-		
-		JScrollPane scrollPaneCheckIn = new JScrollPane(dailyCheckInTable);
-		scrollPaneCheckIn.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneCheckIn.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		panel.add(scrollPaneCheckIn, "cell 0 1,grow");
-		
-		DailyCheckOutModel checkOut = new DailyCheckOutModel();
-		dailyCheckOutTable = new JTable(checkOut);
-		
-		dailyCheckOutTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
-		
-		dailyCheckOutTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				int row = dailyCheckOutTable.rowAtPoint(e.getPoint());
-				int column = dailyCheckOutTable.columnAtPoint(e.getPoint());
-				int modelRow = dailyCheckOutTable.convertRowIndexToModel(row);
+	    dailyCheckInTable.addMouseListener(new MouseAdapter() {
+	        @Override
+	        public void mouseClicked(MouseEvent e) {
+	            int row = dailyCheckInTable.rowAtPoint(e.getPoint());
+	            int column = dailyCheckInTable.columnAtPoint(e.getPoint());
+	            int modelRow = dailyCheckInTable.convertRowIndexToModel(row);
 
-				if (column == 4) {
-					Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
-					new AdditionalServicesPopup(ReceptionistFrame.this,
-							manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
-				}
-			}
-		});
-		
-		JScrollPane scrollPaneCheckOut = new JScrollPane(dailyCheckOutTable);
-		scrollPaneCheckOut.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		scrollPaneCheckOut.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-		panel.add(scrollPaneCheckOut, "cell 0 2,grow");
-		
-        int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100 };
-        setTableColumnWidths(dailyCheckInTable, columnWidths);
-        setTableColumnWidths(dailyCheckOutTable, columnWidths);
-        
-        JTextArea textArea = new JTextArea();
-        textArea.setEditable(false);
-        textArea.setText(ReportsControler.getOccupiedRoomsReport());
-        
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-        scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
-        panel.add(scrollPane, "cell 0 3,grow");
-        
-		return panel;
+	            if (column == 4) {
+	                Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+	                new AdditionalServicesPopup(ReceptionistFrame.this,
+	                        manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
+	            }
+	        }
+	    });
+
+	    JScrollPane scrollPaneCheckIn = new JScrollPane(dailyCheckInTable);
+	    scrollPaneCheckIn.setBackground(BACKGROUND_COLOR);
+	    scrollPaneCheckIn.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    scrollPaneCheckIn.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    panel.add(scrollPaneCheckIn, "cell 0 1,grow");
+
+	    JLabel checkOutLabel = new JLabel("Dnevni odlasci: ");
+	    panel.add(checkOutLabel, "cell 0 2");
+	    
+	    DailyCheckOutModel checkOut = new DailyCheckOutModel();
+	    dailyCheckOutTable = new JTable(checkOut);
+	    dailyCheckOutTable.getColumnModel().getColumn(4).setCellRenderer(new ServicesCellRenderer());
+
+	    dailyCheckOutTable.addMouseListener(new MouseAdapter() {
+	        @Override
+	        public void mouseClicked(MouseEvent e) {
+	            int row = dailyCheckOutTable.rowAtPoint(e.getPoint());
+	            int column = dailyCheckOutTable.columnAtPoint(e.getPoint());
+	            int modelRow = dailyCheckOutTable.convertRowIndexToModel(row);
+
+	            if (column == 4) {
+	                Reservation reservation = manager.getReservationsMan().getReservations().get(modelRow + 1);
+	                new AdditionalServicesPopup(ReceptionistFrame.this,
+	                        manager.getAdditionalServicesList(reservation.getId())).setVisible(true);
+	            }
+	        }
+	    });
+
+	    JScrollPane scrollPaneCheckOut = new JScrollPane(dailyCheckOutTable);
+	    scrollPaneCheckOut.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    scrollPaneCheckOut.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    panel.add(scrollPaneCheckOut, "cell 0 3,grow");
+
+	    int[] columnWidths = new int[] { 50, 100, 100, 100, 150, 100, 100, 100, 100, 100, 100 };
+	    setTableColumnWidths(dailyCheckInTable, columnWidths);
+	    setTableColumnWidths(dailyCheckOutTable, columnWidths);
+
+	    Dimension tableScrollPaneSize = new Dimension(500, 100);
+	    scrollPaneCheckIn.setPreferredSize(tableScrollPaneSize);
+	    scrollPaneCheckOut.setPreferredSize(tableScrollPaneSize);
+
+	    JLabel occupiedRoomsLabel = new JLabel("Dnevni izveštaj o zauzetim sobama: ");
+	    panel.add(occupiedRoomsLabel, "cell 0 4");
+
+	    JTextArea textArea = new JTextArea();
+	    textArea.setEditable(false);
+	    textArea.setText(ReportsControler.getOccupiedRoomsReport());
+
+	    JScrollPane scrollPane = new JScrollPane(textArea);
+	    scrollPane.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+	    scrollPane.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED);
+	    panel.add(scrollPane, "cell 0 5,grow");
+
+	    return panel;
 	}
+
 
 	private void initActions() {
 		addBtn.addActionListener(new ActionListener() {
@@ -627,5 +641,13 @@ public class ReceptionistFrame extends JFrame {
 
 	public void refreshRoomTable() {
 		((AbstractTableModel) roomTable.getModel()).fireTableDataChanged();
+	}
+	
+	public void refreshDailyCheckInTable() {
+		((AbstractTableModel) dailyCheckInTable.getModel()).fireTableDataChanged();
+	}
+	
+	public void refreshDailyCheckOutTable() {
+		((AbstractTableModel) dailyCheckOutTable.getModel()).fireTableDataChanged();
 	}
 }
