@@ -872,7 +872,7 @@ public class AdministratorFrame extends JFrame {
 				double revenue = ReportsControler.getRevenue(startDate, endDate);
 				double expense = ReportsControler.getExpenses(startDate, endDate);
 				
-				revenueExpenseReportLabel.setText("Prihodi: " + revenue * 117 + " Din, Rashodi: " + expense + " Din");
+				revenueExpenseReportLabel.setText("Prihodi: " + revenue + " Eur, Rashodi: " + expense + " Eur");
 			}
 		});
 		

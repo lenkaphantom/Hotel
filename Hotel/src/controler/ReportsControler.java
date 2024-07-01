@@ -222,7 +222,7 @@ public abstract class ReportsControler {
 		for (Room romm : manager.getRoomsMan().getRooms().values()) {
 			id = romm.getId();
 			numOfNights = getNumOfNights(startDate, endDate, id);
-			revenue = getRevenueForRoom(id, startDate, endDate) * 117;
+			revenue = getRevenueForRoom(id, startDate, endDate);
 			roomNumber = romm.getRoomNumber();
 			roomsReport += "Soba: " + roomNumber + " | Broj nocenja: " + numOfNights + " | Prihod: " + revenue + "\n";
 		}
