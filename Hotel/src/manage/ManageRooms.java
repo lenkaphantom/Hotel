@@ -110,6 +110,8 @@ public class ManageRooms {
 			return false;
 		for (LocalDate startDate : room.getOccupiedDates().keySet()) {
 			LocalDate endDate = room.getOccupiedDates().get(startDate);
+			if (endDate == null)
+				continue;
 			if (date1.isBefore(endDate) && date2.isAfter(startDate)) {
 				return true;
 			}

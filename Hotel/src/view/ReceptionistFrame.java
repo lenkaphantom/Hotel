@@ -552,6 +552,9 @@ public class ReceptionistFrame extends JFrame {
 					} else if (manager.checkIn(modelRow + 1) == -2) {
 						JOptionPane.showMessageDialog(null, "Rezervacija je istekla.", "Greška",
 								JOptionPane.WARNING_MESSAGE);
+					} else if (manager.checkIn(modelRow + 1) == -3) {
+						JOptionPane.showMessageDialog(null, "Check-in je već izvršen.", "Greška",
+								JOptionPane.WARNING_MESSAGE);
 					}
 					AddEditReservationDialog addEditReservationDialog = new AddEditReservationDialog(
 							ReceptionistFrame.this, modelRow + 1, controler, new RoomTypeControler(null));

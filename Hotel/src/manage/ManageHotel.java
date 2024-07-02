@@ -105,8 +105,7 @@ public class ManageHotel {
 			if (reservation.getRoom() == null) {
 				continue;
 			}
-			if (!reservation.getRoom().getRoomStatus().equals(RoomStatus.OCCUPIED)
-					&& reservation.getStartDate().isBefore(LocalDate.now())) {
+			if (reservation.getCheckInDate() == null && LocalDate.now().isAfter(reservation.getStartDate())) {
 				reservation.setStatus(ReservationStatus.EXPIRED);
 			}
 		}
@@ -169,11 +168,13 @@ public class ManageHotel {
 		}
 
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
+		if (reservation.getCheckInDate() != null)
+			return -3;
 		this.assignRoomAtCheckIn(reservation.getId());
 		reservation.getRoom().setRoomStatus(RoomStatus.OCCUPIED);
 		this.calculatePrice(id);
 		reservation.setCheckInDate(LocalDate.now());
-		
+
 		return 0;
 	}
 
@@ -184,10 +185,10 @@ public class ManageHotel {
 		}
 
 		Reservation reservation = this.reservationsMan.getReservations().get(id);
-		reservation.setStatus(ReservationStatus.EXPIRED);
 		reservation.getRoom().setRoomStatus(RoomStatus.CLEANING);
 		reservation.setCheckOutDate(LocalDate.now());
 		this.addRoomToHouseKeeper(reservation.getRoom().getId());
+		reservation.getRoom().setOccupiedDates(this);
 	}
 
 	public void addRoomToHouseKeeper(int id) {
@@ -208,7 +209,7 @@ public class ManageHotel {
 				break;
 			} else if (this.getEmployeesMan().getNumberOfRoomsToClean(houseKeeper.getId(),
 					LocalDate.now()) < minCleaning) {
-				minCleaning = houseKeeper.getRoomsToClean().size();
+				minCleaning = this.getEmployeesMan().getNumberOfRoomsToClean(houseKeeper.getId(), LocalDate.now());
 				houseKeeperId = houseKeeper.getId();
 			}
 		}
@@ -227,8 +228,6 @@ public class ManageHotel {
 			return;
 		}
 
-		HouseKeeper houseKeeper = this.employeesMan.getHouseKeepers().get(idHK);
-
 		if (!this.roomsMan.getRooms().containsKey(idRoom)) {
 			System.out.println("Soba sa id-jem " + idRoom + " ne postoji.");
 			return;
@@ -246,14 +245,17 @@ public class ManageHotel {
 				availableCount++;
 			}
 		}
+		System.out.println(availableCount);
 		return availableCount;
 	}
 
 	public int numberOfReservations(RoomType roomType, LocalDate startDate, LocalDate endDate) {
 		int count = 0;
 		for (Reservation reservation : this.reservationsMan.getReservations().values()) {
-			if (reservation.getRoomType().equals(roomType) && !startDate.isAfter(reservation.getEndDate())
-					&& !endDate.isBefore(reservation.getStartDate())) {
+			if (reservation.getCheckInDate() == null)
+				continue;
+			if (reservation.getRoomType().equals(roomType) && !startDate.isAfter(reservation.getCheckOutDate())
+					&& !endDate.isBefore(reservation.getCheckInDate())) {
 				count++;
 			}
 		}
@@ -347,7 +349,7 @@ public class ManageHotel {
 				}
 			}
 		}
-
+		totalPrice = Math.round(totalPrice * 100.0) / 100.0;
 		reservation.setTotalPrice(totalPrice);
 	}
 
@@ -403,10 +405,4 @@ public class ManageHotel {
 		}
 		return specs;
 	}
-	
-	public Map<LocalDate, Map<TypeOfRoom, Double>> getRevenueDataForLast12Months() {
-		Map<LocalDate, Map<TypeOfRoom, Double>> revenueData = new HashMap<>();
-		LocalDate date = LocalDate.now().minusMonths(12);
-		return revenueData;
-    }
 }

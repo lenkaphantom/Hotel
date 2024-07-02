@@ -51,20 +51,20 @@ public class ManageEmployees {
 		}
 		return receptionists;
 	}
-	
+
 	public HouseKeeper getHouseKeeperFromUsername(String username) {
-        for (Employee employee : this.employees.values()) {
-            if (employee instanceof HouseKeeper && employee.getUsername().equals(username)) {
-                return (HouseKeeper) employee;
-            }
-        }
-        return null;
-    }
+		for (Employee employee : this.employees.values()) {
+			if (employee instanceof HouseKeeper && employee.getUsername().equals(username)) {
+				return (HouseKeeper) employee;
+			}
+		}
+		return null;
+	}
 
 	// methods
 	public void addEmployee(String firstName, String lastName, Gender gender, LocalDate date, String phone,
-			String address, String username, String password, Qualifications qualification,
-			int yearsOfExperience, Type type) {
+			String address, String username, String password, Qualifications qualification, int yearsOfExperience,
+			Type type) {
 		if (type == Type.Receptionist) {
 			Receptionist receptionist = new Receptionist(firstName, lastName, gender, date, phone, address, username,
 					password, qualification, yearsOfExperience, type);
@@ -117,7 +117,7 @@ public class ManageEmployees {
 		if (yearsOfExperience != 0) {
 			employee.setYearsOfExperience(yearsOfExperience);
 		}
-		
+
 		employee.calculateSalary();
 	}
 
@@ -133,8 +133,8 @@ public class ManageEmployees {
 			while ((line = reader.readLine()) != null) {
 				String[] parts = line.split(" \\| ");
 				this.addEmployee(parts[1], parts[2], Gender.valueOf(parts[3]), LocalDate.parse(parts[4]), parts[5],
-						parts[6], parts[7], parts[8], Qualifications.valueOf(parts[9]),
-						Integer.parseInt(parts[11]), Type.valueOf(parts[12]));
+						parts[6], parts[7], parts[8], Qualifications.valueOf(parts[9]), Integer.parseInt(parts[11]),
+						Type.valueOf(parts[12]));
 				if (parts[12].equals("HouseKeeper") && parts.length > 13) {
 					HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(Integer.parseInt(parts[0]));
 					String[] data = parts[13].split("\\|");
@@ -169,17 +169,12 @@ public class ManageEmployees {
 			System.out.println("Greška prilikom upisa u fajl.");
 		}
 	}
-	
+
 	public int getNumberOfRoomsToClean(int id, LocalDate date) {
 		HouseKeeper houseKeeper = (HouseKeeper) this.employees.get(id);
-		int numberOfRooms = 0;
 		if (houseKeeper.getRoomsToClean().get(date) == null) {
 			return 0;
 		}
-		for (Room room : houseKeeper.getRoomsToClean().get(date)) {
-			if (room.getRoomStatus().equals(RoomStatus.CLEANING))
-				numberOfRooms++;
-		}
-		return numberOfRooms;
+		return houseKeeper.getRoomsToClean().get(date).size();
 	}
 }

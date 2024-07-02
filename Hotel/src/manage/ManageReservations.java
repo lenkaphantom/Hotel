@@ -142,6 +142,6 @@ public class ManageReservations {
 				totalCost += reservation.getTotalPrice();
 			}
 		}
-		return totalCost;
+		return Math.round(totalCost * 100.0) / 100.0;
 	}
 }

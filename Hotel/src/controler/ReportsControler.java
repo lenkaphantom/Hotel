@@ -16,7 +16,7 @@ public abstract class ReportsControler {
 	private static ManageHotel manager = ManageHotel.getInstance();
 
 	public static double getRevenue(LocalDate startDate, LocalDate endDate) {
-		int revenue = 0;
+		double revenue = 0.0;
 		for (Reservation reservation : manager.getReservationsMan().getReservations().values()) {
 			LocalDate tsDate = startDate.minusDays(1);
 			LocalDate teDate = endDate.plusDays(1);
@@ -25,23 +25,19 @@ public abstract class ReportsControler {
 			}
 		}
 
-		return revenue;
+		return Math.round(revenue * 100.0) / 100.0;
 	}
 
 	public static double getExpenses(LocalDate startDate, LocalDate endDate) {
 		int expenses = 0;
 		Period period = Period.between(startDate, endDate);
-		int numOfDays = period.getDays();
 		int numOfMonths = period.getMonths();
 
 		for (Employee employee : manager.getEmployeesMan().getEmployees().values()) {
 			expenses += employee.getSalary();
 		}
-
-		if (numOfMonths == 0 && numOfDays >= 15)
-			return expenses;
-
-		return numOfMonths * expenses;
+		expenses *= (numOfMonths + 1);
+		return Math.round(expenses * 100.0) / 100.0;
 	}
 
 	public static int getNumOfCleanedRooms(LocalDate startDate, LocalDate endDate, int id) {
@@ -64,11 +60,15 @@ public abstract class ReportsControler {
 
 	public static String getHouseKeeping(LocalDate startDate, LocalDate endDate) {
 		String houseKeeping = "";
+		String room = "";
 		int numOfCleanedRooms = 0;
 		for (HouseKeeper houseKeeper : manager.getEmployeesMan().getHouseKeepers().values()) {
 			houseKeeping += "Housekeeper: " + houseKeeper.getUsername();
 			numOfCleanedRooms = getNumOfCleanedRooms(startDate, endDate, houseKeeper.getId());
-			houseKeeping += " | " + numOfCleanedRooms + " soba\n";
+			if (numOfCleanedRooms >= 2 && numOfCleanedRooms <= 4)
+				room = "sobe";
+			else room = "soba";
+			houseKeeping += " | " + numOfCleanedRooms + room + "\n";
 		}
 		return houseKeeping;
 	}
@@ -210,7 +210,7 @@ public abstract class ReportsControler {
 				}
 			}
 		}
-		return revenue;
+		return Math.round(revenue * 100.0) / 100.0;
 	}
 
 	public static String getRoomsReport(LocalDate startDate, LocalDate endDate) {
@@ -236,7 +236,7 @@ public abstract class ReportsControler {
 				revenue += getRevenueForRoom(room.getId(), startDate, endDate);
 			}
 		}
-		return revenue * 117;
+		return Math.round(revenue * 100.0) / 100.0;
 	}
 
 	private static List<Room> getOccupiedRooms() {

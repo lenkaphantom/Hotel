@@ -93,12 +93,18 @@ public class Room {
 	}
 
 	public void setOccupiedDates(ManageHotel hotel) {
+		LocalDate chIDate;
+		LocalDate chODate;
 		Map<Integer, Reservation> reservations = hotel.getReservationsMan().getReservations();
 		for (Reservation reservation : reservations.values()) {
 			if (reservation.getRoom() == null)
 				continue;
 			if (reservation.getRoom().getId() == this.id) {
-				this.occupiedDates.put(reservation.getStartDate(), reservation.getEndDate());
+				if (reservation.getCheckOutDate() == null)
+					chODate = reservation.getEndDate();
+				else chODate = reservation.getCheckOutDate();
+				chIDate = reservation.getStartDate();
+				this.occupiedDates.put(chIDate, chODate);
 			}
 		}
 	}

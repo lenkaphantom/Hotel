@@ -209,6 +209,11 @@ public class AddEditReservationDialog extends JDialog {
 			JOptionPane.showMessageDialog(this, "Morate izabrati tip sobe.", "Greška", JOptionPane.ERROR_MESSAGE);
 			return false;
 		}
+		if (dcCheckOut.getDate().before(dcCheckIn.getDate())) {
+			JOptionPane.showMessageDialog(this, "Datum kraja rezervacije mora biti nakon datuma njenog početka.",
+					"Greška", JOptionPane.ERROR_MESSAGE);
+			return false;
+		}
 		return true;
 	}
 

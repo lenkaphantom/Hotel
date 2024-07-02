@@ -106,13 +106,13 @@ public abstract class Employee extends User {
 			bonus = 3.0;
 		}
 
-		double hourlyRate = 4.0 * index;
+		double hourlyRate = 2 * index;
 		if (this.getType() == Type.Receptionist) {
 			salary = 2 * hourlyRate * totalHoursPerWeek * totalWeeksPerMonth * bonus;
 		} else {
 			salary = hourlyRate * totalHoursPerWeek * totalWeeksPerMonth * bonus;
 		}
-		return salary;
+		return Math.round(salary * 100.0) / 100.0;
 	}
 
 	@Override
