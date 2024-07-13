@@ -1,1 +1,1 @@
-Informacioni sistem hotela
+Simulacija rada hotela u Javi
