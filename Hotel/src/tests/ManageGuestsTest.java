@@ -57,6 +57,7 @@ class ManageGuestsTest {
 	void testGetGuestFromUsername() {
 		Guest guest = manageGuests.getGuestFromUsername("ljovan");
 		assertNotNull(guest);
+		assertEquals("ljovan", guest.getUsername());
 	}
 
 }
