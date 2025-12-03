@@ -15,27 +15,27 @@ This repository contains an implementation of an informational system for a hote
 
 ## 📁 Project Structure
 ```
-`/`                     # Project root
-├─ `src/`               # Java source files grouped by packages
-│  ├─ `main/Hotel.java`           # Program entry point
-│  ├─ `controler/`                # Controllers (ReservationControler, RoomControler...)
-│  ├─ `entity/`                   # Domain entities (Guest, Room, Reservation...)
-│  ├─ `model/`                    # Models for table views and business logic
-│  ├─ `manage/`                   # Managers for CRUD operations
-│  ├─ `view/`                     # Swing frames and dialogs
-│  ├─ `validation/Validation.java`# Input validation utilities
-│  └─ `charts/`                   # Chart helpers (XChart wrappers)
-├─ `data/`               # CSV data files used for persistence
-│  ├─ `rooms.csv`
-│  ├─ `room_types.csv`
-│  ├─ `reservations.csv`
-│  ├─ `guests.csv`
-│  ├─ `employees.csv`
-│  ├─ `administrators.csv`
-│  └─ `additional_services.csv`
-├─ `img/`                # Images / icons used by GUI
-├─ `jcalendar/`          # External calendar dependency (if used)
-└─ `xchart-3.8.8/`       # Charting library used for GUI charts (optional)
+/                   
+├─ src/                # Java source files grouped by packages
+│  ├─ main/Hotel.java             # Program entry point
+│  ├─ controler/                  # Controllers (ReservationControler, RoomControler...)
+│  ├─ entity/                     # Domain entities (Guest, Room, Reservation...)
+│  ├─ model/                      # Models for table views and business logic
+│  ├─ manage/                     # Managers for CRUD operations
+│  ├─ view/                       # Swing frames and dialogs
+│  ├─ validation/Validation.java  # Input validation utilities
+│  └─ charts/                     # Chart helpers (XChart wrappers)
+├─ data/               # CSV data files used for persistence
+│  ├─ rooms.csv
+│  ├─ room_types.csv
+│  ├─ reservations.csv
+│  ├─ guests.csv
+│  ├─ employees.csv
+│  ├─ administrators.csv
+│  └─ additional_services.csv
+├─ img/                # Images / icons used by GUI
+├─ jcalendar/          # External calendar dependency
+└─ xchart-3.8.8/       # Charting library used for GUI charts
 ```
 
 **Important files**
