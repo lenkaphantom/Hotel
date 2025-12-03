@@ -1,5 +1,5 @@
-# 🏨 Hotel Management System — OOP1 Project
-This repository contains an implementation of an informational system for a hotel, developed as a student project for the Object-Oriented Programming 1 (OOP1) course. The system is implemented in Java (target: Java 17) and provides both console and Swing-based GUI components depending on the chosen build/run configuration.
+# 🏨 Hotel Management System
+This repository contains an implementation of an informational system for a hotel, developed as a student project for the Object-Oriented Programming 1 (OOP1) course. The system is implemented in Java and provides Swing-based GUI components.
 
 ## 📌 Features
 
@@ -11,7 +11,7 @@ This repository contains an implementation of an informational system for a hote
 - **Additional Services & Pricing:** Support for additional services (breakfast, lunch, dinner, etc.) and date-range price lists. Reservation price is calculated at the time of booking and stored with the reservation.
 - **Data Persistence:** CSV-based storage (`data/*.csv`) — human-readable files for employees, guests, rooms, reservations, prices, services.
 - **Reports & Charts (optional):** Income/expense reports, housekeeper workload, daily arrivals/departures and occupancy. XChart is included for charting in the GUI.
-- **Unit Tests (optional):** Manager classes have unit tests in `src/tests` (if implemented).
+- **Unit Tests (optional):** Manager classes have unit tests in `src/tests`.
 
 ## 📁 Project Structure
 ```
